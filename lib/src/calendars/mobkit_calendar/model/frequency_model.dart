@@ -1,0 +1,3 @@
+class Frequency {
+  Frequency();
+}
