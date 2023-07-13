@@ -20,11 +20,16 @@ public class MobkitCalendarPlugin: NSObject, FlutterPlugin {
     
     case "requestCalendarAccess":
         calendarManager.requestCalendarAccess { granted in
-                    result(granted)
+                    result(String(granted))
                 }
             case "getEventList":
-        dateFormatter.dateFormat = "dd-MM-yyyy"
-        calendarManager.fetchCalendarEvents { events in
+        dateFormatter.dateFormat = "dd/MM/yyyy HH:mm:ss"
+  
+        if let args = call.arguments as? Dictionary<String, Any>
+             {
+            let startDate = dateFormatter.date(from: args["startDate"] as! String);
+            let endDate = dateFormatter.date(from: args["endDate"] as! String);
+            calendarManager.fetchCalendarEvents(startDate: startDate!, endDate: endDate!, selectedIdList: args["idlist"] as! [String]) { events in
                 let mappedEvents = events.map { event in
                     var mappedEvent: [String: Any] = [:]
                     mappedEvent["nativeEventId"] = event.eventIdentifier
@@ -35,8 +40,8 @@ public class MobkitCalendarPlugin: NSObject, FlutterPlugin {
                     mappedEvent["isFullDayEvent"] = event.isAllDay
                     return mappedEvent
                 }
-            let events : [String : Any] = ["events" : mappedEvents];
-            result(String(decoding: try! JSONSerialization.data(withJSONObject: events	),as: UTF8.self))
+                let events : [String : Any] = ["events" : mappedEvents];
+                result(String(decoding: try! JSONSerialization.data(withJSONObject: events	),as: UTF8.self))}
             }
             case "getAccountList":
         calendarManager.fetchCalendarAccounts { calendars in
@@ -61,18 +66,20 @@ public class MobkitCalendarPlugin: NSObject, FlutterPlugin {
 
 class CalendarManager {
     let eventStore = EKEventStore()
-
+    
     func requestCalendarAccess(completion: @escaping (Bool) -> Void) {
         eventStore.requestAccess(to: .event) { (granted, error) in
-            completion(granted)
+                completion(granted)
         }
     }
 
-    func fetchCalendarEvents(completion: @escaping ([EKEvent]) -> Void) {
+    func fetchCalendarEvents(startDate: Date, endDate: Date, selectedIdList : [String], completion: @escaping ([EKEvent]) -> Void) {
         let calendars = eventStore.calendars(for: .event)
-        let startDate = Date()
-        let endDate = Calendar.current.date(byAdding: .year, value: 1, to: startDate)
-        let predicate = eventStore.predicateForEvents(withStart: startDate, end: endDate!, calendars: calendars)
+        let startDate = startDate
+        let endDate = endDate
+        let predicate = eventStore.predicateForEvents(withStart: startDate, end: endDate, calendars: calendars.filter {
+            selectedIdList.contains($0.calendarIdentifier)
+        })
         let events = eventStore.events(matching: predicate)
         completion(events)
     }
