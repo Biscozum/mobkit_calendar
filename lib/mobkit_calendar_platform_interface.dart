@@ -1,5 +1,7 @@
+import 'package:mobkit_calendar/src/calendars/mobkit_calendar/model/calendar_account_group_model.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
+import 'mobkit_calendar.dart';
 import 'mobkit_calendar_method_channel.dart';
 
 abstract class MobkitCalendarPlatform extends PlatformInterface {
@@ -27,11 +29,15 @@ abstract class MobkitCalendarPlatform extends PlatformInterface {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
 
-  Future<Map?> getAccountList() {
+  Future<List<AccountGroupModel>> getAccountList() {
     throw UnimplementedError('accountList() has not been implemented.');
   }
 
-  Future<Map?> getEventList(Map arguments) {
+  Future<List<MobkitCalendarAppointmentModel>> getEventList(Map arguments) {
     throw UnimplementedError('eventList() has not been implemented.');
+  }
+
+  Future requestCalendarAccess() {
+    throw UnimplementedError('reqestCalendarAccess() has not been implemented.');
   }
 }
