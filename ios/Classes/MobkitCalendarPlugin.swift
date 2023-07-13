@@ -32,7 +32,7 @@ public class MobkitCalendarPlugin: NSObject, FlutterPlugin {
                     mappedEvent["startDate"] = self.dateFormatter.string(for: event.startDate)
                     mappedEvent["endDate"] = self.dateFormatter.string(for:event.endDate)
                     mappedEvent["description"] = event.description
-                    mappedEvent["isFulldayEvent"] = event.isAllDay
+                    mappedEvent["isFullDayEvent"] = event.isAllDay
                     return mappedEvent
                 }
             let events : [String : Any] = ["events" : mappedEvents];

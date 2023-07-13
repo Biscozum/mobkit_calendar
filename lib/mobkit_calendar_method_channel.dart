@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:mobkit_calendar/mobkit_calendar.dart';
 import 'package:mobkit_calendar/src/calendars/mobkit_calendar/model/calendar_account_group_model.dart';
 import 'package:mobkit_calendar/src/calendars/mobkit_calendar/model/calendar_account_model.dart';
@@ -62,9 +64,11 @@ class MethodChannelMobkitCalendar extends MobkitCalendarPlatform {
           MobkitCalendarAppointmentModel mobkitCalendarAppointmentModel = MobkitCalendarAppointmentModel(
             nativeEventId: event["nativeEventId"].toString(),
             title: event["fullName"],
-            appointmentStartDate: event["startDate"],
-            appointmentEndDate: event["endDate"],
-            isAllDay: event["isFulldayEvent"],
+            appointmentStartDate:
+                Platform.isAndroid ? DateFormat('dd/MM/yyyy HH:mm:ss').parse(event["startDate"]) : event["startDate"],
+            appointmentEndDate:
+                Platform.isAndroid ? DateFormat('dd/MM/yyyy HH:mm:ss').parse(event["endDate"]) : event["endDate"],
+            isAllDay: event["isFullDayEvent"],
             detail: event["description"],
             color: const Color(0xff7209b7),
             recurrenceModel: null,
@@ -79,7 +83,7 @@ class MethodChannelMobkitCalendar extends MobkitCalendarPlatform {
 
   @override
   Future requestCalendarAccess() async {
-    final eventList = await methodChannel.invokeMethod<bool>('requestCalendarAccess');
+    final eventList = await methodChannel.invokeMethod<String>('requestCalendarAccess');
     return eventList;
   }
 }

@@ -51,7 +51,8 @@ class CalendarDateCell extends StatelessWidget {
     List<MobkitCalendarAppointmentModel> showCustomCalendarModelList = [];
     showCustomCalendarModelList = customCalendarModelList
         .where((element) =>
-            (today.isBetween(element.appointmentStartDate, element.appointmentEndDate) ?? false) ||
+            !today.isSameDay(element.appointmentEndDate) &&
+                (today.isBetween(element.appointmentStartDate, element.appointmentEndDate) ?? false) ||
             today.isSameDay(element.appointmentStartDate) ||
             (today.isSameDay(element.appointmentStartDate) && today.isSameDay(element.appointmentEndDate)))
         .toList();

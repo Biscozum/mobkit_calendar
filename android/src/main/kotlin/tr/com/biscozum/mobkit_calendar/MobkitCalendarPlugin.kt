@@ -1,11 +1,11 @@
 package tr.com.biscozum.mobkit_calendar
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.database.Cursor
-import android.graphics.Color
 import android.os.Build
 import android.provider.CalendarContract
 import androidx.annotation.NonNull
@@ -19,7 +19,9 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import org.json.JSONObject
 import java.text.SimpleDateFormat
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
@@ -50,16 +52,49 @@ class MobkitCalendarPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     override fun onDetachedFromActivityForConfigChanges() {
         TODO("Not yet implemented")
     }
+
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, "mobkit_calendar")
         channel.setMethodCallHandler(this)
         context = flutterPluginBinding.applicationContext
     }
 
+    @SuppressLint("SimpleDateFormat")
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
         if (call.method == "getPlatformVersion") {
             result.success("Android ${Build.VERSION.RELEASE}")
+        } else if (call.method == "requestCalendarAccess") {
+            if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CALENDAR)
+                != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    activity,
+                    arrayOf(Manifest.permission.READ_CALENDAR),
+                    1
+                )
+            } else if (ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.WRITE_CALENDAR
+                )
+                != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    activity,
+                    arrayOf(Manifest.permission.WRITE_CALENDAR),
+                    2
+                )
+            }
+            result.success(
+                if (ContextCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.READ_CALENDAR
+                    ) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.WRITE_CALENDAR
+                    ) == PackageManager.PERMISSION_GRANTED
+                ) "true" else "false"
+            )
         } else if (call.method == "getAccountList") {
             val calendarsProjection: Array<String> = arrayOf<String>(
                 CalendarContract.Calendars._ID,
@@ -67,19 +102,26 @@ class MobkitCalendarPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                 CalendarContract.Calendars.CALENDAR_DISPLAY_NAME,
                 CalendarContract.Calendars.CALENDAR_COLOR
             );
-            var accounts: HashMap<String, MutableList<HashMap<String,
-                    Any>>> =
-                HashMap<String, MutableList<HashMap<String,
-                        Any>>>();
+            var accounts: MutableMap<Any?, Any?> =
+                mutableMapOf<Any?, Any?>();
             if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CALENDAR)
                 != PackageManager.PERMISSION_GRANTED
             ) {
-                ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.READ_CALENDAR), 1)
+                ActivityCompat.requestPermissions(
+                    activity,
+                    arrayOf(Manifest.permission.READ_CALENDAR),
+                    1
+                )
             } else {
-                if(ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_CALENDAR)
-                    != PackageManager.PERMISSION_GRANTED){
-                    ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.WRITE_CALENDAR), 2)
-                }else{
+                if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_CALENDAR)
+                    != PackageManager.PERMISSION_GRANTED
+                ) {
+                    ActivityCompat.requestPermissions(
+                        activity,
+                        arrayOf(Manifest.permission.WRITE_CALENDAR),
+                        2
+                    )
+                } else {
                     val cur: Cursor? = context.contentResolver.query(
                         CalendarContract.Calendars.CONTENT_URI,
                         calendarsProjection,
@@ -91,72 +133,30 @@ class MobkitCalendarPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                     ) {
                         var accountGroupModelList: MutableList<HashMap<String, Any>> =
                             mutableListOf<HashMap<String, Any>>();
-
                         while (cur.moveToNext()) {
-                            if (accounts["accountGroupModels"] != null && accounts["accountGroupModels"]!!.any {
-                                    it["groupName"] == cur.getString(
-                                        1
-                                    )
-                                }) {
-                                var model: HashMap<String, Any> = HashMap<String, Any>();
-                                var modelList: MutableList<HashMap<String, Any>> =
-                                    mutableListOf<HashMap<String, Any>>();
-                                model.put("accountId", cur.getString(0));
-                                model.put(
-                                    "accountName",
-                                    if (cur.getString(0) == "1") "Yerel Takvim" else cur.getString(
-                                        2
-                                    )
-                                );
-                                model.put("isChecked", false);
-                                model.put(
-                                    "accountColor",
-                                    Color.parseColor("#7209b7")
-                                );
-                                modelList.add(model)
-                                ((accounts["accountGroupModels"]!!.first {
-                                    it["groupName"] == cur.getString(
-                                        1
-                                    )
-                                } as HashMap<String, Any>)["accountModels"] as MutableList<HashMap<String, Any>>).add(
-                                    model
-                                );
-
-                            } else {
-                                var groupModel: HashMap<String, Any> = HashMap<String, Any>();
-                                var modelList: MutableList<HashMap<String, Any>> =
-                                    mutableListOf<HashMap<String, Any>>();
-                                var model: HashMap<String, Any> = HashMap<String, Any>();
-                                groupModel.put(
-                                    "groupName",
-                                    if (cur.getString(0) == "1") "Telefon" else cur.getString(1),
+                            var model: HashMap<String, Any> = HashMap<String, Any>();
+                            model.put(
+                                "groupName",
+                                if (cur.getString(0) == "1") "Telefon" else cur.getString(1),
+                            )
+                            model.put("accountId", cur.getString(0))
+                            model.put(
+                                "accountName",
+                                if (cur.getString(0) == "1") "Yerel Takvim" else cur.getString(
+                                    2
                                 )
-                                model.put("accountId", cur.getString(0))
-                                model.put(
-                                    "accountName",
-                                    if (cur.getString(0) == "1") "Yerel Takvim" else cur.getString(
-                                        2
-                                    )
-                                )
-                                model.put("isChecked", false)
-                                model.put("accountColor", Color.parseColor("#7209b7"))
-                                modelList.add(model);
-                                groupModel.put(
-                                    "accountModels",
-                                    modelList
-                                )
-                                accountGroupModelList.add(groupModel);
-                                accounts.put(
-                                    "accountGroupModels", accountGroupModelList
-                                );
-                            }
-
+                            )
+                            model.put("isChecked", false)
+                            accountGroupModelList.add(model);
+                            accounts.put(
+                                "accounts", accountGroupModelList
+                            );
                         }
                     }
                     cur?.close()
                 }
             }
-            result.success(accounts);
+            result.success(JSONObject(accounts).toString());
         } else if (call.method == "getEventList") {
             val eventsProjection: Array<String> = arrayOf<String>(
                 CalendarContract.Events._ID,
@@ -169,13 +169,10 @@ class MobkitCalendarPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
             );
             val format = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
 
-            var eventModelList: HashMap<String, MutableList<HashMap<String,
-                    Any>>> =
-                HashMap<String, MutableList<HashMap<String,
-                        Any>>>();
-            var events: MutableList<HashMap<String, Any>> =
+            var eventModelList: MutableList<HashMap<String, Any>> =
                 mutableListOf<HashMap<String, Any>>();
-
+            var events: MutableMap<Any?, Any?> =
+                mutableMapOf<Any?, Any?>();
             var idListJson: MutableList<String>? = mutableListOf<String>();
             idListJson =
                 ((call.arguments as HashMap<*, *>)["idlist"] as MutableList<String>?);
@@ -219,44 +216,40 @@ class MobkitCalendarPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                 );
                 if (cur != null && cur.count > 0) {
                     while (cur.moveToNext()) {
-                        var customCalendarModel: HashMap<String, Any> =
-                            HashMap<String, Any>();
+                        var eventModel: HashMap<String, Any> = HashMap<String, Any>();
                         val startDate = format.format(Date(cur.getLong(2)))
                         val endDate = format.format(Date(cur.getLong(3)))
-
-                        customCalendarModel.put(
+                        eventModel.put(
                             "nativeEventId", cur.getString(0)
                         )
-                        customCalendarModel.put(
+                        eventModel.put(
                             "fullName", cur.getString(1)
                         )
-                        customCalendarModel.put(
-                            "startDate", startDate.toString()
+                        eventModel.put(
+                            "startDate",
+                            startDate,
                         )
-                        customCalendarModel.put(
-                            "endDate", endDate.toString()
+                        eventModel.put(
+                            "endDate", endDate,
                         )
-                        customCalendarModel.put(
+                        eventModel.put(
                             "description", cur.getString(4)
                         )
-                        customCalendarModel.put(
+                        eventModel.put(
                             "isFullDayEvent", cur.getInt(5) != 0,
                         )
-                        customCalendarModel.put(
-                            "nativeEventColor", Color.parseColor("#7209b7"),
-                        )
-                        events.add(
-                            customCalendarModel
+                        eventModelList.add(
+                            eventModel
                         )
                     }
                 }
-                eventModelList.put(
-                    "eventList", events
+                events.put(
+                    "events", eventModelList
                 )
-                result.success(eventModelList);
+                result.success(JSONObject(events).toString());
                 cur?.close();
             } else {
-                result.success(eventModelList)
+                result.success(JSONObject(events).toString());
             }
         } else {
             result.notImplemented()
