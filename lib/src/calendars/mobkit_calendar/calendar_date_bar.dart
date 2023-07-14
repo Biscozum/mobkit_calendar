@@ -11,6 +11,7 @@ class CalendarDateSelectionBar extends StatefulWidget {
   final MobkitCalendarConfigModel? config;
   final List<MobkitCalendarAppointmentModel> customCalendarModel;
   final Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime) onSelectionChange;
+  final Function(DateTime datetime) onCalendarDateChange;
 
   const CalendarDateSelectionBar(
     this.date,
@@ -19,6 +20,7 @@ class CalendarDateSelectionBar extends StatefulWidget {
     this.config,
     required this.customCalendarModel,
     required this.onSelectionChange,
+    required this.onCalendarDateChange,
   }) : super(key: key);
 
   @override
@@ -29,6 +31,7 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
   changeWeek(ValueNotifier<DateTime> calendarDate, int amount) {
     DateTime firstWeekDay = findFirstDateOfTheWeek(calendarDate.value);
     calendarDate.value = firstWeekDay.add(Duration(days: amount));
+    widget.onCalendarDateChange(calendarDate.value);
   }
 
   goNextWeek() => changeWeek(widget.date, 7);
@@ -39,6 +42,7 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
         ? DateTime(calendarDate.value.year, calendarDate.value.month + 1, 1)
         : findFirstDateOfTheMonth(DateTime(calendarDate.value.year, calendarDate.value.month, 0));
     calendarDate.value = firstMonthDay;
+    widget.onCalendarDateChange(calendarDate.value);
   }
 
   goNextMonth() => changeMonth(widget.date, true);
@@ -56,14 +60,16 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
             },
             onPanEnd: (details) {
               if (swipeDirection == 'left') {
-                if (widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.daily) {
+                if (widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.daily ||
+                    widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.weekly) {
                   goNextWeek();
                 } else if (widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.monthly) {
                   goNextMonth();
                 }
               }
               if (swipeDirection == 'right') {
-                if (widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.daily) {
+                if (widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.daily ||
+                    widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.weekly) {
                   goPreviousWeek();
                 } else if (widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.monthly) {
                   goPreviousMonth();
@@ -184,18 +190,28 @@ class _DateListState extends State<DateList> {
       List<Widget> cellList = [];
       for (var x = 1; x <= 7; x++) {
         cellList.add(
-          CalendarDateCell(
-            newDate,
-            selectedDate,
-            onSelectionChange,
-            customCalendarModel: customCalendarModel,
-            config: config,
-            enabled: true,
+          Expanded(
+            child: CalendarDateCell(
+              newDate,
+              selectedDate,
+              onSelectionChange,
+              customCalendarModel: customCalendarModel,
+              config: config,
+              enabled: true,
+            ),
           ),
         );
+        cellList.add(Container(
+          width: 1,
+          color: config?.enabledBorderColor ?? Colors.transparent,
+        ));
         newDate = newDate.add(const Duration(days: 1));
       }
       rowList.add(Expanded(child: Row(children: cellList)));
+      rowList.add(Container(
+        color: config?.enabledBorderColor ?? Colors.transparent,
+        height: 1,
+      ));
     }
     return rowList;
   }

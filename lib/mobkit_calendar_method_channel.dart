@@ -71,7 +71,7 @@ class MethodChannelMobkitCalendar extends MobkitCalendarPlatform {
               appointmentStartDate: DateFormat('dd/MM/yyyy HH:mm:ss').parse(event["startDate"]),
               appointmentEndDate: DateFormat('dd/MM/yyyy HH:mm:ss').parse(event["endDate"]),
               isAllDay: event["isFullDayEvent"],
-              detail: event["description"],
+              detail: event["description"] ?? "",
               color: const Color(0xff7209b7),
               recurrenceModel: null,
             );

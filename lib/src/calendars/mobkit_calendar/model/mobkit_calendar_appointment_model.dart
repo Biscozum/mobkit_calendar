@@ -11,6 +11,7 @@ class MobkitCalendarAppointmentModel {
   bool isAllDay;
   String detail;
   RecurrenceModel? recurrenceModel;
+  Object? eventData;
   MobkitCalendarAppointmentModel({
     this.nativeEventId,
     required this.title,
@@ -20,5 +21,6 @@ class MobkitCalendarAppointmentModel {
     required this.isAllDay,
     required this.detail,
     required this.recurrenceModel,
+    this.eventData,
   });
 }

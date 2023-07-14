@@ -91,6 +91,7 @@ class MobkitCalendarWidget extends StatefulWidget {
   final MobkitCalendarConfigModel? config;
   final List<MobkitCalendarAppointmentModel> appointmentModel;
   final Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime) onSelectionChange;
+  final Function(MobkitCalendarAppointmentModel model) eventTap;
   final Function(DateTime datetime) onCalendarDateChange;
 
   MobkitCalendarWidget({
@@ -98,6 +99,7 @@ class MobkitCalendarWidget extends StatefulWidget {
     Key? key,
     this.config,
     required this.onSelectionChange,
+    required this.eventTap,
     required this.onCalendarDateChange,
     required this.appointmentModel,
     required this.calendarDate,
@@ -333,6 +335,7 @@ class _MobkitCalendarWidgetState extends State<MobkitCalendarWidget> {
             selectedDate: widgetSelectedDate,
             calendarDate: widgetCalendarDate,
             onSelectionChange: widget.onSelectionChange,
+            eventTap: widget.eventTap,
             onCalendarDateChange: widget.onCalendarDateChange,
           )
         : const CircularProgressIndicator();

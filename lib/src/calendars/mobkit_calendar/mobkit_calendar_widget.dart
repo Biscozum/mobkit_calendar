@@ -15,6 +15,7 @@ class MobkitCalendarView extends StatelessWidget {
     required this.calendarDate,
     required this.selectedDate,
     required this.onSelectionChange,
+    required this.eventTap,
     required this.onCalendarDateChange,
   }) : super(key: key);
   final MobkitCalendarConfigModel? config;
@@ -22,6 +23,7 @@ class MobkitCalendarView extends StatelessWidget {
   final ValueNotifier<DateTime> selectedDate;
   final ValueNotifier<DateTime> calendarDate;
   final Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime) onSelectionChange;
+  final Function(MobkitCalendarAppointmentModel model) eventTap;
   final Function(DateTime datetime) onCalendarDateChange;
 
   bool? isIntersect(
@@ -85,26 +87,53 @@ class MobkitCalendarView extends StatelessWidget {
         const SizedBox(
           height: 10,
         ),
-        Expanded(
-          child: CalendarDateSelectionBar(
-            calendarDate,
-            selectedDate,
-            onSelectionChange: onSelectionChange,
-            customCalendarModel: appointmentModel,
-            config: config,
-          ),
-        ),
+        config?.mobkitCalendarViewType != MobkitCalendarViewType.monthly
+            ? SizedBox(
+                height: 100,
+                child: CalendarDateSelectionBar(
+                  calendarDate,
+                  selectedDate,
+                  onSelectionChange: onSelectionChange,
+                  customCalendarModel: appointmentModel,
+                  config: config,
+                  onCalendarDateChange: onCalendarDateChange,
+                ),
+              )
+            : Expanded(
+                child: CalendarDateSelectionBar(
+                  calendarDate,
+                  selectedDate,
+                  onSelectionChange: onSelectionChange,
+                  customCalendarModel: appointmentModel,
+                  config: config,
+                  onCalendarDateChange: onCalendarDateChange,
+                ),
+              ),
         config?.mobkitCalendarViewType == MobkitCalendarViewType.daily
             ? ValueListenableBuilder(
                 valueListenable: selectedDate,
                 builder: (_, DateTime date, __) {
                   List<MobkitCalendarAppointmentModel> modelList = appointmentModel
                       .where((element) =>
-                          (DateTime(selectedDate.value.year, selectedDate.value.month, selectedDate.value.day)
-                                  .isBetween(element.appointmentStartDate, element.appointmentEndDate) ??
-                              false) ||
-                          DateTime(selectedDate.value.year, selectedDate.value.month, selectedDate.value.day)
-                              .isSameDay(element.appointmentStartDate))
+                          ((DateTime(selectedDate.value.year, selectedDate.value.month, selectedDate.value.day)
+                                      .isBetween(element.appointmentStartDate, element.appointmentEndDate) ??
+                                  false) ||
+                              DateTime(selectedDate.value.year, selectedDate.value.month, selectedDate.value.day)
+                                  .isSameDay(element.appointmentStartDate)) &&
+                          !DateTime(selectedDate.value.year, selectedDate.value.month, selectedDate.value.day)
+                              .isSameDay(element.appointmentEndDate) &&
+                          !element.isAllDay)
+                      .toList();
+                  List<MobkitCalendarAppointmentModel> allDayList = appointmentModel
+                      .where((element) =>
+                          ((DateTime(selectedDate.value.year, selectedDate.value.month, selectedDate.value.day)
+                                      .isBetween(element.appointmentStartDate, element.appointmentEndDate) ??
+                                  false) ||
+                              DateTime(selectedDate.value.year, selectedDate.value.month, selectedDate.value.day)
+                                  .isSameDay(element.appointmentStartDate)) &&
+                          !DateTime(selectedDate.value.year, selectedDate.value.month, selectedDate.value.day)
+                              .isSameDay(element.appointmentEndDate) &&
+                          element.isAllDay)
                       .toList();
                   modelList.sort((a, b) => a.appointmentStartDate.compareTo(b.appointmentStartDate));
                   if (modelList.isNotEmpty) {
@@ -131,125 +160,166 @@ class MobkitCalendarView extends StatelessWidget {
                     }
                   }
                   return Expanded(
-                    child: SingleChildScrollView(
-                      child: Stack(
-                        children: List<Widget>.generate(
-                          modelList.length,
-                          (i) {
-                            return Positioned(
-                              top: (!modelList[i].appointmentEndDate.isSameDay(selectedDate.value) &&
-                                      !modelList[i].appointmentStartDate.isSameDay(selectedDate.value))
-                                  ? 0
-                                  : (!modelList[i].appointmentStartDate.isSameDay(selectedDate.value) &&
-                                          modelList[i].appointmentEndDate.isSameDay(selectedDate.value))
-                                      ? 0
-                                      : (80 *
-                                                      (modelList[i].appointmentStartDate.hour +
-                                                          (modelList[i].appointmentStartDate.minute / 60)))
-                                                  .toDouble() !=
-                                              0
-                                          ? (80 *
-                                                      (modelList[i].appointmentStartDate.hour +
-                                                          (modelList[i].appointmentStartDate.minute / 60)))
-                                                  .toDouble() +
-                                              9
-                                          : (80 *
-                                                  (modelList[i].appointmentStartDate.hour +
-                                                      (modelList[i].appointmentStartDate.minute / 60)))
-                                              .toDouble(),
-                              left: 58.5 +
-                                  ((modelList[i].index ?? 0) > 0
-                                      ? ((width * 0.8) / maxGroupCount) * (modelList[i].index ?? 0)
-                                      : 0),
-                              width: (width * 0.8) / (maxGroupCount),
-                              height: (!modelList[i].appointmentEndDate.isSameDay(selectedDate.value) &&
-                                      !modelList[i].appointmentStartDate.isSameDay(selectedDate.value))
-                                  ? 24 * 80
-                                  : (!modelList[i].appointmentStartDate.isSameDay(selectedDate.value) &&
-                                          modelList[i].appointmentEndDate.isSameDay(selectedDate.value))
-                                      ? (80 *
-                                                      (modelList[i].appointmentEndDate.hour +
-                                                          (modelList[i].appointmentEndDate.minute / 60)))
-                                                  .toDouble() !=
-                                              0
-                                          ? (80 *
-                                                      (modelList[i].appointmentEndDate.hour +
-                                                          (modelList[i].appointmentEndDate.minute / 60)))
-                                                  .toDouble() +
-                                              9
-                                          : (80 *
-                                                  (modelList[i].appointmentEndDate.hour +
-                                                      (modelList[i].appointmentEndDate.minute / 60)))
-                                              .toDouble()
-                                      : modelList[i].appointmentEndDate.hour != 0
-                                          ? (((modelList[i]
-                                                      .appointmentEndDate
-                                                      .difference(modelList[i].appointmentStartDate)
-                                                      .inMinutes) /
-                                                  60) *
-                                              80)
-                                          : modelList[i]
-                                                  .appointmentEndDate
-                                                  .difference(modelList[i].appointmentStartDate)
-                                                  .inHours *
-                                              80,
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 1.5),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: modelList[i].color,
-                                    borderRadius: const BorderRadius.all(Radius.circular(1)),
-                                  ),
-                                  child: Align(
-                                    alignment: Alignment.topLeft,
-                                    child: Text(
-                                      modelList[i].title ?? "",
-                                      style: const TextStyle(color: Colors.white),
+                    child: Column(
+                      children: [
+                        allDayList.isNotEmpty
+                            ? Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 6),
+                                child: Row(
+                                  children: [
+                                    const Text(
+                                      "Tüm Gün",
+                                      style: TextStyle(color: Colors.black, fontSize: 14),
+                                    ),
+                                    Row(
+                                      children: allDayList
+                                          .map((item) => GestureDetector(
+                                                onTap: () => eventTap(item),
+                                                child: Container(
+                                                    width:
+                                                        (MediaQuery.of(context).size.width * 0.8) / allDayList.length,
+                                                    color: item.color,
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                                      child: Text(
+                                                        item.title ?? "",
+                                                        overflow: TextOverflow.ellipsis,
+                                                        maxLines: 1,
+                                                      ),
+                                                    )),
+                                              ))
+                                          .toList(),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : Container(),
+                        Expanded(
+                          child: SingleChildScrollView(
+                            child: Stack(
+                              children: List<Widget>.generate(
+                                modelList.length,
+                                (i) {
+                                  return Positioned(
+                                    top: (!modelList[i].appointmentEndDate.isSameDay(selectedDate.value) &&
+                                            !modelList[i].appointmentStartDate.isSameDay(selectedDate.value))
+                                        ? 0
+                                        : (!modelList[i].appointmentStartDate.isSameDay(selectedDate.value) &&
+                                                modelList[i].appointmentEndDate.isSameDay(selectedDate.value))
+                                            ? 0
+                                            : (80 *
+                                                            (modelList[i].appointmentStartDate.hour +
+                                                                (modelList[i].appointmentStartDate.minute / 60)))
+                                                        .toDouble() !=
+                                                    0
+                                                ? (80 *
+                                                            (modelList[i].appointmentStartDate.hour +
+                                                                (modelList[i].appointmentStartDate.minute / 60)))
+                                                        .toDouble() +
+                                                    9
+                                                : (80 *
+                                                        (modelList[i].appointmentStartDate.hour +
+                                                            (modelList[i].appointmentStartDate.minute / 60)))
+                                                    .toDouble(),
+                                    left: 58.5 +
+                                        ((modelList[i].index ?? 0) > 0
+                                            ? ((width * 0.8) / maxGroupCount) * (modelList[i].index ?? 0)
+                                            : 0),
+                                    width: (width * 0.8) / (maxGroupCount),
+                                    height: (!modelList[i].appointmentEndDate.isSameDay(selectedDate.value) &&
+                                            !modelList[i].appointmentStartDate.isSameDay(selectedDate.value))
+                                        ? 24 * 80
+                                        : (!modelList[i].appointmentStartDate.isSameDay(selectedDate.value) &&
+                                                modelList[i].appointmentEndDate.isSameDay(selectedDate.value))
+                                            ? (80 *
+                                                            (modelList[i].appointmentEndDate.hour +
+                                                                (modelList[i].appointmentEndDate.minute / 60)))
+                                                        .toDouble() !=
+                                                    0
+                                                ? (80 *
+                                                            (modelList[i].appointmentEndDate.hour +
+                                                                (modelList[i].appointmentEndDate.minute / 60)))
+                                                        .toDouble() +
+                                                    9
+                                                : (80 *
+                                                        (modelList[i].appointmentEndDate.hour +
+                                                            (modelList[i].appointmentEndDate.minute / 60)))
+                                                    .toDouble()
+                                            : modelList[i].appointmentEndDate.hour != 0
+                                                ? (((modelList[i]
+                                                            .appointmentEndDate
+                                                            .difference(modelList[i].appointmentStartDate)
+                                                            .inMinutes) /
+                                                        60) *
+                                                    80)
+                                                : modelList[i]
+                                                        .appointmentEndDate
+                                                        .difference(modelList[i].appointmentStartDate)
+                                                        .inHours *
+                                                    80,
+                                    child: GestureDetector(
+                                      onTap: () => eventTap(modelList[i]),
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(left: 1.5),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            color: modelList[i].color,
+                                            borderRadius: const BorderRadius.all(Radius.circular(1)),
+                                          ),
+                                          child: Align(
+                                            alignment: Alignment.topLeft,
+                                            child: Text(
+                                              modelList[i].title ?? "",
+                                              style: const TextStyle(color: Colors.white),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              )..insert(
+                                  0,
+                                  Column(
+                                    children: List<Widget>.generate(
+                                      24,
+                                      (index) {
+                                        if (index == 0) {
+                                          return const SizedBox(
+                                            height: 80,
+                                          );
+                                        } else {
+                                          return Container(
+                                            alignment: Alignment.topCenter,
+                                            height: 80,
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(left: 12, right: 12),
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    "${(index).toString()}:00",
+                                                    style: const TextStyle(color: Colors.black, fontSize: 18),
+                                                  ),
+                                                  Container(
+                                                    width: width * 0.8,
+                                                    color: Colors.grey,
+                                                    height: 1,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      },
                                     ),
                                   ),
                                 ),
-                              ),
-                            );
-                          },
-                        )..insert(
-                            0,
-                            Column(
-                              children: List<Widget>.generate(
-                                24,
-                                (index) {
-                                  if (index == 0) {
-                                    return const SizedBox(
-                                      height: 80,
-                                    );
-                                  } else {
-                                    return Container(
-                                      alignment: Alignment.topCenter,
-                                      height: 80,
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(left: 12, right: 12),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              "${(index).toString()}:00",
-                                              style: const TextStyle(color: Colors.black, fontSize: 18),
-                                            ),
-                                            Container(
-                                              width: width * 0.8,
-                                              color: Colors.grey,
-                                              height: 1,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                },
-                              ),
                             ),
                           ),
-                      ),
+                        ),
+                      ],
                     ),
                   );
                 },
