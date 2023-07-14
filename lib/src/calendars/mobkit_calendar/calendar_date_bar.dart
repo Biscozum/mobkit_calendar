@@ -34,6 +34,16 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
   goNextWeek() => changeWeek(widget.date, 7);
   goPreviousWeek() => changeWeek(widget.date, -7);
 
+  changeMonth(ValueNotifier<DateTime> calendarDate, bool isNext) {
+    DateTime firstMonthDay = isNext
+        ? DateTime(calendarDate.value.year, calendarDate.value.month + 1, 1)
+        : findFirstDateOfTheMonth(DateTime(calendarDate.value.year, calendarDate.value.month, 0));
+    calendarDate.value = firstMonthDay;
+  }
+
+  goNextMonth() => changeMonth(widget.date, true);
+  goPreviousMonth() => changeMonth(widget.date, false);
+
   @override
   Widget build(BuildContext context) {
     String? swipeDirection;
@@ -48,11 +58,15 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
               if (swipeDirection == 'left') {
                 if (widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.daily) {
                   goNextWeek();
+                } else if (widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.monthly) {
+                  goNextMonth();
                 }
               }
               if (swipeDirection == 'right') {
                 if (widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.daily) {
                   goPreviousWeek();
+                } else if (widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.monthly) {
+                  goPreviousMonth();
                 }
               }
             },
