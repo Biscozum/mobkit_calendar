@@ -64,37 +64,6 @@ class MobkitCalendarPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
         if (call.method == "getPlatformVersion") {
             result.success("Android ${Build.VERSION.RELEASE}")
-        } else if (call.method == "requestCalendarAccess") {
-            if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CALENDAR)
-                != PackageManager.PERMISSION_GRANTED
-            ) {
-                ActivityCompat.requestPermissions(
-                    activity,
-                    arrayOf(Manifest.permission.READ_CALENDAR),
-                    1
-                )
-            } else if (ContextCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.WRITE_CALENDAR
-                )
-                != PackageManager.PERMISSION_GRANTED
-            ) {
-                ActivityCompat.requestPermissions(
-                    activity,
-                    arrayOf(Manifest.permission.WRITE_CALENDAR),
-                    2
-                )
-            }
-            result.success(
-                if (ContextCompat.checkSelfPermission(
-                        context,
-                        Manifest.permission.READ_CALENDAR
-                    ) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
-                        context,
-                        Manifest.permission.WRITE_CALENDAR
-                    ) == PackageManager.PERMISSION_GRANTED
-                ) "true" else "false"
-            )
         } else if (call.method == "getAccountList") {
             val calendarsProjection: Array<String> = arrayOf<String>(
                 CalendarContract.Calendars._ID,
@@ -104,58 +73,38 @@ class MobkitCalendarPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
             );
             var accounts: MutableMap<Any?, Any?> =
                 mutableMapOf<Any?, Any?>();
-            if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CALENDAR)
-                != PackageManager.PERMISSION_GRANTED
+            val cur: Cursor? = context.contentResolver.query(
+                CalendarContract.Calendars.CONTENT_URI,
+                calendarsProjection,
+                null,
+                null,
+                null
+            );
+            if (cur != null && cur.count > 0
             ) {
-                ActivityCompat.requestPermissions(
-                    activity,
-                    arrayOf(Manifest.permission.READ_CALENDAR),
-                    1
-                )
-            } else {
-                if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_CALENDAR)
-                    != PackageManager.PERMISSION_GRANTED
-                ) {
-                    ActivityCompat.requestPermissions(
-                        activity,
-                        arrayOf(Manifest.permission.WRITE_CALENDAR),
-                        2
+                var accountGroupModelList: MutableList<HashMap<String, Any>> =
+                    mutableListOf<HashMap<String, Any>>();
+                while (cur.moveToNext()) {
+                    var model: HashMap<String, Any> = HashMap<String, Any>();
+                    model.put(
+                        "groupName",
+                        if (cur.getString(0) == "1") "Telefon" else cur.getString(1),
                     )
-                } else {
-                    val cur: Cursor? = context.contentResolver.query(
-                        CalendarContract.Calendars.CONTENT_URI,
-                        calendarsProjection,
-                        null,
-                        null,
-                        null
+                    model.put("accountId", cur.getString(0))
+                    model.put(
+                        "accountName",
+                        if (cur.getString(0) == "1") "Yerel Takvim" else cur.getString(
+                            2
+                        )
+                    )
+                    model.put("isChecked", false)
+                    accountGroupModelList.add(model);
+                    accounts.put(
+                        "accounts", accountGroupModelList
                     );
-                    if (cur != null && cur.count > 0
-                    ) {
-                        var accountGroupModelList: MutableList<HashMap<String, Any>> =
-                            mutableListOf<HashMap<String, Any>>();
-                        while (cur.moveToNext()) {
-                            var model: HashMap<String, Any> = HashMap<String, Any>();
-                            model.put(
-                                "groupName",
-                                if (cur.getString(0) == "1") "Telefon" else cur.getString(1),
-                            )
-                            model.put("accountId", cur.getString(0))
-                            model.put(
-                                "accountName",
-                                if (cur.getString(0) == "1") "Yerel Takvim" else cur.getString(
-                                    2
-                                )
-                            )
-                            model.put("isChecked", false)
-                            accountGroupModelList.add(model);
-                            accounts.put(
-                                "accounts", accountGroupModelList
-                            );
-                        }
-                    }
-                    cur?.close()
                 }
             }
+            cur?.close()
             result.success(JSONObject(accounts).toString());
         } else if (call.method == "getEventList") {
             val eventsProjection: Array<String> = arrayOf<String>(

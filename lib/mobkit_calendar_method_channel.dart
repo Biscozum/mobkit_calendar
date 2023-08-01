@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:mobkit_calendar/mobkit_calendar.dart';
 import 'mobkit_calendar_platform_interface.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 /// An implementation of [MobkitCalendarPlatform] that uses method channels.
 class MethodChannelMobkitCalendar extends MobkitCalendarPlatform {
@@ -19,9 +20,9 @@ class MethodChannelMobkitCalendar extends MobkitCalendarPlatform {
 
   @override
   Future<List<AccountGroupModel>> getAccountList() async {
-    String? permission = await methodChannel.invokeMethod<String?>('requestCalendarAccess');
+    PermissionStatus result = await Permission.calendar.request();
     List<AccountGroupModel> accounts = [];
-    if (permission?.toLowerCase() == "true") {
+    if (result.isGranted) {
       String? accountList = await methodChannel.invokeMethod<String?>('getAccountList');
       Map accountMap = json.decode(accountList ?? "");
       if (accountMap["accounts"] is List<Object?>) {
@@ -57,9 +58,9 @@ class MethodChannelMobkitCalendar extends MobkitCalendarPlatform {
 
   @override
   Future<List<MobkitCalendarAppointmentModel>> getEventList(Map arguments) async {
-    String? permission = await methodChannel.invokeMethod<String?>('requestCalendarAccess');
+    PermissionStatus result = await Permission.calendar.request();
     List<MobkitCalendarAppointmentModel> events = [];
-    if (permission?.toLowerCase() == "true") {
+    if (result.isGranted) {
       String? eventList = await methodChannel.invokeMethod<String?>('getEventList', arguments);
       Map eventMap = json.decode(eventList ?? "");
       if (eventMap["events"] is List<Object?>) {
@@ -85,7 +86,7 @@ class MethodChannelMobkitCalendar extends MobkitCalendarPlatform {
 
   @override
   Future requestCalendarAccess() async {
-    final permission = await methodChannel.invokeMethod<String>('requestCalendarAccess');
-    return permission;
+    PermissionStatus result = await Permission.calendar.request();
+    return result.isGranted;
   }
 }

@@ -1,4 +1,3 @@
-import 'package:mobkit_calendar/src/calendars/mobkit_calendar/model/calendar_account_group_model.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'mobkit_calendar.dart';
