@@ -14,7 +14,7 @@ class CalendarYearSelectionBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         config?.mobkitCalendarViewType == MobkitCalendarViewType.monthly
             ? CalendarBackButton(goPreviousYear)

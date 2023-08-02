@@ -88,7 +88,7 @@ class CalendarCellWidget extends StatelessWidget {
                     children: generateItems(showedCustomCalendarModelList),
                   ),
                   const SizedBox(
-                    height: 8,
+                    height: 2,
                   ),
                   showedCustomCalendarModelList != null
                       ? Stack(
@@ -103,7 +103,7 @@ class CalendarCellWidget extends StatelessWidget {
                                       "+${(showedCustomCalendarModelList!.where((element) => element.isAllDay).length - 3).toString()}",
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
-                                          fontSize: 10,
+                                          fontSize: 9,
                                           color: isSelected ? Colors.white : Colors.black,
                                           fontWeight: FontWeight.bold),
                                     ),
@@ -132,7 +132,7 @@ class CalendarCellWidget extends StatelessWidget {
                 child: Text(
                   "+${(listModel.length - 2).toString()}",
                   style: TextStyle(
-                      fontSize: 10, color: isSelected ? Colors.white : Colors.black, fontWeight: FontWeight.bold),
+                      fontSize: 8, color: isSelected ? Colors.white : Colors.black, fontWeight: FontWeight.bold),
                 ),
               ),
             );
@@ -142,7 +142,7 @@ class CalendarCellWidget extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(1),
                 child: CircleAvatar(
-                  radius: 6,
+                  radius: 4.5,
                   backgroundColor: listModel[i].color,
                 ),
               ),
@@ -171,7 +171,7 @@ class CalendarCellWidget extends StatelessWidget {
                   borderRadius: const BorderRadius.all(Radius.circular(2.0)),
                   color: listModel[i].color,
                 ),
-                height: 3.3,
+                height: 2.5,
               ),
             );
           }
