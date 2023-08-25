@@ -39,20 +39,21 @@ class CalendarCellWidget extends StatelessWidget {
                   : configStandardCalendar.enabledColor
               : configStandardCalendar.disabledColor,
           borderRadius: configStandardCalendar.borderRadius,
+          border: isWeekDaysBar
+              ? Border.all(width: 1, color: configStandardCalendar.weekDaysBarBorderColor)
+              : Border.all(
+                  width: configStandardCalendar.borderWidth,
+                  color: isEnabled
+                      ? isSelected
+                          ? configStandardCalendar.selectedBorderColor
+                          : configStandardCalendar.enabledCellBorderColor
+                      : configStandardCalendar.disabledColor),
         ),
         child: isWeekDaysBar
             ? Center(
                 child: Text(
                   text,
-                  style: isEnabled
-                      ? isCurrent
-                          ? isSelected
-                              ? configStandardCalendar.selectedStyle
-                              : configStandardCalendar.currentStyle
-                          : isSelected
-                              ? configStandardCalendar.selectedStyle
-                              : configStandardCalendar.monthDaysStyle
-                      : configStandardCalendar.disabledStyle,
+                  style: configStandardCalendar.weekDaysStyle,
                 ),
               )
             : Column(
@@ -62,24 +63,18 @@ class CalendarCellWidget extends StatelessWidget {
                   Align(
                     alignment: Alignment.topCenter,
                     child: Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Spacer(),
-                          Text(
-                            text,
-                            style: isEnabled
-                                ? isCurrent
-                                    ? isSelected
-                                        ? configStandardCalendar.selectedStyle
-                                        : configStandardCalendar.currentStyle
-                                    : isSelected
-                                        ? configStandardCalendar.selectedStyle
-                                        : configStandardCalendar.monthDaysStyle
-                                : configStandardCalendar.disabledStyle,
-                          ),
-                        ],
+                      padding: const EdgeInsets.all(1.0),
+                      child: Text(
+                        text,
+                        style: isEnabled
+                            ? isCurrent
+                                ? isSelected
+                                    ? configStandardCalendar.selectedStyle
+                                    : configStandardCalendar.currentStyle
+                                : isSelected
+                                    ? configStandardCalendar.selectedStyle
+                                    : configStandardCalendar.monthDaysStyle
+                            : configStandardCalendar.disabledStyle,
                       ),
                     ),
                   ),

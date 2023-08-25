@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:mobkit_calendar/src/extensions/date_extensions.dart';
 import 'package:mobkit_calendar/src/pickers/month_and_year_picker/model/month_and_year_config_model.dart';
-import 'package:mobkit_calendar/src/pickers/standard_picker/model/picker_config_model.dart';
-import 'package:mobkit_calendar/src/pickers/standard_picker/picker_month_selection_bar.dart';
-import 'package:mobkit_calendar/src/pickers/standard_picker/standard_picker.dart';
 import 'calendars/mobkit_calendar/mobkit_calendar_widget.dart';
 import 'calendars/mobkit_calendar/model/calendar_config_model.dart';
 import 'calendars/mobkit_calendar/model/daily_frequency.dart';
@@ -15,42 +12,6 @@ import 'calendars/mobkit_calendar/model/monthly_frequency.dart';
 import 'calendars/mobkit_calendar/model/weekly_frequency.dart';
 import 'extensions/model/week_dates_model.dart';
 import 'pickers/month_and_year_picker/month_and_year_picker.dart';
-
-class MobkitPicker extends StatelessWidget {
-  final DateTime calendarDate;
-  late final DateTime selectDate;
-  final ValueNotifier<List<DateTime>> selectedDates = ValueNotifier<List<DateTime>>(List<DateTime>.from([]));
-  final MobkitPickerConfigModel? config;
-  final ValueChanged<DateTime> onSelectionChange;
-  final Function(DateTime firstDate, DateTime lastDate) onRangeSelectionChange;
-  MobkitPicker({
-    DateTime? selectedDate,
-    Key? key,
-    this.config,
-    required this.onSelectionChange,
-    required this.onRangeSelectionChange,
-    required this.calendarDate,
-  }) : super(key: key) {
-    selectDate = selectedDate ?? DateTime.now();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    initializeDateFormatting();
-    ValueNotifier<DateTime> widgetCalendarDate = ValueNotifier<DateTime>(calendarDate);
-    ValueNotifier<DateTime> widgetSelectedDate = ValueNotifier<DateTime>(selectDate);
-    var months = MonthSelectionBar(widgetCalendarDate, config);
-    return StandardPicker(
-      config: config,
-      months: months,
-      calendarDate: widgetCalendarDate,
-      selectedDate: widgetSelectedDate,
-      selectedDates: selectedDates,
-      onSelectionChange: onSelectionChange,
-      onRangeSelectionChange: onRangeSelectionChange,
-    );
-  }
-}
 
 class MobkitMonthAndYearCalendar extends StatelessWidget {
   final DateTime calendarDate;
@@ -92,7 +53,8 @@ class MobkitCalendarWidget extends StatefulWidget {
   final List<MobkitCalendarAppointmentModel> appointmentModel;
   final Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime) onSelectionChange;
   final Function(MobkitCalendarAppointmentModel model) eventTap;
-  final Function(DateTime datetime) onCalendarDateChange;
+  final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) onPopupChange;
+  final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) headerWidget;
 
   MobkitCalendarWidget({
     DateTime? selectedDate,
@@ -100,9 +62,10 @@ class MobkitCalendarWidget extends StatefulWidget {
     this.config,
     required this.onSelectionChange,
     required this.eventTap,
-    required this.onCalendarDateChange,
     required this.appointmentModel,
     required this.calendarDate,
+    required this.onPopupChange,
+    required this.headerWidget,
   }) : super(key: key) {
     selectDate = selectedDate ?? DateTime.now();
   }
@@ -167,11 +130,8 @@ class _MobkitCalendarWidgetState extends State<MobkitCalendarWidget> {
                   List<int> dayOfWeekList =
                       (withRecurrencyAppointments[i].recurrenceModel!.frequency as WeeklyFrequency).daysOfWeek;
                   int interval = withRecurrencyAppointments[i].recurrenceModel!.interval;
-                  WeekDates weekDates = getDatesFromWeekNumber(
-                      withRecurrencyAppointments[i].appointmentStartDate.year,
-                      withRecurrencyAppointments[i]
-                          .appointmentEndDate
-                          .weekNumber(withRecurrencyAppointments[i].appointmentEndDate));
+                  WeekDates weekDates = getDatesFromWeekNumber(withRecurrencyAppointments[i].appointmentStartDate.year,
+                      withRecurrencyAppointments[i].appointmentEndDate.weekNumber());
                   for (int y = 1; y < interval + 1; y++) {
                     int endDateDay = withRecurrencyAppointments[i]
                         .appointmentStartDate
@@ -336,7 +296,8 @@ class _MobkitCalendarWidgetState extends State<MobkitCalendarWidget> {
             calendarDate: widgetCalendarDate,
             onSelectionChange: widget.onSelectionChange,
             eventTap: widget.eventTap,
-            onCalendarDateChange: widget.onCalendarDateChange,
+            onPopupChange: widget.onPopupChange,
+            headerWidget: widget.headerWidget,
           )
         : const CircularProgressIndicator();
   }

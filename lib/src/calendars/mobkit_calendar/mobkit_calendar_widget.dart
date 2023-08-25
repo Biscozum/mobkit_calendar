@@ -4,6 +4,7 @@ import 'package:mobkit_calendar/src/extensions/date_extensions.dart';
 import 'calendar_month_selection_bar.dart';
 import 'calendar_weekdays_bar.dart';
 import 'calendar_year_selection_bar.dart';
+import 'enum/mobkit_calendar_view_type_enum.dart';
 import 'model/calendar_config_model.dart';
 import 'model/mobkit_calendar_appointment_model.dart';
 
@@ -16,7 +17,8 @@ class MobkitCalendarView extends StatelessWidget {
     required this.selectedDate,
     required this.onSelectionChange,
     required this.eventTap,
-    required this.onCalendarDateChange,
+    required this.onPopupChange,
+    required this.headerWidget,
   }) : super(key: key);
   final MobkitCalendarConfigModel? config;
   final List<MobkitCalendarAppointmentModel> appointmentModel;
@@ -24,7 +26,8 @@ class MobkitCalendarView extends StatelessWidget {
   final ValueNotifier<DateTime> calendarDate;
   final Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime) onSelectionChange;
   final Function(MobkitCalendarAppointmentModel model) eventTap;
-  final Function(DateTime datetime) onCalendarDateChange;
+  final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) onPopupChange;
+  final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) headerWidget;
 
   bool? isIntersect(
     DateTime firstStartDate,
@@ -51,42 +54,57 @@ class MobkitCalendarView extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: [
-        SizedBox(
-          height: 30,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SizedBox(
-                    width: width * 0.5,
-                    child: CalendarMonthSelectionBar(
-                      calendarDate,
-                      onCalendarDateChange,
-                      config,
-                    )),
-                const SizedBox(
-                  width: 10,
+        config?.isVisibleMonthBar == true || config?.isVisibleYearBar == true
+            ? SizedBox(
+                height: 30,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      config?.isVisibleMonthBar == true
+                          ? SizedBox(
+                              width: width * 0.5,
+                              child: CalendarMonthSelectionBar(
+                                calendarDate,
+                                onSelectionChange,
+                                config,
+                              ))
+                          : Container(),
+                      config?.isVisibleMonthBar == true
+                          ? const SizedBox(
+                              width: 10,
+                            )
+                          : Container(),
+                      config?.isVisibleYearBar == true
+                          ? SizedBox(
+                              width: width * 0.4,
+                              child: CalendarYearSelectionBar(calendarDate, onSelectionChange, config))
+                          : Container(),
+                    ],
+                  ),
                 ),
-                SizedBox(
-                    width: width * 0.4, child: CalendarYearSelectionBar(calendarDate, onCalendarDateChange, config)),
-              ],
-            ),
-          ),
-        ),
-        const SizedBox(
-          height: 15,
-        ),
-        SizedBox(
-          height: 30,
-          child: CalendarWeekDaysBar(
-            config: config,
-            customCalendarModel: appointmentModel,
-          ),
-        ),
-        const SizedBox(
-          height: 10,
-        ),
+              )
+            : Container(),
+        config?.isVisibleMonthBar == true || config?.isVisibleYearBar == true
+            ? const SizedBox(
+                height: 15,
+              )
+            : Container(),
+        config?.isVisibleWeekDaysBar == true
+            ? SizedBox(
+                height: 30,
+                child: CalendarWeekDaysBar(
+                  config: config,
+                  customCalendarModel: appointmentModel,
+                ),
+              )
+            : Container(),
+        config?.isVisibleWeekDaysBar == true
+            ? const SizedBox(
+                height: 10,
+              )
+            : Container(),
         config?.mobkitCalendarViewType != MobkitCalendarViewType.monthly
             ? SizedBox(
                 height: 100,
@@ -96,7 +114,8 @@ class MobkitCalendarView extends StatelessWidget {
                   onSelectionChange: onSelectionChange,
                   customCalendarModel: appointmentModel,
                   config: config,
-                  onCalendarDateChange: onCalendarDateChange,
+                  onPopupChange: onPopupChange,
+                  headerWidget: headerWidget,
                 ),
               )
             : Expanded(
@@ -106,7 +125,8 @@ class MobkitCalendarView extends StatelessWidget {
                   onSelectionChange: onSelectionChange,
                   customCalendarModel: appointmentModel,
                   config: config,
-                  onCalendarDateChange: onCalendarDateChange,
+                  onPopupChange: onPopupChange,
+                  headerWidget: headerWidget,
                 ),
               ),
         config?.mobkitCalendarViewType == MobkitCalendarViewType.daily

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mobkit_calendar/src/pickers/standard_picker/model/picker_config_model.dart';
+import 'package:mobkit_calendar/src/calendars/mobkit_calendar/model/calendar_config_model.dart';
 import '../../model/calendar_type_model.dart';
 import '../month_and_year_picker/model/month_and_year_config_model.dart';
 
@@ -11,7 +11,7 @@ class CellWidget extends StatelessWidget {
   final bool isWeekDaysBar;
   final bool isCurrent;
   final CalendarType calendarType;
-  late final MobkitPickerConfigModel configStandardCalendar;
+  late final MobkitCalendarConfigModel configStandardCalendar;
   late final MobkitMonthAndYearCalendarConfigModel configMonthAndYear;
   CellWidget(
     this.text, {
@@ -21,12 +21,12 @@ class CellWidget extends StatelessWidget {
     this.isWeekDaysBar = false,
     this.isCurrent = false,
     this.calendarType = CalendarType.standardCalendar,
-    MobkitPickerConfigModel? standardCalendarConfig,
+    MobkitCalendarConfigModel? standardCalendarConfig,
     MobkitMonthAndYearCalendarConfigModel? monthAndYearConfig,
     Key? key,
   }) : super(key: key) {
     if (standardCalendarConfig == null) {
-      configStandardCalendar = MobkitPickerConfigModel();
+      configStandardCalendar = MobkitCalendarConfigModel();
     } else {
       configStandardCalendar = standardCalendarConfig;
     }
@@ -61,7 +61,7 @@ class CellWidget extends StatelessWidget {
                       width: configMonthAndYear.borderWidth,
                       color: isSelected
                           ? configStandardCalendar.selectedBorderColor
-                          : configStandardCalendar.enabledBorderColor),
+                          : configStandardCalendar.enabledCellBorderColor),
             ),
             child: Center(
               child: Text(
@@ -89,8 +89,7 @@ class CellWidget extends StatelessWidget {
                   ? isFirstLastSelectedItem
                       ? configStandardCalendar.isFirstLastItemColor
                       : isSelected
-                          ? configStandardCalendar.selectedColor.withOpacity(
-                              configStandardCalendar.selectionType == MobkitCalendarSelectionType.rangeTap ? 0.70 : 1.0)
+                          ? configStandardCalendar.selectedColor.withOpacity(1.0)
                           : configStandardCalendar.enabledColor
                   : configStandardCalendar.disabledColor,
               border: isWeekDaysBar
@@ -99,7 +98,7 @@ class CellWidget extends StatelessWidget {
                       width: configStandardCalendar.borderWidth,
                       color: isSelected
                           ? configStandardCalendar.selectedBorderColor
-                          : configStandardCalendar.enabledBorderColor),
+                          : configStandardCalendar.enabledCellBorderColor),
               borderRadius: configStandardCalendar.borderRadius,
             ),
             child: Center(

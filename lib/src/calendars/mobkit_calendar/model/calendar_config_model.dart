@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../enum/mobkit_calendar_view_type_enum.dart';
+import 'calendar_popup_config_model.dart';
+
 class MobkitCalendarConfigModel {
   /// The title you want to appear at the top of the date picker.
   String? title;
@@ -47,7 +50,8 @@ class MobkitCalendarConfigModel {
   Color primaryColor;
 
   /// The color of the borders of the active days of the date picker
-  Color enabledBorderColor;
+  Color enabledCellBorderColor;
+  Color gridBorderColor;
 
   /// The color of the borders of the inactive days of the date picker
   Color disabledBorderColor;
@@ -80,6 +84,16 @@ class MobkitCalendarConfigModel {
 
   MobkitCalendarViewType mobkitCalendarViewType;
 
+  bool isNativePopup;
+
+  CalendarPopupConfigModel? calendarPopupConfigModel;
+
+  bool? isVisibleMonthBar;
+  bool? isVisibleYearBar;
+  bool? isVisibleWeekDaysBar;
+  double? viewportFraction;
+  bool? isVisibleHeaderWidget;
+
   /// The textstyle that the selected days in the date picker will have.
   TextStyle selectedStyle;
   MobkitCalendarConfigModel({
@@ -99,7 +113,8 @@ class MobkitCalendarConfigModel {
     this.isFirstLastItemColor = const Color.fromARGB(255, 236, 10, 10),
     this.primaryColor = const Color.fromRGBO(253, 165, 46, 1),
     this.weekDaysBarBorderColor = const Color.fromRGBO(253, 165, 46, 1),
-    this.enabledBorderColor = Colors.transparent,
+    this.enabledCellBorderColor = Colors.transparent,
+    this.gridBorderColor = Colors.transparent,
     this.disabledBorderColor = const Color.fromARGB(255, 127, 127, 127),
     this.selectedBorderColor = Colors.black,
     this.borderWidth = 1,
@@ -111,7 +126,12 @@ class MobkitCalendarConfigModel {
     this.currentStyle = const TextStyle(color: Color.fromRGBO(253, 165, 46, 1), fontWeight: FontWeight.bold),
     this.selectedStyle = const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
     this.mobkitCalendarViewType = MobkitCalendarViewType.monthly,
+    this.isNativePopup = false,
+    this.calendarPopupConfigModel,
+    this.isVisibleMonthBar = true,
+    this.isVisibleYearBar = true,
+    this.isVisibleWeekDaysBar = true,
+    this.viewportFraction = 1.0,
+    this.isVisibleHeaderWidget = false,
   });
 }
-
-enum MobkitCalendarViewType { monthly, weekly, daily }

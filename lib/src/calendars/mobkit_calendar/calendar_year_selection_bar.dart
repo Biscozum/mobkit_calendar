@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:mobkit_calendar/src/calendars/mobkit_calendar/model/calendar_config_model.dart';
+import '../../../mobkit_calendar.dart';
 import 'calendar_buttons.dart';
 
 class CalendarYearSelectionBar extends StatelessWidget {
   final ValueNotifier<DateTime> calendarDate;
   final double _itemSpace = 14;
   final MobkitCalendarConfigModel? config;
-  final Function(DateTime datetime) onCalendarDateChange;
+  final Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime) onSelectionChange;
 
-  const CalendarYearSelectionBar(this.calendarDate, this.onCalendarDateChange, this.config, {Key? key})
-      : super(key: key);
+  const CalendarYearSelectionBar(this.calendarDate, this.onSelectionChange, this.config, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +42,7 @@ class CalendarYearSelectionBar extends StatelessWidget {
   changeYear(ValueNotifier<DateTime> calendarDate, int amount) {
     var newYear = calendarDate.value.year + amount;
     calendarDate.value = DateTime(newYear, calendarDate.value.month, calendarDate.value.day);
-    onCalendarDateChange(calendarDate.value);
+    onSelectionChange([], calendarDate.value);
   }
 
   goNextYear() => changeYear(calendarDate, 1);

@@ -13,6 +13,9 @@ class DateList extends StatefulWidget {
   final MobkitCalendarConfigModel? config;
   final List<MobkitCalendarAppointmentModel> customCalendarModel;
   final Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime) onSelectionChange;
+  final Function(DateTime datetime) onCalendarDateChange;
+  final Widget? Function(List<MobkitCalendarAppointmentModel>, DateTime datetime) onPopupChange;
+
   const DateList(
     this.date,
     this.selectedDate, {
@@ -20,6 +23,8 @@ class DateList extends StatefulWidget {
     this.config,
     required this.customCalendarModel,
     required this.onSelectionChange,
+    required this.onCalendarDateChange,
+    required this.onPopupChange,
   }) : super(key: key);
 
   @override
@@ -38,6 +43,8 @@ class _DateListState extends State<DateList> {
         widget.config,
         widget.customCalendarModel,
         widget.onSelectionChange,
+        widget.onCalendarDateChange,
+        widget.onPopupChange,
       ),
     );
   }
@@ -59,12 +66,13 @@ class _DateListState extends State<DateList> {
   }
 
   List<TableRow> getDates(
-    DateTime date,
-    ValueNotifier<DateTime> selectedDate,
-    final MobkitCalendarConfigModel? config,
-    final List<MobkitCalendarAppointmentModel> customCalendarModel,
-    Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime) onSelectionChange,
-  ) {
+      DateTime date,
+      ValueNotifier<DateTime> selectedDate,
+      final MobkitCalendarConfigModel? config,
+      final List<MobkitCalendarAppointmentModel> customCalendarModel,
+      Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime) onSelectionChange,
+      final Function(DateTime datetime) onCalendarDateChange,
+      final Widget? Function(List<MobkitCalendarAppointmentModel>, DateTime datetime) onPopupChange) {
     List<TableRow> rowList = [];
 
     var firstDay = DateTime(date.year, date.month, 1);
@@ -80,6 +88,7 @@ class _DateListState extends State<DateList> {
             config: config,
             customCalendarModel: customCalendarModel,
             enabled: checkConfigForEnable(newDate, date, config),
+            onPopupChange: onPopupChange,
           ));
         } else {
           cellList.add(Container());
@@ -116,12 +125,17 @@ class DateSelectionBar extends StatefulWidget {
   final List<MobkitCalendarAppointmentModel> customCalendarModel;
   final Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime) onSelectionChange;
   final Function(DateTime, DateTime) onRangeSelectionChange;
+  final Function(DateTime datetime) onCalendarDateChange;
+  final Widget? Function(List<MobkitCalendarAppointmentModel>, DateTime datetime) onPopupChange;
+
   const DateSelectionBar(this.date, this.selectedDate, this.selectedDates,
       {Key? key,
       this.config,
       required this.customCalendarModel,
       required this.onSelectionChange,
-      required this.onRangeSelectionChange})
+      required this.onRangeSelectionChange,
+      required this.onCalendarDateChange,
+      required this.onPopupChange})
       : super(key: key);
 
   @override
@@ -251,6 +265,8 @@ class _DateSelectionBarState extends State<DateSelectionBar> {
               customCalendarModel: widget.customCalendarModel,
               key: key2,
               onSelectionChange: widget.onSelectionChange,
+              onCalendarDateChange: widget.onCalendarDateChange,
+              onPopupChange: widget.onPopupChange,
             );
           }),
     );
