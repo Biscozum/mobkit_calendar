@@ -63,13 +63,11 @@ class MobkitCalendarView extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       config?.isVisibleMonthBar == true
-                          ? SizedBox(
-                              width: width * 0.5,
-                              child: CalendarMonthSelectionBar(
-                                calendarDate,
-                                onSelectionChange,
-                                config,
-                              ))
+                          ? CalendarMonthSelectionBar(
+                              calendarDate,
+                              onSelectionChange,
+                              config,
+                            )
                           : Container(),
                       config?.isVisibleMonthBar == true
                           ? const SizedBox(
@@ -77,9 +75,7 @@ class MobkitCalendarView extends StatelessWidget {
                             )
                           : Container(),
                       config?.isVisibleYearBar == true
-                          ? SizedBox(
-                              width: width * 0.4,
-                              child: CalendarYearSelectionBar(calendarDate, onSelectionChange, config))
+                          ? CalendarYearSelectionBar(calendarDate, onSelectionChange, config)
                           : Container(),
                     ],
                   ),
