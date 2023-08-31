@@ -40,9 +40,9 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
     super.initState();
     _pageController = PageController(initialPage: 1, viewportFraction: widget.config?.viewportFraction ?? 1.0);
     showDates = [
-      DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month - 1, widget.calendarDate.value.day),
+      DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month - 1, 1),
       DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month, widget.calendarDate.value.day),
-      DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month + 1, widget.calendarDate.value.day),
+      DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month + 1, 1),
     ];
   }
 
@@ -50,9 +50,9 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
     DateTime firstWeekDay = findFirstDateOfTheWeek(calendarDate.value);
     calendarDate.value = firstWeekDay.add(Duration(days: amount));
     showDates = [
-      DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month - 1, widget.calendarDate.value.day),
+      DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month - 1, 1),
       DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month, widget.calendarDate.value.day),
-      DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month + 1, widget.calendarDate.value.day),
+      DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month + 1, 1),
     ];
     _pageController.jumpToPage(
       1,
@@ -71,9 +71,9 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
   setShowDates(bool isNext) {
     if (isNext) {
       showDates = [
-        DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month - 1, widget.calendarDate.value.day),
+        DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month - 1, 1),
         DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month, widget.calendarDate.value.day),
-        DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month + 1, widget.calendarDate.value.day),
+        DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month + 1, 1),
       ];
       _pageController.jumpToPage(
         1,
@@ -81,9 +81,9 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
       widget.onSelectionChange([], widget.calendarDate.value);
     } else {
       showDates = [
-        DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month - 1, widget.calendarDate.value.day),
+        DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month - 1, 1),
         DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month, widget.calendarDate.value.day),
-        DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month + 1, widget.calendarDate.value.day),
+        DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month + 1, 1),
       ];
       _pageController.jumpToPage(
         1,

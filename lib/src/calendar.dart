@@ -81,7 +81,7 @@ class _MobkitCalendarWidgetState extends State<MobkitCalendarWidget> {
 
   parseAppointmentModel() {
     lastAppointments = [];
-    if (widget.appointmentModel.isNotEmpty && !isLoadData) {
+    if (widget.appointmentModel.isNotEmpty) {
       List<MobkitCalendarAppointmentModel> withRecurrencyAppointments = [];
       List<MobkitCalendarAppointmentModel> addNewAppointments = [];
       for (var appointment in widget.appointmentModel
@@ -270,11 +270,6 @@ class _MobkitCalendarWidgetState extends State<MobkitCalendarWidget> {
           }
         }
       }
-      lastAppointments.addAll(widget.appointmentModel);
-      setState(() {
-        isLoadData = true;
-      });
-    } else {
       lastAppointments.addAll(widget.appointmentModel);
       setState(() {
         isLoadData = true;
