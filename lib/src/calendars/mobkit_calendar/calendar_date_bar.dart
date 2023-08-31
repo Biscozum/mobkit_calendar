@@ -49,7 +49,15 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
   changeWeek(ValueNotifier<DateTime> calendarDate, int amount) {
     DateTime firstWeekDay = findFirstDateOfTheWeek(calendarDate.value);
     calendarDate.value = firstWeekDay.add(Duration(days: amount));
-    widget.onSelectionChange([], calendarDate.value);
+    showDates = [
+      DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month - 1, widget.calendarDate.value.day),
+      DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month, widget.calendarDate.value.day),
+      DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month + 1, widget.calendarDate.value.day),
+    ];
+    _pageController.jumpToPage(
+      1,
+    );
+    widget.onSelectionChange([], widget.calendarDate.value);
   }
 
   changeMonth(ValueNotifier<DateTime> calendarDate, bool isNext) {
@@ -99,16 +107,12 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
                 if (widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.daily ||
                     widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.weekly) {
                   changeWeek(widget.calendarDate, 7);
-                } else if (widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.monthly) {
-                  changeMonth(widget.calendarDate, true);
                 }
               }
               if (swipeDirection == 'right') {
                 if (widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.daily ||
                     widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.weekly) {
                   changeWeek(widget.calendarDate, -7);
-                } else if (widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.monthly) {
-                  changeMonth(widget.calendarDate, false);
                 }
               }
             },
@@ -256,7 +260,7 @@ class _DateListState extends State<DateList> {
   ) {
     List<Widget> rowList = [];
     var firstDay = date.add(const Duration(days: 1));
-    DateTime newDate = firstDay.isFirstDay(DateTime.monday) ? firstDay : firstDay.previous(DateTime.monday);
+    DateTime newDate = firstDay.previous(DateTime.monday);
     for (var i = 0; i < 1; i++) {
       List<Widget> cellList = [];
       rowList.add(Container(
