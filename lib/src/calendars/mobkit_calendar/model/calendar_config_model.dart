@@ -96,6 +96,17 @@ class MobkitCalendarConfigModel {
 
   /// The textstyle that the selected days in the date picker will have.
   TextStyle selectedStyle;
+
+  double? cellTextTopPadding;
+
+  bool? showEventOffDay;
+
+  double? eventPointRadius;
+  double? eventLineHeight;
+  int? maxEventPointCount;
+  int? maxEventLineCount;
+  double? eventLinePadding;
+  double? monthBetweenPadding;
   MobkitCalendarConfigModel({
     this.title,
     this.locale = 'tr_Tr',
@@ -133,5 +144,13 @@ class MobkitCalendarConfigModel {
     this.isVisibleWeekDaysBar = true,
     this.viewportFraction = 1.0,
     this.isVisibleHeaderWidget = false,
+    this.cellTextTopPadding = 0,
+    this.showEventOffDay = false,
+    this.eventPointRadius = 4.5,
+    this.eventLineHeight = 2.5,
+    this.maxEventPointCount = 3,
+    this.maxEventLineCount = 3,
+    this.eventLinePadding = 0.3,
+    this.monthBetweenPadding = 0,
   });
 }

@@ -56,59 +56,64 @@ class CalendarCellWidget extends StatelessWidget {
                   style: configStandardCalendar.weekDaysStyle,
                 ),
               )
-            : Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Align(
-                    alignment: Alignment.topCenter,
-                    child: Padding(
-                      padding: const EdgeInsets.all(1.0),
-                      child: Text(
-                        text,
-                        style: isEnabled
-                            ? isCurrent
-                                ? isSelected
-                                    ? configStandardCalendar.selectedStyle
-                                    : configStandardCalendar.currentStyle
-                                : isSelected
-                                    ? configStandardCalendar.selectedStyle
-                                    : configStandardCalendar.monthDaysStyle
-                            : configStandardCalendar.disabledStyle,
-                      ),
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: generateItems(showedCustomCalendarModelList),
-                  ),
-                  const SizedBox(
-                    height: 2,
-                  ),
-                  showedCustomCalendarModelList != null
-                      ? Stack(
-                          children: [
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: generateAllDayItems(showedCustomCalendarModelList, context),
+            : showedCustomCalendarModelList != null
+                ? Stack(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(top: configStandardCalendar.cellTextTopPadding ?? 0),
+                        child: Align(
+                          alignment: Alignment.topCenter,
+                          child: Padding(
+                            padding: const EdgeInsets.all(1.0),
+                            child: Text(
+                              text,
+                              textAlign: TextAlign.center,
+                              style: isEnabled
+                                  ? isCurrent
+                                      ? isSelected
+                                          ? configStandardCalendar.selectedStyle
+                                          : configStandardCalendar.currentStyle
+                                      : isSelected
+                                          ? configStandardCalendar.selectedStyle
+                                          : configStandardCalendar.monthDaysStyle
+                                  : configStandardCalendar.disabledStyle,
                             ),
-                            showedCustomCalendarModelList!.where((element) => element.isAllDay).length > 3
-                                ? Center(
-                                    child: Text(
-                                      "+${(showedCustomCalendarModelList!.where((element) => element.isAllDay).length - 3).toString()}",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontSize: 9,
-                                          color: isSelected ? Colors.white : Colors.black,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  )
-                                : Container(),
-                          ],
-                        )
-                      : Container()
-                ],
-              ),
+                          ),
+                        ),
+                      ),
+                      (!isEnabled && !(configStandardCalendar.showEventOffDay ?? false))
+                          ? Container()
+                          : Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: generateItems(showedCustomCalendarModelList),
+                                ),
+                                const SizedBox(
+                                  height: 2,
+                                ),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: generateAllDayItems(showedCustomCalendarModelList, context),
+                                ),
+                                showedCustomCalendarModelList!.where((element) => element.isAllDay).length > 3
+                                    ? Center(
+                                        child: Text(
+                                          "+${(showedCustomCalendarModelList!.where((element) => element.isAllDay).length - 3).toString()}",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontSize: 9,
+                                              color: isSelected ? Colors.white : Colors.black,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      )
+                                    : Container(),
+                              ],
+                            )
+                    ],
+                  )
+                : Container(),
       ),
     );
   }
@@ -120,12 +125,12 @@ class CalendarCellWidget extends StatelessWidget {
           showedCustomCalendarModelList.where((element) => !element.isAllDay).toList();
       if (listModel.isNotEmpty) {
         for (int i = 0; i < listModel.length; i++) {
-          if (i == 2 && listModel.length > 3) {
+          if ((i) == (configStandardCalendar.maxEventPointCount ?? 3)) {
             items.add(
               Padding(
                 padding: const EdgeInsets.all(1),
                 child: Text(
-                  "+${(listModel.length - 2).toString()}",
+                  "+${(listModel.length - (configStandardCalendar.maxEventPointCount ?? 3)).toString()}",
                   style: TextStyle(
                       fontSize: 8, color: isSelected ? Colors.white : Colors.black, fontWeight: FontWeight.bold),
                 ),
@@ -137,7 +142,7 @@ class CalendarCellWidget extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(1),
                 child: CircleAvatar(
-                  radius: 4.5,
+                  radius: configStandardCalendar.eventPointRadius ?? 4.5,
                   backgroundColor: listModel[i].color,
                 ),
               ),
@@ -157,16 +162,19 @@ class CalendarCellWidget extends StatelessWidget {
           showedCustomCalendarModelList.where((element) => element.isAllDay).toList();
       if (listModel.isNotEmpty) {
         for (int i = 0; i < listModel.length; i++) {
-          if (i == 3 && listModel.length > 3) {
+          if ((i + 1) == (configStandardCalendar.maxEventLineCount ?? 3)) {
             break;
           } else {
             items.add(
               Container(
+                margin: EdgeInsets.only(
+                  top: configStandardCalendar.eventLinePadding ?? 0.3,
+                ),
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.all(Radius.circular(2.0)),
                   color: listModel[i].color,
                 ),
-                height: 2.5,
+                height: configStandardCalendar.eventLineHeight ?? 2.5,
               ),
             );
           }

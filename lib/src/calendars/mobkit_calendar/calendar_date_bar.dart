@@ -43,6 +43,7 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
       DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month - 1, 1),
       DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month, widget.calendarDate.value.day),
       DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month + 1, 1),
+      DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month + 2, 1),
     ];
   }
 
@@ -53,6 +54,7 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
       DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month - 1, 1),
       DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month, widget.calendarDate.value.day),
       DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month + 1, 1),
+      DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month + 2, 1),
     ];
     _pageController.jumpToPage(
       1,
@@ -74,6 +76,7 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
         DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month - 1, 1),
         DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month, widget.calendarDate.value.day),
         DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month + 1, 1),
+        DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month + 2, 1),
       ];
       _pageController.jumpToPage(
         1,
@@ -84,6 +87,7 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
         DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month - 1, 1),
         DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month, widget.calendarDate.value.day),
         DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month + 1, 1),
+        DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month + 2, 1),
       ];
       _pageController.jumpToPage(
         1,
@@ -132,36 +136,39 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
                   page == 2 ? setShowDates(true) : null;
                 },
                 itemBuilder: (context, index) {
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      ((widget.config?.isVisibleHeaderWidget ?? false) &&
-                              widget.headerWidget(
-                                    findCustomModel(widget.customCalendarModel, showDates[index]),
-                                    showDates[index],
-                                  ) !=
-                                  null)
-                          ? widget.headerWidget(
-                              findCustomModel(widget.customCalendarModel, showDates[index]),
-                              showDates[index],
-                            )!
-                          : Container(),
-                      Expanded(
-                        child: DateList(
-                          config: widget.config,
-                          customCalendarModel: widget.customCalendarModel,
-                          date: index == 0
-                              ? addMonth(date, -1)
-                              : index == 1
-                                  ? showDates[index]
-                                  : addMonth(date, 1),
-                          selectedDate: widget.selectedDate,
-                          onSelectionChange: widget.onSelectionChange,
-                          onPopupChange: widget.onPopupChange,
-                          headerWidget: widget.headerWidget,
+                  return Padding(
+                    padding: EdgeInsets.only(top: widget.config?.monthBetweenPadding ?? 0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        ((widget.config?.isVisibleHeaderWidget ?? false) &&
+                                widget.headerWidget(
+                                      findCustomModel(widget.customCalendarModel, showDates[index]),
+                                      showDates[index],
+                                    ) !=
+                                    null)
+                            ? widget.headerWidget(
+                                findCustomModel(widget.customCalendarModel, showDates[index]),
+                                showDates[index],
+                              )!
+                            : Container(),
+                        Expanded(
+                          child: DateList(
+                            config: widget.config,
+                            customCalendarModel: widget.customCalendarModel,
+                            date: index == 0
+                                ? addMonth(date, -1)
+                                : index == 1
+                                    ? showDates[index]
+                                    : addMonth(date, 1),
+                            selectedDate: widget.selectedDate,
+                            onSelectionChange: widget.onSelectionChange,
+                            onPopupChange: widget.onPopupChange,
+                            headerWidget: widget.headerWidget,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   );
                 }),
           );
