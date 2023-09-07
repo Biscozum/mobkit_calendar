@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:mobkit_calendar/src/calendars/mobkit_calendar/model/calendar_config_model.dart';
 import 'package:mobkit_calendar/src/calendars/mobkit_calendar/model/mobkit_calendar_appointment_model.dart';
 import 'package:mobkit_calendar/src/calendars/mobkit_calendar/utils/date_utils.dart';
 import '../../extensions/date_extensions.dart';
 import 'calendar_date_cell.dart';
 import 'enum/mobkit_calendar_view_type_enum.dart';
+import 'model/configs/calendar_config_model.dart';
 
 class CalendarDateSelectionBar extends StatefulWidget {
   final ValueNotifier<DateTime> calendarDate;
@@ -13,6 +13,7 @@ class CalendarDateSelectionBar extends StatefulWidget {
   final MobkitCalendarConfigModel? config;
   final List<MobkitCalendarAppointmentModel> customCalendarModel;
   final Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime) onSelectionChange;
+  final Function(DateTime datetime) onDateChanged;
   final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) onPopupChange;
   final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) headerWidget;
 
@@ -25,6 +26,7 @@ class CalendarDateSelectionBar extends StatefulWidget {
     required this.onSelectionChange,
     required this.onPopupChange,
     required this.headerWidget,
+    required this.onDateChanged,
   }) : super(key: key);
 
   @override
@@ -34,11 +36,26 @@ class CalendarDateSelectionBar extends StatefulWidget {
 class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
   late PageController _pageController;
   List<DateTime> showDates = [];
+  ScrollActivity? _lastActivity;
 
+  int _currentPage = 1;
   @override
   void initState() {
     super.initState();
     _pageController = PageController(initialPage: 1, viewportFraction: widget.config?.viewportFraction ?? 1.0);
+    _pageController.addListener(() {
+      // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+      if (_pageController.position.activity is BallisticScrollActivity && _lastActivity is! DragScrollActivity) {
+        Future.delayed(const Duration(milliseconds: 350)).then(
+          (value) {
+            _currentPage == 0 ? setShowDates(false, showDates[_currentPage]) : null;
+            _currentPage == 2 ? setShowDates(true, showDates[_currentPage]) : null;
+          },
+        );
+      }
+      // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+      _lastActivity = _pageController.position.activity;
+    });
     showDates = [
       DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month - 1, 1),
       DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month, widget.calendarDate.value.day),
@@ -59,7 +76,7 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
     _pageController.jumpToPage(
       1,
     );
-    widget.onSelectionChange([], widget.calendarDate.value);
+    widget.onDateChanged(widget.calendarDate.value);
   }
 
   changeMonth(ValueNotifier<DateTime> calendarDate, bool isNext) {
@@ -67,33 +84,34 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
         ? DateTime(calendarDate.value.year, calendarDate.value.month + 1, 1)
         : findFirstDateOfTheMonth(DateTime(calendarDate.value.year, calendarDate.value.month, 0));
     calendarDate.value = firstMonthDay;
-    widget.onSelectionChange([], calendarDate.value);
+    widget.onDateChanged(calendarDate.value);
   }
 
-  setShowDates(bool isNext) {
+  setShowDates(bool isNext, DateTime time) {
     if (isNext) {
       showDates = [
-        DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month - 1, 1),
-        DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month, widget.calendarDate.value.day),
-        DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month + 1, 1),
-        DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month + 2, 1),
+        DateTime(time.year, time.month - 1, 1),
+        DateTime(time.year, time.month, time.day),
+        DateTime(time.year, time.month + 1, 1),
+        DateTime(time.year, time.month + 2, 1),
       ];
       _pageController.jumpToPage(
         1,
       );
-      widget.onSelectionChange([], widget.calendarDate.value);
+      widget.onDateChanged(time);
     } else {
       showDates = [
-        DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month - 1, 1),
-        DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month, widget.calendarDate.value.day),
-        DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month + 1, 1),
-        DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month + 2, 1),
+        DateTime(time.year, time.month - 1, 1),
+        DateTime(time.year, time.month, time.day),
+        DateTime(time.year, time.month + 1, 1),
+        DateTime(time.year, time.month + 2, 1),
       ];
       _pageController.jumpToPage(
         1,
       );
-      widget.onSelectionChange([], widget.calendarDate.value);
     }
+    widget.calendarDate.value = time;
+    widget.onDateChanged(time);
   }
 
   @override
@@ -131,17 +149,18 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
                 scrollDirection: Axis.vertical,
                 padEnds: false,
                 onPageChanged: (page) {
-                  widget.calendarDate.value = showDates[page];
-                  page == 0 ? setShowDates(false) : null;
-                  page == 2 ? setShowDates(true) : null;
+                  _currentPage = page;
                 },
                 itemBuilder: (context, index) {
                   return Padding(
-                    padding: EdgeInsets.only(top: widget.config?.monthBetweenPadding ?? 0),
+                    padding: EdgeInsets.only(
+                        bottom: widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.monthly
+                            ? widget.config?.monthBetweenPadding ?? 0
+                            : 0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        ((widget.config?.isVisibleHeaderWidget ?? false) &&
+                        ((widget.config?.topBarConfig.isVisibleHeaderWidget ?? false) &&
                                 widget.headerWidget(
                                       findCustomModel(widget.customCalendarModel, showDates[index]),
                                       showDates[index],
@@ -156,11 +175,7 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
                           child: DateList(
                             config: widget.config,
                             customCalendarModel: widget.customCalendarModel,
-                            date: index == 0
-                                ? addMonth(date, -1)
-                                : index == 1
-                                    ? showDates[index]
-                                    : addMonth(date, 1),
+                            date: showDates[index],
                             selectedDate: widget.selectedDate,
                             onSelectionChange: widget.onSelectionChange,
                             onPopupChange: widget.onPopupChange,
@@ -288,10 +303,7 @@ class _DateListState extends State<DateList> {
             ),
           ),
         );
-        cellList.add(Container(
-          width: 1,
-          color: config?.enabledCellBorderColor ?? Colors.transparent,
-        ));
+
         newDate = newDate.add(const Duration(days: 1));
       }
       rowList.add(Expanded(child: Row(children: cellList)));

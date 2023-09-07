@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mobkit_calendar/src/calendars/mobkit_calendar/calendar_native_carousel.dart';
-import 'package:mobkit_calendar/src/calendars/mobkit_calendar/model/calendar_config_model.dart';
+import 'package:mobkit_calendar/src/calendars/mobkit_calendar/enum/mobkit_calendar_view_type_enum.dart';
 import 'package:mobkit_calendar/src/calendars/mobkit_calendar/model/mobkit_calendar_appointment_model.dart';
 import 'package:mobkit_calendar/src/calendars/mobkit_calendar/utils/date_utils.dart';
 import 'package:mobkit_calendar/src/extensions/date_extensions.dart';
 import 'calendar_cell.dart';
+import 'model/configs/calendar_config_model.dart';
 
 class CalendarDateCell extends StatelessWidget {
   final DateTime calendarDate;
@@ -35,12 +36,13 @@ class CalendarDateCell extends StatelessWidget {
         builder: (context, DateTime selectedDate, widget) {
           return GestureDetector(
             onTap: () async {
-              if (isEnabled) {
+              if (isEnabled || config?.mobkitCalendarViewType != MobkitCalendarViewType.monthly) {
                 this.selectedDate.value = calendarDate;
                 onSelectionChange(findCustomModel(customCalendarModel, calendarDate), calendarDate);
                 if (config != null && config!.isNativePopup) {
                   await showDialog(
                     context: context,
+                    useRootNavigator: true,
                     builder: (_) => ValueListenableBuilder(
                         valueListenable: this.selectedDate,
                         builder: (_, DateTime date, __) {

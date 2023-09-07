@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mobkit_calendar/src/calendars/mobkit_calendar/model/calendar_config_model.dart';
+import '../../../mobkit_calendar.dart';
 import '../../model/calendar_type_model.dart';
-import '../month_and_year_picker/model/month_and_year_config_model.dart';
 
 class CellWidget extends StatelessWidget {
   final String text;
@@ -60,17 +59,18 @@ class CellWidget extends StatelessWidget {
                   : Border.all(
                       width: configMonthAndYear.borderWidth,
                       color: isSelected
-                          ? configStandardCalendar.selectedBorderColor
-                          : configStandardCalendar.enabledCellBorderColor),
+                          ? configStandardCalendar.cellConfig.selectedStyle?.border?.top.color ?? Colors.transparent
+                          : configStandardCalendar.cellConfig.enabledStyle?.border?.top.color ?? Colors.transparent,
+                    ),
             ),
             child: Center(
               child: Text(
                 text,
                 style: isEnabled
                     ? isSelected
-                        ? configStandardCalendar.selectedStyle
-                        : configStandardCalendar.monthDaysStyle
-                    : configStandardCalendar.disabledStyle,
+                        ? configStandardCalendar.cellConfig.selectedStyle?.textStyle
+                        : configStandardCalendar.topBarConfig.monthDaysStyle
+                    : configStandardCalendar.cellConfig.disabledStyle?.textStyle,
               ),
             ),
           ),
@@ -89,16 +89,14 @@ class CellWidget extends StatelessWidget {
                   ? isFirstLastSelectedItem
                       ? configStandardCalendar.isFirstLastItemColor
                       : isSelected
-                          ? configStandardCalendar.selectedColor.withOpacity(1.0)
-                          : configStandardCalendar.enabledColor
-                  : configStandardCalendar.disabledColor,
+                          ? configStandardCalendar.cellConfig.selectedStyle?.color
+                          : configStandardCalendar.cellConfig.enabledStyle?.color
+                  : configStandardCalendar.cellConfig.disabledStyle?.color,
               border: isWeekDaysBar
                   ? Border.all(width: 1, color: configStandardCalendar.weekDaysBarBorderColor)
-                  : Border.all(
-                      width: configStandardCalendar.borderWidth,
-                      color: isSelected
-                          ? configStandardCalendar.selectedBorderColor
-                          : configStandardCalendar.enabledCellBorderColor),
+                  : isSelected
+                      ? configStandardCalendar.cellConfig.selectedStyle?.border
+                      : configStandardCalendar.cellConfig.enabledStyle?.border,
               borderRadius: configStandardCalendar.borderRadius,
             ),
             child: Center(
@@ -107,12 +105,12 @@ class CellWidget extends StatelessWidget {
                 style: isEnabled
                     ? isCurrent
                         ? isSelected
-                            ? configStandardCalendar.selectedStyle
-                            : configStandardCalendar.currentStyle
+                            ? configStandardCalendar.cellConfig.selectedStyle?.textStyle
+                            : configStandardCalendar.cellConfig.currentStyle?.textStyle
                         : isSelected
-                            ? configStandardCalendar.selectedStyle
-                            : configStandardCalendar.monthDaysStyle
-                    : configStandardCalendar.disabledStyle,
+                            ? configStandardCalendar.cellConfig.selectedStyle?.textStyle
+                            : configStandardCalendar.topBarConfig.monthDaysStyle
+                    : configStandardCalendar.cellConfig.disabledStyle?.textStyle,
               ),
             ),
           ),

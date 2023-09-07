@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mobkit_calendar/src/calendars/mobkit_calendar/calendar_date_bar.dart';
+import 'package:mobkit_calendar/src/calendars/mobkit_calendar/model/configs/calendar_config_model.dart';
 import 'package:mobkit_calendar/src/extensions/date_extensions.dart';
 import 'calendar_month_selection_bar.dart';
 import 'calendar_weekdays_bar.dart';
 import 'calendar_year_selection_bar.dart';
 import 'enum/mobkit_calendar_view_type_enum.dart';
-import 'model/calendar_config_model.dart';
 import 'model/mobkit_calendar_appointment_model.dart';
 
 class MobkitCalendarView extends StatelessWidget {
@@ -19,6 +19,7 @@ class MobkitCalendarView extends StatelessWidget {
     required this.eventTap,
     required this.onPopupChange,
     required this.headerWidget,
+    required this.onDateChanged,
   }) : super(key: key);
   final MobkitCalendarConfigModel? config;
   final List<MobkitCalendarAppointmentModel> appointmentModel;
@@ -28,6 +29,7 @@ class MobkitCalendarView extends StatelessWidget {
   final Function(MobkitCalendarAppointmentModel model) eventTap;
   final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) onPopupChange;
   final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) headerWidget;
+  final Function(DateTime datetime) onDateChanged;
 
   bool? isIntersect(
     DateTime firstStartDate,
@@ -54,7 +56,7 @@ class MobkitCalendarView extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: [
-        config?.isVisibleMonthBar == true || config?.isVisibleYearBar == true
+        config?.topBarConfig.isVisibleMonthBar == true || config?.topBarConfig.isVisibleYearBar == true
             ? SizedBox(
                 height: 30,
                 child: Padding(
@@ -62,19 +64,19 @@ class MobkitCalendarView extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      config?.isVisibleMonthBar == true
+                      config?.topBarConfig.isVisibleMonthBar == true
                           ? CalendarMonthSelectionBar(
                               calendarDate,
                               onSelectionChange,
                               config,
                             )
                           : Container(),
-                      config?.isVisibleMonthBar == true
+                      config?.topBarConfig.isVisibleMonthBar == true
                           ? const SizedBox(
                               width: 10,
                             )
                           : Container(),
-                      config?.isVisibleYearBar == true
+                      config?.topBarConfig.isVisibleYearBar == true
                           ? CalendarYearSelectionBar(calendarDate, onSelectionChange, config)
                           : Container(),
                     ],
@@ -82,12 +84,12 @@ class MobkitCalendarView extends StatelessWidget {
                 ),
               )
             : Container(),
-        config?.isVisibleMonthBar == true || config?.isVisibleYearBar == true
+        config?.topBarConfig.isVisibleMonthBar == true || config?.topBarConfig.isVisibleYearBar == true
             ? const SizedBox(
                 height: 15,
               )
             : Container(),
-        config?.isVisibleWeekDaysBar == true
+        config?.topBarConfig.isVisibleWeekDaysBar == true
             ? SizedBox(
                 height: 30,
                 child: CalendarWeekDaysBar(
@@ -96,14 +98,16 @@ class MobkitCalendarView extends StatelessWidget {
                 ),
               )
             : Container(),
-        config?.isVisibleWeekDaysBar == true
+        config?.topBarConfig.isVisibleWeekDaysBar == true
             ? const SizedBox(
                 height: 10,
               )
             : Container(),
         config?.mobkitCalendarViewType != MobkitCalendarViewType.monthly
             ? SizedBox(
-                height: 100,
+                height: config?.mobkitCalendarViewType == MobkitCalendarViewType.weekly
+                    ? config?.weeklyTopWidgetSize ?? 110
+                    : config?.dailyTopWidgetSize,
                 child: CalendarDateSelectionBar(
                   calendarDate,
                   selectedDate,
@@ -112,6 +116,7 @@ class MobkitCalendarView extends StatelessWidget {
                   config: config,
                   onPopupChange: onPopupChange,
                   headerWidget: headerWidget,
+                  onDateChanged: onDateChanged,
                 ),
               )
             : Expanded(
@@ -123,23 +128,24 @@ class MobkitCalendarView extends StatelessWidget {
                   config: config,
                   onPopupChange: onPopupChange,
                   headerWidget: headerWidget,
+                  onDateChanged: onDateChanged,
                 ),
               ),
         config?.mobkitCalendarViewType == MobkitCalendarViewType.daily
             ? ValueListenableBuilder(
                 valueListenable: selectedDate,
                 builder: (_, DateTime date, __) {
-                  List<MobkitCalendarAppointmentModel> modelList = appointmentModel
-                      .where((element) =>
-                          ((DateTime(selectedDate.value.year, selectedDate.value.month, selectedDate.value.day)
-                                      .isBetween(element.appointmentStartDate, element.appointmentEndDate) ??
-                                  false) ||
-                              DateTime(selectedDate.value.year, selectedDate.value.month, selectedDate.value.day)
-                                  .isSameDay(element.appointmentStartDate)) &&
-                          !DateTime(selectedDate.value.year, selectedDate.value.month, selectedDate.value.day)
-                              .isSameDay(element.appointmentEndDate) &&
-                          !element.isAllDay)
-                      .toList();
+                  List<MobkitCalendarAppointmentModel> modelList = appointmentModel.where((element) {
+                    var item = !element.isAllDay &&
+                        ((DateTime(selectedDate.value.year, selectedDate.value.month, selectedDate.value.day)
+                                    .isBetween(element.appointmentStartDate, element.appointmentEndDate) ??
+                                false) ||
+                            (DateTime(selectedDate.value.year, selectedDate.value.month, selectedDate.value.day)
+                                    .isSameDay(element.appointmentStartDate)) &&
+                                DateTime(selectedDate.value.year, selectedDate.value.month, selectedDate.value.day)
+                                    .isSameDay(element.appointmentEndDate));
+                    return item;
+                  }).toList();
                   List<MobkitCalendarAppointmentModel> allDayList = appointmentModel
                       .where((element) =>
                           ((DateTime(selectedDate.value.year, selectedDate.value.month, selectedDate.value.day)
@@ -177,34 +183,51 @@ class MobkitCalendarView extends StatelessWidget {
                   }
                   return Expanded(
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         allDayList.isNotEmpty
                             ? Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 6),
+                                padding: config?.dailyItemsConfigModel.allDayMargin ??
+                                    const EdgeInsets.symmetric(vertical: 6),
                                 child: Row(
                                   children: [
-                                    const Text(
-                                      "Tüm Gün",
-                                      style: TextStyle(color: Colors.black, fontSize: 14),
+                                    Text(
+                                      config?.dailyItemsConfigModel.allDayText ?? "Tüm Gün",
+                                      style: config?.dailyItemsConfigModel.allDayTextStyle ??
+                                          const TextStyle(color: Colors.black, fontSize: 14),
                                     ),
-                                    Row(
-                                      children: allDayList
-                                          .map((item) => GestureDetector(
-                                                onTap: () => eventTap(item),
-                                                child: Container(
-                                                    width:
-                                                        (MediaQuery.of(context).size.width * 0.8) / allDayList.length,
-                                                    color: item.color,
-                                                    child: Padding(
-                                                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                                      child: Text(
-                                                        item.title ?? "",
-                                                        overflow: TextOverflow.ellipsis,
-                                                        maxLines: 1,
-                                                      ),
-                                                    )),
-                                              ))
-                                          .toList(),
+                                    SizedBox(
+                                      width: config?.dailyItemsConfigModel.space ?? 2,
+                                    ),
+                                    Expanded(
+                                      child: Row(
+                                        children: allDayList
+                                            .map(
+                                              (item) => Expanded(
+                                                child: GestureDetector(
+                                                  onTap: () => eventTap(item),
+                                                  child: Container(
+                                                    padding: config?.dailyItemsConfigModel.allDayFrameStyle?.padding ??
+                                                        const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                                    decoration: BoxDecoration(
+                                                      color: item.color ??
+                                                          config?.dailyItemsConfigModel.allDayFrameStyle?.color,
+                                                      border: config?.dailyItemsConfigModel.allDayFrameStyle?.border,
+                                                      borderRadius:
+                                                          config?.dailyItemsConfigModel.allDayFrameStyle?.borderRadius,
+                                                    ),
+                                                    child: Text(
+                                                      item.title ?? "",
+                                                      overflow: TextOverflow.ellipsis,
+                                                      maxLines: 1,
+                                                      style: config?.dailyItemsConfigModel.allDayFrameStyle?.textStyle,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                            .toList(),
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -278,15 +301,20 @@ class MobkitCalendarView extends StatelessWidget {
                                       child: Padding(
                                         padding: const EdgeInsets.only(left: 1.5),
                                         child: Container(
+                                          padding: config?.dailyItemsConfigModel.itemFrameStyle?.padding,
                                           decoration: BoxDecoration(
-                                            color: modelList[i].color,
-                                            borderRadius: const BorderRadius.all(Radius.circular(1)),
-                                          ),
+                                              color: modelList[i].color,
+                                              borderRadius:
+                                                  config?.dailyItemsConfigModel.itemFrameStyle?.borderRadius ??
+                                                      const BorderRadius.all(Radius.circular(1)),
+                                              border: config?.dailyItemsConfigModel.itemFrameStyle?.border),
                                           child: Align(
-                                            alignment: Alignment.topLeft,
+                                            alignment: config?.dailyItemsConfigModel.itemFrameStyle?.alignment ??
+                                                Alignment.topLeft,
                                             child: Text(
                                               modelList[i].title ?? "",
-                                              style: const TextStyle(color: Colors.white),
+                                              style: config?.dailyItemsConfigModel.itemFrameStyle?.textStyle ??
+                                                  const TextStyle(color: Colors.white),
                                             ),
                                           ),
                                         ),
@@ -316,11 +344,12 @@ class MobkitCalendarView extends StatelessWidget {
                                                 children: [
                                                   Text(
                                                     "${(index).toString()}:00",
-                                                    style: const TextStyle(color: Colors.black, fontSize: 18),
+                                                    style: config?.dailyItemsConfigModel.hourTextStyle ??
+                                                        const TextStyle(color: Colors.black, fontSize: 18),
                                                   ),
                                                   Container(
                                                     width: width * 0.8,
-                                                    color: Colors.grey,
+                                                    color: Theme.of(context).dividerColor,
                                                     height: 1,
                                                   ),
                                                 ],

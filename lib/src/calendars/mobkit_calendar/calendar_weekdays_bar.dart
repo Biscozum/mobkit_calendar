@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:mobkit_calendar/src/calendars/mobkit_calendar/model/calendar_config_model.dart';
 import 'package:mobkit_calendar/src/calendars/mobkit_calendar/model/mobkit_calendar_appointment_model.dart';
 import 'calendar_cell.dart';
+import 'model/configs/calendar_config_model.dart';
 
 class CalendarWeekDaysBar extends StatelessWidget {
   const CalendarWeekDaysBar({Key? key, this.config, required this.customCalendarModel}) : super(key: key);

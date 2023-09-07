@@ -3,7 +3,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:mobkit_calendar/src/extensions/date_extensions.dart';
 import 'package:mobkit_calendar/src/pickers/month_and_year_picker/model/month_and_year_config_model.dart';
 import 'calendars/mobkit_calendar/mobkit_calendar_widget.dart';
-import 'calendars/mobkit_calendar/model/calendar_config_model.dart';
+import 'calendars/mobkit_calendar/model/configs/calendar_config_model.dart';
 import 'calendars/mobkit_calendar/model/daily_frequency.dart';
 import 'calendars/mobkit_calendar/model/day_of_month_model.dart';
 import 'calendars/mobkit_calendar/model/day_of_week_and_repetition_model.dart';
@@ -53,6 +53,8 @@ class MobkitCalendarWidget extends StatefulWidget {
   final List<MobkitCalendarAppointmentModel> appointmentModel;
   final Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime) onSelectionChange;
   final Function(MobkitCalendarAppointmentModel model) eventTap;
+  final Function(DateTime datetime) onDateChanged;
+
   final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) onPopupChange;
   final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) headerWidget;
 
@@ -66,6 +68,7 @@ class MobkitCalendarWidget extends StatefulWidget {
     required this.calendarDate,
     required this.onPopupChange,
     required this.headerWidget,
+    required this.onDateChanged,
   }) : super(key: key) {
     selectDate = selectedDate ?? DateTime.now();
   }
@@ -293,7 +296,8 @@ class _MobkitCalendarWidgetState extends State<MobkitCalendarWidget> {
             eventTap: widget.eventTap,
             onPopupChange: widget.onPopupChange,
             headerWidget: widget.headerWidget,
+            onDateChanged: widget.onDateChanged,
           )
-        : const CircularProgressIndicator();
+        : const Center(child: CircularProgressIndicator());
   }
 }
