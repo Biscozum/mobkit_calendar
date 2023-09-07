@@ -62,7 +62,8 @@ extension DateTimeExtension on DateTime {
   }
 
   bool isSameDay(DateTime other) {
-    return year == other.year && month == other.month && day == other.day;
+    var item = year == other.year && month == other.month && day == other.day;
+    return item;
   }
 
   int numOfWeeks(int year) {

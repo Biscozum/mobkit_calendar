@@ -1,8 +1,13 @@
 export './src/calendar.dart';
 export 'src/pickers/month_and_year_picker/model/month_and_year_config_model.dart';
 export 'src/calendars/mobkit_calendar/model/mobkit_calendar_appointment_model.dart';
-export 'src/calendars/mobkit_calendar/model/calendar_config_model.dart';
-export 'src/calendars/mobkit_calendar/model/calendar_popup_config_model.dart';
+export 'src/calendars/mobkit_calendar/model/configs/calendar_popup_config_model.dart';
+export 'src/calendars/mobkit_calendar/model/configs/calendar_config_model.dart';
+export 'src/calendars/mobkit_calendar/model/configs/calendar_cell_config_model.dart';
+export 'src/calendars/mobkit_calendar/model/configs/daily_items_config_model.dart';
+export 'src/calendars/mobkit_calendar/model/configs/calendar_top_bar_config_model.dart';
+export 'src/calendars/mobkit_calendar/model/styles/calendar_cell_style.dart';
+export 'src/calendars/mobkit_calendar/model/styles/frame_style.dart';
 export 'src/calendars/mobkit_calendar/enum/mobkit_calendar_view_type_enum.dart';
 export 'src/calendars/mobkit_calendar/model/recurrence_model.dart';
 export 'src/calendars/mobkit_calendar/model/calendar_account_group_model.dart';

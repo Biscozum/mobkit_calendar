@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:mobkit_calendar/src/calendars/mobkit_calendar/calendar_date_cell.dart';
-import 'package:mobkit_calendar/src/calendars/mobkit_calendar/model/calendar_config_model.dart';
 import 'package:mobkit_calendar/src/calendars/mobkit_calendar/model/mobkit_calendar_appointment_model.dart';
 import 'package:mobkit_calendar/src/extensions/date_extensions.dart';
 import 'datecell_renderobject.dart';
+import 'model/configs/calendar_config_model.dart';
 
 class DateList extends StatefulWidget {
   final DateTime date;
