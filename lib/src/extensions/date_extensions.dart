@@ -62,7 +62,8 @@ extension DateTimeExtension on DateTime {
   }
 
   bool isSameDay(DateTime other) {
-    return year == other.year && month == other.month && day == other.day;
+    var item = year == other.year && month == other.month && day == other.day;
+    return item;
   }
 
   int numOfWeeks(int year) {
@@ -71,12 +72,12 @@ extension DateTimeExtension on DateTime {
     return ((dayOfDec28 - dec28.weekday + 10) / 7).floor();
   }
 
-  int weekNumber(DateTime date) {
-    int dayOfYear = int.parse(DateFormat("D").format(date));
-    int woy = ((dayOfYear - date.weekday + 10) / 7).floor();
+  int weekNumber() {
+    int dayOfYear = int.parse(DateFormat("D").format(this));
+    int woy = ((dayOfYear - weekday + 10) / 7).floor();
     if (woy < 1) {
-      woy = numOfWeeks(date.year - 1);
-    } else if (woy > numOfWeeks(date.year)) {
+      woy = numOfWeeks(year - 1);
+    } else if (woy > numOfWeeks(year)) {
       woy = 1;
     }
     return woy;

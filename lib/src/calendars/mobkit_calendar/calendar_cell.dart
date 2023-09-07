@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mobkit_calendar/src/calendars/mobkit_calendar/model/calendar_config_model.dart';
-import 'package:mobkit_calendar/src/calendars/mobkit_calendar/model/mobkit_calendar_appointment_model.dart';
+import '../../../mobkit_calendar.dart';
 
 class CalendarCellWidget extends StatelessWidget {
   final String text;
@@ -28,111 +27,104 @@ class CalendarCellWidget extends StatelessWidget {
   }
   @override
   Widget build(BuildContext context) {
+    var style = isEnabled || configStandardCalendar.mobkitCalendarViewType != MobkitCalendarViewType.monthly
+        ? isSelected
+            ? configStandardCalendar.cellConfig.selectedStyle
+            : isCurrent
+                ? configStandardCalendar.cellConfig.currentStyle
+                : configStandardCalendar.cellConfig.enabledStyle
+        : configStandardCalendar.cellConfig.disabledStyle;
     return Padding(
       padding: configStandardCalendar.itemSpace,
       child: AnimatedContainer(
         duration: configStandardCalendar.animationDuration,
         decoration: BoxDecoration(
-          color: isEnabled
-              ? isSelected
-                  ? configStandardCalendar.selectedColor.withOpacity(1.0)
-                  : configStandardCalendar.enabledColor
-              : configStandardCalendar.disabledColor,
+          color: style?.color,
           borderRadius: configStandardCalendar.borderRadius,
+          border: isWeekDaysBar
+              ? Border.all(width: 1, color: configStandardCalendar.weekDaysBarBorderColor)
+              : style?.border,
         ),
         child: isWeekDaysBar
             ? Center(
                 child: Text(
                   text,
-                  style: isEnabled
-                      ? isCurrent
-                          ? isSelected
-                              ? configStandardCalendar.selectedStyle
-                              : configStandardCalendar.currentStyle
-                          : isSelected
-                              ? configStandardCalendar.selectedStyle
-                              : configStandardCalendar.monthDaysStyle
-                      : configStandardCalendar.disabledStyle,
+                  style: configStandardCalendar.topBarConfig.weekDaysStyle,
                 ),
               )
-            : Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Align(
-                    alignment: Alignment.topCenter,
-                    child: Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Spacer(),
-                          Text(
+            : showedCustomCalendarModelList != null
+                ? Padding(
+                    padding: style?.padding ?? EdgeInsets.zero,
+                    child: Stack(
+                      children: [
+                        Align(
+                          alignment: Alignment.topCenter,
+                          child: Text(
                             text,
-                            style: isEnabled
-                                ? isCurrent
-                                    ? isSelected
-                                        ? configStandardCalendar.selectedStyle
-                                        : configStandardCalendar.currentStyle
-                                    : isSelected
-                                        ? configStandardCalendar.selectedStyle
-                                        : configStandardCalendar.monthDaysStyle
-                                : configStandardCalendar.disabledStyle,
+                            textAlign: TextAlign.center,
+                            style: style?.textStyle,
                           ),
-                        ],
-                      ),
+                        ),
+                        ((!isEnabled && !(configStandardCalendar.showEventOffDay ?? false)) &&
+                                configStandardCalendar.mobkitCalendarViewType == MobkitCalendarViewType.monthly)
+                            ? Container()
+                            : Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: generateItems(showedCustomCalendarModelList, style),
+                                  ),
+                                  SizedBox(
+                                    height: configStandardCalendar.cellConfig.spaceBetweenEventLineToPoint,
+                                  ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: generateAllDayItems(showedCustomCalendarModelList, context),
+                                  ),
+                                  showedCustomCalendarModelList!.where((element) => element.isAllDay).length >
+                                          configStandardCalendar.cellConfig.maxEventLineCount
+                                      ? Center(
+                                          child: Text(
+                                            "+${(showedCustomCalendarModelList!.where((element) => element.isAllDay).length - (configStandardCalendar.cellConfig.maxEventLineCount - 1)).toString()}",
+                                            textAlign: TextAlign.center,
+                                            style: style?.maxLineCountTextStyle ??
+                                                TextStyle(
+                                                    fontSize: 9,
+                                                    color: isSelected ? Colors.white : Colors.black,
+                                                    fontWeight: FontWeight.bold),
+                                          ),
+                                        )
+                                      : Container(),
+                                ],
+                              )
+                      ],
                     ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: generateItems(showedCustomCalendarModelList),
-                  ),
-                  const SizedBox(
-                    height: 2,
-                  ),
-                  showedCustomCalendarModelList != null
-                      ? Stack(
-                          children: [
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: generateAllDayItems(showedCustomCalendarModelList, context),
-                            ),
-                            showedCustomCalendarModelList!.where((element) => element.isAllDay).length > 3
-                                ? Center(
-                                    child: Text(
-                                      "+${(showedCustomCalendarModelList!.where((element) => element.isAllDay).length - 3).toString()}",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontSize: 9,
-                                          color: isSelected ? Colors.white : Colors.black,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  )
-                                : Container(),
-                          ],
-                        )
-                      : Container()
-                ],
-              ),
+                  )
+                : Container(),
       ),
     );
   }
 
-  List<Widget> generateItems(List<MobkitCalendarAppointmentModel>? showedCustomCalendarModelList) {
+  List<Widget> generateItems(
+      List<MobkitCalendarAppointmentModel>? showedCustomCalendarModelList, CalendarCellStyle? style) {
     List<Widget> items = [];
     if (showedCustomCalendarModelList != null) {
       List<MobkitCalendarAppointmentModel> listModel =
           showedCustomCalendarModelList.where((element) => !element.isAllDay).toList();
       if (listModel.isNotEmpty) {
         for (int i = 0; i < listModel.length; i++) {
-          if (i == 2 && listModel.length > 3) {
+          if (i + 1 == configStandardCalendar.cellConfig.maxEventPointCount && i < listModel.length - 1) {
             items.add(
               Padding(
-                padding: const EdgeInsets.all(1),
+                padding: const EdgeInsets.symmetric(horizontal: 1),
                 child: Text(
-                  "+${(listModel.length - 2).toString()}",
-                  style: TextStyle(
-                      fontSize: 8, color: isSelected ? Colors.white : Colors.black, fontWeight: FontWeight.bold),
+                  "+${(listModel.length - (configStandardCalendar.cellConfig.maxEventPointCount - 1)).toString()}",
+                  style: isSelected
+                      ? style?.maxPointCountTextStyle ??
+                          const TextStyle(fontSize: 8, color: Colors.white, fontWeight: FontWeight.bold)
+                      : style?.maxPointCountTextStyle ??
+                          const TextStyle(fontSize: 8, color: Colors.black, fontWeight: FontWeight.bold),
                 ),
               ),
             );
@@ -140,9 +132,11 @@ class CalendarCellWidget extends StatelessWidget {
           } else {
             items.add(
               Padding(
-                padding: const EdgeInsets.all(1),
+                padding: EdgeInsets.only(
+                  right: i == listModel.length - 1 ? 0 : configStandardCalendar.cellConfig.spaceBetweenEventPoints,
+                ),
                 child: CircleAvatar(
-                  radius: 4.5,
+                  radius: configStandardCalendar.cellConfig.eventPointRadius,
                   backgroundColor: listModel[i].color,
                 ),
               ),
@@ -162,16 +156,21 @@ class CalendarCellWidget extends StatelessWidget {
           showedCustomCalendarModelList.where((element) => element.isAllDay).toList();
       if (listModel.isNotEmpty) {
         for (int i = 0; i < listModel.length; i++) {
-          if (i == 3 && listModel.length > 3) {
+          if ((i + 1) == (configStandardCalendar.cellConfig.maxEventLineCount) && i < listModel.length - 1) {
             break;
           } else {
             items.add(
               Container(
+                margin: EdgeInsets.only(
+                  bottom: i == (configStandardCalendar.cellConfig.maxEventLineCount) || i == listModel.length - 1
+                      ? 0
+                      : configStandardCalendar.cellConfig.spaceBetweenEventLines,
+                ),
                 decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(2.0)),
+                  borderRadius: configStandardCalendar.cellConfig.eventLineRadius,
                   color: listModel[i].color,
                 ),
-                height: 2.5,
+                height: configStandardCalendar.cellConfig.eventLineHeight,
               ),
             );
           }
