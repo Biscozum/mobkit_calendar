@@ -10,6 +10,7 @@ import 'model/configs/calendar_config_model.dart';
 
 class CalendarDateCell extends StatelessWidget {
   final DateTime calendarDate;
+  final bool enabled;
   final ValueNotifier<DateTime> selectedDate;
   final MobkitCalendarConfigModel? config;
   final List<MobkitCalendarAppointmentModel> customCalendarModel;
@@ -23,18 +24,18 @@ class CalendarDateCell extends StatelessWidget {
     Key? key,
     this.config,
     required this.customCalendarModel,
+    this.enabled = true,
     required this.onPopupChange,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var isEnabled = checkIsEnableDate(calendarDate);
     return ValueListenableBuilder(
         valueListenable: selectedDate,
         builder: (context, DateTime selectedDate, widget) {
           return GestureDetector(
             onTap: () async {
-              if (isEnabled || config?.mobkitCalendarViewType != MobkitCalendarViewType.monthly) {
+              if (enabled || config?.mobkitCalendarViewType != MobkitCalendarViewType.monthly) {
                 this.selectedDate.value = calendarDate;
                 onSelectionChange(findCustomModel(customCalendarModel, calendarDate), calendarDate);
                 if (config != null && config!.isNativePopup) {
@@ -61,7 +62,7 @@ class CalendarDateCell extends StatelessWidget {
               calendarDate.day.toString(),
               isSelected: selectedDate.isSameDay(calendarDate),
               showedCustomCalendarModelList: findCustomModel(customCalendarModel, calendarDate),
-              isEnabled: isEnabled,
+              isEnabled: enabled,
               standardCalendarConfig: config,
               isCurrent: DateFormat.yMd().format(DateTime.now()) == DateFormat.yMd().format(calendarDate),
             ),
@@ -79,7 +80,6 @@ class CalendarDateCell extends StatelessWidget {
       if (config?.disabledDates != null && config!.disabledDates!.any((element) => element.isSameDay(date))) {
         return false;
       }
-      if (date.month != date.month && config!.disableOffDays) return false;
     }
     return true;
   }
