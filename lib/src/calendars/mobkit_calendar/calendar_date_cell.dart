@@ -10,7 +10,6 @@ import 'model/configs/calendar_config_model.dart';
 
 class CalendarDateCell extends StatelessWidget {
   final DateTime calendarDate;
-  final bool enabled;
   final ValueNotifier<DateTime> selectedDate;
   final MobkitCalendarConfigModel? config;
   final List<MobkitCalendarAppointmentModel> customCalendarModel;
@@ -24,13 +23,12 @@ class CalendarDateCell extends StatelessWidget {
     Key? key,
     this.config,
     required this.customCalendarModel,
-    this.enabled = true,
     required this.onPopupChange,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var isEnabled = enabled && checkIsEnableDate(calendarDate);
+    var isEnabled = checkIsEnableDate(calendarDate);
     return ValueListenableBuilder(
         valueListenable: selectedDate,
         builder: (context, DateTime selectedDate, widget) {

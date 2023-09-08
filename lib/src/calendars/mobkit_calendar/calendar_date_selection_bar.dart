@@ -87,7 +87,6 @@ class _DateListState extends State<DateList> {
             onSelectionChange,
             config: config,
             customCalendarModel: customCalendarModel,
-            enabled: checkConfigForEnable(newDate, date, config),
             onPopupChange: onPopupChange,
           ));
         } else {
@@ -99,21 +98,6 @@ class _DateListState extends State<DateList> {
     }
 
     return rowList;
-  }
-
-  bool checkConfigForEnable(DateTime newDate, DateTime date, MobkitCalendarConfigModel? config) {
-    if (config == null) return false;
-    if (config.disableBefore != null && date.isBefore(config.disableBefore!)) return false;
-
-    if (config.disableAfter != null && date.isAfter(config.disableAfter!)) {
-      return false;
-    }
-    if (config.disabledDates != null && config.disabledDates!.any((element) => element.isSameDay(date))) {
-      return false;
-    }
-    if (newDate.isWeekend() && config.disableWeekendsDays) return false;
-    if (newDate.month != date.month && config.disableOffDays) return false;
-    return true;
   }
 }
 
