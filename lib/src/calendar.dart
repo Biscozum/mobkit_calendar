@@ -277,6 +277,11 @@ class _MobkitCalendarWidgetState extends State<MobkitCalendarWidget> {
       setState(() {
         isLoadData = true;
       });
+    } else {
+      lastAppointments.addAll(widget.appointmentModel);
+      setState(() {
+        isLoadData = true;
+      });
     }
   }
 
