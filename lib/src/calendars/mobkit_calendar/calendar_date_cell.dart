@@ -79,6 +79,7 @@ class CalendarDateCell extends StatelessWidget {
       if (config?.disabledDates != null && config!.disabledDates!.any((element) => element.isSameDay(date))) {
         return false;
       }
+      if (date.month != date.month && config!.disableOffDays) return false;
     }
     return true;
   }
