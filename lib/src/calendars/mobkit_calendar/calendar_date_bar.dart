@@ -88,28 +88,15 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
   }
 
   setShowDates(bool isNext, DateTime time) {
-    if (isNext) {
-      showDates = [
-        DateTime(time.year, time.month - 1, 1),
-        DateTime(time.year, time.month, time.day),
-        DateTime(time.year, time.month + 1, 1),
-        DateTime(time.year, time.month + 2, 1),
-      ];
-      _pageController.jumpToPage(
-        1,
-      );
-      widget.onDateChanged(time);
-    } else {
-      showDates = [
-        DateTime(time.year, time.month - 1, 1),
-        DateTime(time.year, time.month, time.day),
-        DateTime(time.year, time.month + 1, 1),
-        DateTime(time.year, time.month + 2, 1),
-      ];
-      _pageController.jumpToPage(
-        1,
-      );
-    }
+    showDates = [
+      DateTime(time.year, time.month - 1, 1),
+      DateTime(time.year, time.month, time.day),
+      DateTime(time.year, time.month + 1, 1),
+      DateTime(time.year, time.month + 2, 1),
+    ];
+    _pageController.jumpToPage(
+      1,
+    );
     widget.calendarDate.value = time;
     widget.onDateChanged(time);
   }
