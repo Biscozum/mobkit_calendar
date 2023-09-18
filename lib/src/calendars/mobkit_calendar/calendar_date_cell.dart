@@ -63,6 +63,7 @@ class CalendarDateCell extends StatelessWidget {
               isSelected: selectedDate.isSameDay(calendarDate),
               showedCustomCalendarModelList: findCustomModel(customCalendarModel, calendarDate),
               isEnabled: enabled,
+              isWeekend: calendarDate.isWeekend(),
               standardCalendarConfig: config,
               isCurrent: DateFormat.yMd().format(DateTime.now()) == DateFormat.yMd().format(calendarDate),
             ),
