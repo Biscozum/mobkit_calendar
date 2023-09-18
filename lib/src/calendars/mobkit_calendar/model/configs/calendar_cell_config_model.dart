@@ -6,6 +6,7 @@ class CalendarCellConfigModel {
   CalendarCellStyle? enabledStyle;
   CalendarCellStyle? disabledStyle;
   CalendarCellStyle? currentStyle;
+  CalendarCellStyle? weekendStyle;
   double eventPointRadius;
   double spaceBetweenEventLines;
   double spaceBetweenEventLineToPoint;
@@ -20,6 +21,7 @@ class CalendarCellConfigModel {
     this.enabledStyle,
     this.disabledStyle,
     this.currentStyle,
+    this.weekendStyle,
     this.eventPointRadius = 4.5,
     this.spaceBetweenEventLines = 0.3,
     this.spaceBetweenEventLineToPoint = 4,

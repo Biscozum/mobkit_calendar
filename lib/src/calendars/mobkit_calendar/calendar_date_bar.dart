@@ -16,6 +16,7 @@ class CalendarDateSelectionBar extends StatefulWidget {
   final Function(DateTime datetime) onDateChanged;
   final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) onPopupChange;
   final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) headerWidget;
+  final Widget? Function(Map<DateTime, List<MobkitCalendarAppointmentModel>>) weekendWidget;
 
   const CalendarDateSelectionBar(
     this.calendarDate,
@@ -27,6 +28,7 @@ class CalendarDateSelectionBar extends StatefulWidget {
     required this.onPopupChange,
     required this.headerWidget,
     required this.onDateChanged,
+    required this.weekendWidget,
   }) : super(key: key);
 
   @override
@@ -42,138 +44,180 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(initialPage: 1, viewportFraction: widget.config?.viewportFraction ?? 1.0);
-    _pageController.addListener(() {
-      // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-      if (_pageController.position.activity is BallisticScrollActivity && _lastActivity is! DragScrollActivity) {
-        Future.delayed(const Duration(milliseconds: 350)).then(
-          (value) {
-            _currentPage == 0 ? setShowDates(false, showDates[_currentPage]) : null;
-            _currentPage == 2 ? setShowDates(true, showDates[_currentPage]) : null;
-          },
-        );
+    if (widget.config?.pageController == null) {
+      _pageController = PageController(initialPage: 1, viewportFraction: widget.config?.viewportFraction ?? 1.0);
+      _pageController.addListener(() {
+        // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+        if (_pageController.position.activity is BallisticScrollActivity && _lastActivity is! DragScrollActivity) {
+          Future.delayed(const Duration(milliseconds: 350)).then(
+            (value) {
+              _currentPage == 0 ? setShowDates(showDates[_currentPage]) : null;
+              _currentPage == 2 ? setShowDates(showDates[_currentPage]) : null;
+            },
+          );
+        }
+        // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+        _lastActivity = _pageController.position.activity;
+      });
+      if (widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.daily ||
+          widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.weekly) {
+        showDates = [
+          findFirstDateOfTheWeek(DateTime(
+              widget.calendarDate.value.year, widget.calendarDate.value.month, widget.calendarDate.value.day - 7)),
+          findFirstDateOfTheWeek(widget.calendarDate.value),
+          findFirstDateOfTheWeek(DateTime(
+              widget.calendarDate.value.year, widget.calendarDate.value.month, widget.calendarDate.value.day + 7)),
+          findFirstDateOfTheWeek(DateTime(
+              widget.calendarDate.value.year, widget.calendarDate.value.month, widget.calendarDate.value.day + 14)),
+        ];
+      } else {
+        showDates = [
+          DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month - 1, 1),
+          DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month, widget.calendarDate.value.day),
+          DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month + 1, 1),
+          DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month + 2, 1),
+        ];
       }
-      // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-      _lastActivity = _pageController.position.activity;
-    });
-    showDates = [
-      DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month - 1, 1),
-      DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month, widget.calendarDate.value.day),
-      DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month + 1, 1),
-      DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month + 2, 1),
-    ];
+    } else {
+      widget.config?.pageController =
+          PageController(initialPage: 1, viewportFraction: widget.config?.viewportFraction ?? 1.0);
+      widget.config?.pageController!.addListener(() {
+        // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+        if (widget.config?.pageController!.position.activity is BallisticScrollActivity &&
+            _lastActivity is! DragScrollActivity) {
+          Future.delayed(const Duration(milliseconds: 350)).then(
+            (value) {
+              _currentPage == 0 ? setShowDates(showDates[_currentPage]) : null;
+              _currentPage == 2 ? setShowDates(showDates[_currentPage]) : null;
+            },
+          );
+        }
+        // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+        _lastActivity = widget.config?.pageController!.position.activity;
+      });
+      if (widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.daily ||
+          widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.weekly) {
+        showDates = [
+          findFirstDateOfTheWeek(DateTime(
+              widget.calendarDate.value.year, widget.calendarDate.value.month, widget.calendarDate.value.day - 7)),
+          findFirstDateOfTheWeek(widget.calendarDate.value),
+          findFirstDateOfTheWeek(DateTime(
+              widget.calendarDate.value.year, widget.calendarDate.value.month, widget.calendarDate.value.day + 7)),
+          findFirstDateOfTheWeek(DateTime(
+              widget.calendarDate.value.year, widget.calendarDate.value.month, widget.calendarDate.value.day + 14)),
+        ];
+      } else {
+        showDates = [
+          DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month - 1, 1),
+          DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month, widget.calendarDate.value.day),
+          DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month + 1, 1),
+          DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month + 2, 1),
+        ];
+      }
+    }
   }
 
-  changeWeek(ValueNotifier<DateTime> calendarDate, int amount) {
-    DateTime firstWeekDay = findFirstDateOfTheWeek(calendarDate.value);
-    calendarDate.value = firstWeekDay.add(Duration(days: amount));
-    showDates = [
-      DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month - 1, 1),
-      DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month, widget.calendarDate.value.day),
-      DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month + 1, 1),
-      DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month + 2, 1),
-    ];
-    _pageController.jumpToPage(
-      1,
-    );
-    widget.onDateChanged(widget.calendarDate.value);
-  }
+  setShowDates(DateTime time) {
+    if (widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.daily ||
+        widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.weekly) {
+      showDates = [
+        findFirstDateOfTheWeek(DateTime(time.year, time.month, time.day - 7)),
+        findFirstDateOfTheWeek(time),
+        findFirstDateOfTheWeek(DateTime(time.year, time.month, time.day + 7)),
+        findFirstDateOfTheWeek(DateTime(time.year, time.month, time.day + 14)),
+      ];
+    } else {
+      showDates = [
+        DateTime(time.year, time.month - 1, 1),
+        DateTime(time.year, time.month, time.day),
+        DateTime(time.year, time.month + 1, 1),
+        DateTime(time.year, time.month + 2, 1),
+      ];
+    }
+    if (widget.config?.pageController == null) {
+      _pageController.jumpToPage(
+        1,
+      );
+    } else {
+      widget.config?.pageController!.jumpToPage(
+        1,
+      );
+    }
 
-  changeMonth(ValueNotifier<DateTime> calendarDate, bool isNext) {
-    DateTime firstMonthDay = isNext
-        ? DateTime(calendarDate.value.year, calendarDate.value.month + 1, 1)
-        : findFirstDateOfTheMonth(DateTime(calendarDate.value.year, calendarDate.value.month, 0));
-    calendarDate.value = firstMonthDay;
-    widget.onDateChanged(calendarDate.value);
-  }
-
-  setShowDates(bool isNext, DateTime time) {
-    showDates = [
-      DateTime(time.year, time.month - 1, 1),
-      DateTime(time.year, time.month, time.day),
-      DateTime(time.year, time.month + 1, 1),
-      DateTime(time.year, time.month + 2, 1),
-    ];
-    _pageController.jumpToPage(
-      1,
-    );
     widget.calendarDate.value = time;
     widget.onDateChanged(time);
   }
 
   @override
   Widget build(BuildContext context) {
-    String? swipeDirection;
     return ValueListenableBuilder(
         valueListenable: widget.calendarDate,
         builder: (_, DateTime date, __) {
-          return GestureDetector(
-            onPanUpdate: (details) {
-              swipeDirection = details.delta.dx < 0 ? 'left' : 'right';
-            },
-            onPanEnd: (details) {
-              if (swipeDirection == 'left') {
-                if (widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.daily ||
-                    widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.weekly) {
-                  changeWeek(widget.calendarDate, 7);
-                }
-              }
-              if (swipeDirection == 'right') {
-                if (widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.daily ||
-                    widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.weekly) {
-                  changeWeek(widget.calendarDate, -7);
-                }
-              }
-            },
-            child: PageView.builder(
-                itemCount: showDates.length,
-                pageSnapping: true,
-                physics: widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.weekly ||
-                        widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.daily
-                    ? const NeverScrollableScrollPhysics()
-                    : const AlwaysScrollableScrollPhysics(),
-                controller: _pageController,
-                scrollDirection: Axis.vertical,
-                padEnds: false,
-                onPageChanged: (page) {
-                  _currentPage = page;
-                },
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: EdgeInsets.only(
-                        bottom: widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.monthly
-                            ? widget.config?.monthBetweenPadding ?? 0
-                            : 0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        ((widget.config?.topBarConfig.isVisibleHeaderWidget ?? false) &&
-                                widget.headerWidget(
-                                      findCustomModel(widget.customCalendarModel, showDates[index]),
-                                      showDates[index],
-                                    ) !=
-                                    null)
-                            ? widget.headerWidget(
-                                findCustomModel(widget.customCalendarModel, showDates[index]),
-                                showDates[index],
-                              )!
-                            : Container(),
-                        Expanded(
-                          child: DateList(
-                            config: widget.config,
-                            customCalendarModel: widget.customCalendarModel,
-                            date: showDates[index],
-                            selectedDate: widget.selectedDate,
-                            onSelectionChange: widget.onSelectionChange,
-                            onPopupChange: widget.onPopupChange,
-                            headerWidget: widget.headerWidget,
-                          ),
+          return PageView.builder(
+              itemCount: showDates.length,
+              pageSnapping: true,
+              controller: widget.config?.pageController ?? _pageController,
+              scrollDirection: widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.weekly
+                  ? Axis.horizontal
+                  : Axis.vertical,
+              padEnds: false,
+              onPageChanged: (page) {
+                _currentPage = page;
+              },
+              itemBuilder: (context, index) {
+                DateTime firstWeekDay = findFirstDateOfTheWeek(widget.calendarDate.value);
+                return Padding(
+                  padding: EdgeInsets.only(
+                      bottom: widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.monthly
+                          ? widget.config?.monthBetweenPadding ?? 0
+                          : 0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      ((widget.config?.topBarConfig.isVisibleHeaderWidget ?? false) &&
+                              widget.headerWidget(
+                                    findCustomModel(widget.customCalendarModel, showDates[index]),
+                                    showDates[index],
+                                  ) !=
+                                  null)
+                          ? widget.headerWidget(
+                              findCustomModel(widget.customCalendarModel, showDates[index]),
+                              showDates[index],
+                            )!
+                          : Container(),
+                      Expanded(
+                        child: DateList(
+                          config: widget.config,
+                          customCalendarModel: widget.customCalendarModel,
+                          date: showDates[index],
+                          selectedDate: widget.selectedDate,
+                          onSelectionChange: widget.onSelectionChange,
+                          onPopupChange: widget.onPopupChange,
+                          headerWidget: widget.headerWidget,
                         ),
-                      ],
-                    ),
-                  );
-                }),
-          );
+                      ),
+                      widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.weekly
+                          ? widget.weekendWidget({
+                                firstWeekDay: findCustomModel(widget.customCalendarModel, firstWeekDay),
+                                firstWeekDay.add(const Duration(days: 1)): findCustomModel(
+                                    widget.customCalendarModel, firstWeekDay.add(const Duration(days: 1))),
+                                firstWeekDay.add(const Duration(days: 2)): findCustomModel(
+                                    widget.customCalendarModel, firstWeekDay.add(const Duration(days: 2))),
+                                firstWeekDay.add(const Duration(days: 3)): findCustomModel(
+                                    widget.customCalendarModel, firstWeekDay.add(const Duration(days: 3))),
+                                firstWeekDay.add(const Duration(days: 4)): findCustomModel(
+                                    widget.customCalendarModel, firstWeekDay.add(const Duration(days: 4))),
+                                firstWeekDay.add(const Duration(days: 5)): findCustomModel(
+                                    widget.customCalendarModel, firstWeekDay.add(const Duration(days: 5))),
+                                firstWeekDay.add(const Duration(days: 6)): findCustomModel(
+                                    widget.customCalendarModel, firstWeekDay.add(const Duration(days: 6))),
+                              }) ??
+                              Container()
+                          : Container(),
+                    ],
+                  ),
+                );
+              });
         });
   }
 }

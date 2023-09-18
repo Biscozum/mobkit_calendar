@@ -7,6 +7,7 @@ class CalendarCellWidget extends StatelessWidget {
   final bool isEnabled;
   final bool isWeekDaysBar;
   final bool isCurrent;
+  final bool isWeekend;
   late final MobkitCalendarConfigModel configStandardCalendar;
   final List<MobkitCalendarAppointmentModel>? showedCustomCalendarModelList;
   CalendarCellWidget(
@@ -15,6 +16,7 @@ class CalendarCellWidget extends StatelessWidget {
     this.isEnabled = true,
     this.isWeekDaysBar = false,
     this.isCurrent = false,
+    this.isWeekend = false,
     MobkitCalendarConfigModel? standardCalendarConfig,
     this.showedCustomCalendarModelList,
     Key? key,
@@ -32,7 +34,9 @@ class CalendarCellWidget extends StatelessWidget {
             ? configStandardCalendar.cellConfig.selectedStyle
             : isCurrent
                 ? configStandardCalendar.cellConfig.currentStyle
-                : configStandardCalendar.cellConfig.enabledStyle
+                : isWeekend
+                    ? configStandardCalendar.cellConfig.weekendStyle ?? configStandardCalendar.cellConfig.enabledStyle
+                    : configStandardCalendar.cellConfig.enabledStyle
         : configStandardCalendar.cellConfig.disabledStyle;
     return Padding(
       padding: configStandardCalendar.itemSpace,

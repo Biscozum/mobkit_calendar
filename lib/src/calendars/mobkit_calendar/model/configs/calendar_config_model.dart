@@ -66,7 +66,7 @@ class MobkitCalendarConfigModel {
   late CalendarCellConfigModel cellConfig;
   late CalendarMonthBarConfigModel topBarConfig;
   late DailyItemsConfigModel dailyItemsConfigModel;
-
+  PageController? pageController;
   MobkitCalendarConfigModel({
     this.title,
     this.locale = 'tr_Tr',
@@ -93,6 +93,7 @@ class MobkitCalendarConfigModel {
     this.showEventPointMaxCountText = true,
     this.weeklyTopWidgetSize = 110,
     this.dailyTopWidgetSize = 110,
+    this.pageController,
     CalendarCellConfigModel? cellConfig,
     CalendarMonthBarConfigModel? topBarConfig,
     DailyItemsConfigModel? dailyItemsConfigModel,

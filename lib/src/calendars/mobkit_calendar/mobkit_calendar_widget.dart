@@ -20,6 +20,7 @@ class MobkitCalendarView extends StatelessWidget {
     required this.onPopupChange,
     required this.headerWidget,
     required this.onDateChanged,
+    required this.weekendWidget,
   }) : super(key: key);
   final MobkitCalendarConfigModel? config;
   final List<MobkitCalendarAppointmentModel> appointmentModel;
@@ -30,6 +31,7 @@ class MobkitCalendarView extends StatelessWidget {
   final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) onPopupChange;
   final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) headerWidget;
   final Function(DateTime datetime) onDateChanged;
+  final Widget? Function(Map<DateTime, List<MobkitCalendarAppointmentModel>>) weekendWidget;
 
   bool? isIntersect(
     DateTime firstStartDate,
@@ -117,6 +119,7 @@ class MobkitCalendarView extends StatelessWidget {
                   onPopupChange: onPopupChange,
                   headerWidget: headerWidget,
                   onDateChanged: onDateChanged,
+                  weekendWidget: weekendWidget,
                 ),
               )
             : Expanded(
@@ -129,6 +132,7 @@ class MobkitCalendarView extends StatelessWidget {
                   onPopupChange: onPopupChange,
                   headerWidget: headerWidget,
                   onDateChanged: onDateChanged,
+                  weekendWidget: weekendWidget,
                 ),
               ),
         config?.mobkitCalendarViewType == MobkitCalendarViewType.daily
