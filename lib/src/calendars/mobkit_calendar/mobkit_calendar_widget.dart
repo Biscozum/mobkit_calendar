@@ -20,7 +20,7 @@ class MobkitCalendarView extends StatelessWidget {
     required this.onPopupChange,
     required this.headerWidget,
     required this.onDateChanged,
-    required this.weekendWidget,
+    required this.weeklyViewWidget,
   }) : super(key: key);
   final MobkitCalendarConfigModel? config;
   final List<MobkitCalendarAppointmentModel> appointmentModel;
@@ -31,7 +31,7 @@ class MobkitCalendarView extends StatelessWidget {
   final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) onPopupChange;
   final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) headerWidget;
   final Function(DateTime datetime) onDateChanged;
-  final Widget? Function(Map<DateTime, List<MobkitCalendarAppointmentModel>>) weekendWidget;
+  final Widget? Function(Map<DateTime, List<MobkitCalendarAppointmentModel>>) weeklyViewWidget;
 
   bool? isIntersect(
     DateTime firstStartDate,
@@ -105,11 +105,9 @@ class MobkitCalendarView extends StatelessWidget {
                 height: 10,
               )
             : Container(),
-        config?.mobkitCalendarViewType != MobkitCalendarViewType.monthly
+        config?.mobkitCalendarViewType == MobkitCalendarViewType.daily
             ? SizedBox(
-                height: config?.mobkitCalendarViewType == MobkitCalendarViewType.weekly
-                    ? config?.weeklyTopWidgetSize ?? 110
-                    : config?.dailyTopWidgetSize,
+                height: config?.dailyTopWidgetSize,
                 child: CalendarDateSelectionBar(
                   calendarDate,
                   selectedDate,
@@ -119,7 +117,7 @@ class MobkitCalendarView extends StatelessWidget {
                   onPopupChange: onPopupChange,
                   headerWidget: headerWidget,
                   onDateChanged: onDateChanged,
-                  weekendWidget: weekendWidget,
+                  weeklyViewWidget: weeklyViewWidget,
                 ),
               )
             : Expanded(
@@ -132,7 +130,7 @@ class MobkitCalendarView extends StatelessWidget {
                   onPopupChange: onPopupChange,
                   headerWidget: headerWidget,
                   onDateChanged: onDateChanged,
-                  weekendWidget: weekendWidget,
+                  weeklyViewWidget: weeklyViewWidget,
                 ),
               ),
         config?.mobkitCalendarViewType == MobkitCalendarViewType.daily

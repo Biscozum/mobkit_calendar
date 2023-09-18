@@ -16,7 +16,7 @@ class CalendarDateSelectionBar extends StatefulWidget {
   final Function(DateTime datetime) onDateChanged;
   final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) onPopupChange;
   final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) headerWidget;
-  final Widget? Function(Map<DateTime, List<MobkitCalendarAppointmentModel>>) weekendWidget;
+  final Widget? Function(Map<DateTime, List<MobkitCalendarAppointmentModel>>) weeklyViewWidget;
 
   const CalendarDateSelectionBar(
     this.calendarDate,
@@ -28,7 +28,7 @@ class CalendarDateSelectionBar extends StatefulWidget {
     required this.onPopupChange,
     required this.headerWidget,
     required this.onDateChanged,
-    required this.weekendWidget,
+    required this.weeklyViewWidget,
   }) : super(key: key);
 
   @override
@@ -174,30 +174,61 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      ((widget.config?.topBarConfig.isVisibleHeaderWidget ?? false) &&
-                              widget.headerWidget(
-                                    findCustomModel(widget.customCalendarModel, showDates[index]),
-                                    showDates[index],
-                                  ) !=
-                                  null)
-                          ? widget.headerWidget(
-                              findCustomModel(widget.customCalendarModel, showDates[index]),
-                              showDates[index],
-                            )!
-                          : Container(),
-                      Expanded(
-                        child: DateList(
-                          config: widget.config,
-                          customCalendarModel: widget.customCalendarModel,
-                          date: showDates[index],
-                          selectedDate: widget.selectedDate,
-                          onSelectionChange: widget.onSelectionChange,
-                          onPopupChange: widget.onPopupChange,
-                          headerWidget: widget.headerWidget,
+                      if (widget.config?.mobkitCalendarViewType != MobkitCalendarViewType.weekly) ...[
+                        ((widget.config?.topBarConfig.isVisibleHeaderWidget ?? false) &&
+                                widget.headerWidget(
+                                      findCustomModel(widget.customCalendarModel, showDates[index]),
+                                      showDates[index],
+                                    ) !=
+                                    null)
+                            ? widget.headerWidget(
+                                findCustomModel(widget.customCalendarModel, showDates[index]),
+                                showDates[index],
+                              )!
+                            : Container(),
+                        Expanded(
+                          child: DateList(
+                            config: widget.config,
+                            customCalendarModel: widget.customCalendarModel,
+                            date: showDates[index],
+                            selectedDate: widget.selectedDate,
+                            onSelectionChange: widget.onSelectionChange,
+                            onPopupChange: widget.onPopupChange,
+                            headerWidget: widget.headerWidget,
+                          ),
                         ),
-                      ),
+                      ] else
+                        SizedBox(
+                          height: widget.config?.weeklyTopWidgetSize,
+                          child: Column(
+                            children: [
+                              ((widget.config?.topBarConfig.isVisibleHeaderWidget ?? false) &&
+                                      widget.headerWidget(
+                                            findCustomModel(widget.customCalendarModel, showDates[index]),
+                                            showDates[index],
+                                          ) !=
+                                          null)
+                                  ? widget.headerWidget(
+                                      findCustomModel(widget.customCalendarModel, showDates[index]),
+                                      showDates[index],
+                                    )!
+                                  : Container(),
+                              Expanded(
+                                child: DateList(
+                                  config: widget.config,
+                                  customCalendarModel: widget.customCalendarModel,
+                                  date: showDates[index],
+                                  selectedDate: widget.selectedDate,
+                                  onSelectionChange: widget.onSelectionChange,
+                                  onPopupChange: widget.onPopupChange,
+                                  headerWidget: widget.headerWidget,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.weekly
-                          ? widget.weekendWidget({
+                          ? widget.weeklyViewWidget({
                                 firstWeekDay: findCustomModel(widget.customCalendarModel, firstWeekDay),
                                 firstWeekDay.add(const Duration(days: 1)): findCustomModel(
                                     widget.customCalendarModel, firstWeekDay.add(const Duration(days: 1))),
