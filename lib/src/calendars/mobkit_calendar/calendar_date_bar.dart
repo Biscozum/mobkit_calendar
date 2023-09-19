@@ -175,6 +175,7 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
                       bottom: widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.monthly
                           ? widget.config?.monthBetweenPadding ?? 0
                           : 0),
+                  key: Key(DateTime.now().millisecondsSinceEpoch.toString()),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
