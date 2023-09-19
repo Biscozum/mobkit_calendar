@@ -5,6 +5,7 @@ import '../../extensions/date_extensions.dart';
 import 'calendar_date_cell.dart';
 import 'enum/mobkit_calendar_view_type_enum.dart';
 import 'model/configs/calendar_config_model.dart';
+import 'multiple_listenable_builder_widget.dart';
 
 class CalendarDateSelectionBar extends StatefulWidget {
   final ValueNotifier<DateTime> calendarDate;
@@ -151,13 +152,16 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-        valueListenable: widget.calendarDate,
-        builder: (_, DateTime date, __) {
+        valueListenable: ValuesNotifier([
+          widget.calendarDate,
+          widget.selectedDate,
+        ]),
+        builder: (_, bool date, __) {
           return PageView.builder(
               itemCount: showDates.length,
               pageSnapping: true,
               controller: widget.config?.pageController ?? _pageController,
-              scrollDirection: widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.weekly
+              scrollDirection: widget.config?.mobkitCalendarViewType != MobkitCalendarViewType.monthly
                   ? Axis.horizontal
                   : Axis.vertical,
               padEnds: false,
