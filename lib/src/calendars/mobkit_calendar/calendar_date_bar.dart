@@ -169,7 +169,7 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
                 _currentPage = page;
               },
               itemBuilder: (context, index) {
-                DateTime firstWeekDay = findFirstDateOfTheWeek(widget.calendarDate.value);
+                DateTime firstWeekDay = showDates[index];
                 return Padding(
                   padding: EdgeInsets.only(
                       bottom: widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.monthly
