@@ -121,20 +121,14 @@ class CalendarCellWidget extends StatelessWidget {
           if (i + 1 == configStandardCalendar.cellConfig.maxEventPointCount && i < listModel.length - 1) {
             items.add(
               Padding(
-                padding: EdgeInsets.only(
-                  right: i == listModel.length - 1 ? 0 : configStandardCalendar.cellConfig.spaceBetweenEventPoints,
-                ),
-                child: CircleAvatar(
-                  radius: configStandardCalendar.cellConfig.eventPointRadius,
-                  backgroundColor: listModel[i].color,
-                  child: Text(
-                    "+${(listModel.length - (configStandardCalendar.cellConfig.maxEventPointCount - 1)).toString()}",
-                    style: isSelected
-                        ? style?.maxPointCountTextStyle ??
-                            const TextStyle(fontSize: 8, color: Colors.white, fontWeight: FontWeight.bold)
-                        : style?.maxPointCountTextStyle ??
-                            const TextStyle(fontSize: 8, color: Colors.black, fontWeight: FontWeight.bold),
-                  ),
+                padding: const EdgeInsets.symmetric(horizontal: 1),
+                child: Text(
+                  "+${(listModel.length - (configStandardCalendar.cellConfig.maxEventPointCount - 1)).toString()}",
+                  style: isSelected
+                      ? style?.maxPointCountTextStyle ??
+                          const TextStyle(fontSize: 8, color: Colors.white, fontWeight: FontWeight.bold)
+                      : style?.maxPointCountTextStyle ??
+                          const TextStyle(fontSize: 8, color: Colors.black, fontWeight: FontWeight.bold),
                 ),
               ),
             );
