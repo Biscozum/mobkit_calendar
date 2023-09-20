@@ -384,9 +384,9 @@ class _DateListState extends State<DateList> {
 
   bool checkConfigForEnable(DateTime newDate, DateTime date, MobkitCalendarConfigModel? config) {
     if (config == null) return false;
-    if (config.disableBefore != null && date.isBefore(config.disableBefore!)) return false;
+    if (config.disableBefore != null && newDate.isBefore(config.disableBefore!)) return false;
 
-    if (config.disableAfter != null && date.isAfter(config.disableAfter!)) {
+    if (config.disableAfter != null && newDate.isAfter(config.disableAfter!)) {
       return false;
     }
     if (config.disabledDates != null && config.disabledDates!.any((element) => element.isSameDay(date))) {
