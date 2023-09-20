@@ -70,18 +70,4 @@ class CalendarDateCell extends StatelessWidget {
           );
         });
   }
-
-  bool checkIsEnableDate(DateTime date) {
-    if (config != null) {
-      if (config?.disableBefore != null && date.isBefore(config!.disableBefore!)) return false;
-
-      if (config?.disableAfter != null && date.isAfter(config!.disableAfter!)) {
-        return false;
-      }
-      if (config?.disabledDates != null && config!.disabledDates!.any((element) => element.isSameDay(date))) {
-        return false;
-      }
-    }
-    return true;
-  }
 }

@@ -72,9 +72,9 @@ class _MonthListState extends State<MonthList> {
 
   bool checkConfigForEnable(DateTime newDate, DateTime date, MobkitMonthAndYearCalendarConfigModel? config) {
     if (config == null) return false;
-    if (config.disableBefore != null && date.isBefore(config.disableBefore!)) return false;
+    if (config.disableBefore != null && newDate.isBefore(config.disableBefore!)) return false;
 
-    if (config.disableAfter != null && date.isAfter(config.disableAfter!)) {
+    if (config.disableAfter != null && newDate.isAfter(config.disableAfter!)) {
       return false;
     }
     if (config.disabledDates != null && config.disabledDates!.any((element) => element.isSameDay(date))) {
