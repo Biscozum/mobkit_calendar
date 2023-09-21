@@ -58,6 +58,7 @@ class CalendarDateCell extends StatelessWidget {
                 }
               }
             },
+            key: Key("${DateUtils.dateOnly(calendarDate)}"),
             child: CalendarCellWidget(
               calendarDate.day.toString(),
               isSelected: selectedDate.isSameDay(calendarDate),
