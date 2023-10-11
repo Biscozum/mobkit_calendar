@@ -58,6 +58,7 @@ class MobkitCalendarConfigModel {
   bool? showEventOffDay;
 
   double? monthBetweenPadding;
+  double? agendaDayBetweenPadding;
   bool? showEventLineMaxCountText;
   bool? showEventPointMaxCountText;
   double? weeklyTopWidgetSize;
@@ -89,6 +90,7 @@ class MobkitCalendarConfigModel {
     this.viewportFraction = 1.0,
     this.showEventOffDay = false,
     this.monthBetweenPadding = 0,
+    this.agendaDayBetweenPadding = 0,
     this.showEventLineMaxCountText = true,
     this.showEventPointMaxCountText = true,
     this.weeklyTopWidgetSize = 110,

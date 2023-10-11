@@ -1,1 +1,1 @@
-enum MobkitCalendarViewType { monthly, weekly, daily }
+enum MobkitCalendarViewType { monthly, weekly, daily, agenda }
