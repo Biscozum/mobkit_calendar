@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+import 'package:infinite_listview/infinite_listview.dart';
 import 'package:intl/intl.dart';
 import 'package:mobkit_calendar/src/calendars/mobkit_calendar/model/mobkit_calendar_appointment_model.dart';
 import 'package:mobkit_calendar/src/calendars/mobkit_calendar/utils/date_utils.dart';
-import '../../extensions/date_extensions.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 import 'model/configs/calendar_config_model.dart';
 
 class CalendarAgendaBar extends StatefulWidget {
   final ValueNotifier<DateTime> calendarDate;
   final MobkitCalendarConfigModel? config;
   final List<MobkitCalendarAppointmentModel> customCalendarModel;
-  final Function(DateTime datetime) onDateChanged;
+  final Function(DateTime datetime) dateRangeChanged;
   final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) headerWidget;
 
   const CalendarAgendaBar(
@@ -19,7 +19,7 @@ class CalendarAgendaBar extends StatefulWidget {
     this.config,
     required this.customCalendarModel,
     required this.headerWidget,
-    required this.onDateChanged,
+    required this.dateRangeChanged,
   }) : super(key: key);
 
   @override
@@ -27,127 +27,75 @@ class CalendarAgendaBar extends StatefulWidget {
 }
 
 class _CalendarAgendaBarState extends State<CalendarAgendaBar> {
-  List<DateTime> reverseDates = [];
-  List<DateTime> centerDates = [];
-  List<DateTime> forwardDates = [];
-
-  final ScrollController _controller = ScrollController();
-  ScrollActivity? _lastActivity;
+  final InfiniteScrollController _infiniteScrollController = InfiniteScrollController();
+  DateTime? lastDate;
 
   @override
   void initState() {
     super.initState();
-
-    setShowDates(widget.calendarDate.value, isFirst: true);
-
-    _controller.addListener(() {
-      // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-      if (_controller.position.activity is BallisticScrollActivity && _lastActivity is! DragScrollActivity) {
-        Future.delayed(const Duration(milliseconds: 350)).then(
-          (value) {
-            if (_controller.position.pixels == _controller.position.maxScrollExtent) {
-              setShowDates(addMonth(widget.calendarDate.value, 2));
-              _controller.jumpTo(1);
-              setState(() {});
-            } else if (_controller.position.pixels == _controller.position.minScrollExtent) {
-              setShowDates(addMonth(widget.calendarDate.value, -2));
-              _controller.jumpTo(1);
-              setState(() {});
+    widget.customCalendarModel.sort((a, b) {
+      return a.appointmentStartDate.compareTo(b.appointmentStartDate);
+    });
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _infiniteScrollController.position.isScrollingNotifier.addListener(() {
+        if (!_infiniteScrollController.position.isScrollingNotifier.value) {
+          if (widget.config?.agendaViewConfigModel != null && lastDate != null) {
+            if (widget.config!.agendaViewConfigModel!.endDate != null &&
+                lastDate!.isAfter(widget.config!.agendaViewConfigModel!.endDate!)) {
+              widget.dateRangeChanged(lastDate!);
+            } else if (widget.config!.agendaViewConfigModel!.startDate != null &&
+                lastDate!.isBefore(widget.config!.agendaViewConfigModel!.startDate!)) {
+              widget.dateRangeChanged(lastDate!);
             }
-          },
-        );
-      }
-      // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-      _lastActivity = _controller.position.activity;
+          }
+        }
+      });
     });
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _infiniteScrollController.dispose();
     super.dispose();
-  }
-
-  setShowDates(DateTime time, {bool isFirst = false}) {
-    centerDates = getDaysInBetween(findFirstDateOfTheMonth(time), findLastDateOfTheMonth(time));
-
-    reverseDates = getDaysInBetween(findFirstDateOfTheMonth(DateTime(time.year, time.month - 1, 1)),
-        findLastDateOfTheMonth(DateTime(time.year, time.month - 1, 1)))
-      ..sort((b, a) {
-        return a.compareTo(b);
-      });
-
-    forwardDates = getDaysInBetween(findFirstDateOfTheMonth(DateTime(time.year, time.month + 1, 1)),
-        findLastDateOfTheMonth(DateTime(time.year, time.month + 1, 1)));
-
-    widget.calendarDate.value = time;
-    if (!isFirst) {
-      widget.onDateChanged(time);
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    Key centerListKey = UniqueKey();
-    Widget centerList = SliverList(
-      delegate: SliverChildBuilderDelegate(
-        (BuildContext context, int index) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 18),
-            child: AgendaItemWidget(
-              key: ValueKey(DateUtils.dateOnly(centerDates[index])),
-              appoitnments: findCustomModel(widget.customCalendarModel, centerDates[index]),
-              currentDate: centerDates[index],
-            ),
-          );
-        },
-        childCount: centerDates.length,
-      ),
-      key: centerListKey,
-    );
-
-    Widget reverseList = SliverList(
-      delegate: SliverChildBuilderDelegate(
-        (BuildContext context, int index) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 18),
-            child: AgendaItemWidget(
-              key: ValueKey(DateUtils.dateOnly(reverseDates[index])),
-              appoitnments: findCustomModel(widget.customCalendarModel, reverseDates[index]),
-              currentDate: reverseDates[index],
-            ),
-          );
-        },
-        childCount: reverseDates.length,
-      ),
-    );
-    Widget forwardList = SliverList(
-      delegate: SliverChildBuilderDelegate(
-        (BuildContext context, int index) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 18),
-            child: AgendaItemWidget(
-              key: ValueKey(DateUtils.dateOnly(forwardDates[index])),
-              appoitnments: findCustomModel(widget.customCalendarModel, forwardDates[index]),
-              currentDate: forwardDates[index],
-            ),
-          );
-        },
-        childCount: forwardDates.length,
-      ),
-    );
-
     return Column(
       children: [
+        ((widget.config?.topBarConfig.isVisibleHeaderWidget ?? false) &&
+                widget.headerWidget(
+                      findCustomModel(widget.customCalendarModel, lastDate ?? DateTime.now()),
+                      lastDate ?? DateTime.now(),
+                    ) !=
+                    null)
+            ? widget.headerWidget(
+                findCustomModel(widget.customCalendarModel, lastDate ?? DateTime.now()),
+                lastDate ?? DateTime.now(),
+              )!
+            : Container(),
         Expanded(
-          child: Scrollable(
-            controller: _controller,
-            viewportBuilder: (BuildContext context, ViewportOffset offset) {
-              return Viewport(offset: offset, center: centerListKey, slivers: [
-                reverseList,
-                centerList,
-                forwardList,
-              ]);
+          child: InfiniteListView.builder(
+            key: const PageStorageKey("keyy"),
+            controller: _infiniteScrollController,
+            itemBuilder: (BuildContext context, int index) {
+              DateTime currentDate = DateUtils.dateOnly(DateTime.now().add(Duration(days: index)));
+              return VisibilityDetector(
+                key: ValueKey("$currentDate"),
+                onVisibilityChanged: (visibilityInfo) {
+                  if (visibilityInfo.key is ValueKey) {
+                    lastDate =
+                        DateUtils.dateOnly(DateFormat("yyyy-MM-dd").parse((visibilityInfo.key as ValueKey).value));
+                  }
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 18),
+                  child: AgendaItemWidget(
+                    appoitnments: findCustomModel(widget.customCalendarModel, currentDate),
+                    currentDate: currentDate,
+                  ),
+                ),
+              );
             },
           ),
         ),
