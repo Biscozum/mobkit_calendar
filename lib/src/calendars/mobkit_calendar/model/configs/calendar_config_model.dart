@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../mobkit_calendar.dart';
+import 'agenda_view_config_model.dart';
 
 class MobkitCalendarConfigModel {
   /// The title you want to appear at the top of the date picker.
@@ -68,6 +69,7 @@ class MobkitCalendarConfigModel {
   late CalendarMonthBarConfigModel topBarConfig;
   late DailyItemsConfigModel dailyItemsConfigModel;
   PageController? pageController;
+  AgendaViewConfigModel? agendaViewConfigModel;
   MobkitCalendarConfigModel({
     this.title,
     this.locale = 'tr_Tr',
@@ -99,9 +101,11 @@ class MobkitCalendarConfigModel {
     CalendarCellConfigModel? cellConfig,
     CalendarMonthBarConfigModel? topBarConfig,
     DailyItemsConfigModel? dailyItemsConfigModel,
+    AgendaViewConfigModel? agendaViewConfigModel,
   }) {
     this.cellConfig = cellConfig ?? CalendarCellConfigModel();
     this.topBarConfig = topBarConfig ?? CalendarMonthBarConfigModel();
     this.dailyItemsConfigModel = dailyItemsConfigModel ?? DailyItemsConfigModel();
+    this.agendaViewConfigModel = agendaViewConfigModel ?? AgendaViewConfigModel();
   }
 }

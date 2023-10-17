@@ -22,6 +22,7 @@ class MobkitCalendarView extends StatelessWidget {
     required this.headerWidget,
     required this.onDateChanged,
     required this.weeklyViewWidget,
+    required this.dateRangeChanged,
   }) : super(key: key);
   final MobkitCalendarConfigModel? config;
   final List<MobkitCalendarAppointmentModel> appointmentModel;
@@ -33,6 +34,7 @@ class MobkitCalendarView extends StatelessWidget {
   final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) headerWidget;
   final Function(DateTime datetime) onDateChanged;
   final Widget? Function(Map<DateTime, List<MobkitCalendarAppointmentModel>>) weeklyViewWidget;
+  final Function(DateTime datetime) dateRangeChanged;
 
   bool? isIntersect(
     DateTime firstStartDate,
@@ -66,7 +68,7 @@ class MobkitCalendarView extends StatelessWidget {
                   customCalendarModel: appointmentModel,
                   config: config,
                   headerWidget: headerWidget,
-                  onDateChanged: onDateChanged,
+                  dateRangeChanged: dateRangeChanged,
                 ),
               ),
             ]

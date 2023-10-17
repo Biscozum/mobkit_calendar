@@ -59,6 +59,7 @@ class MobkitCalendarWidget extends StatefulWidget {
   final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) onPopupChange;
   final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) headerWidget;
   final Widget? Function(Map<DateTime, List<MobkitCalendarAppointmentModel>>) weeklyViewWidget;
+  final Function(DateTime datetime) dateRangeChanged;
 
   MobkitCalendarWidget({
     DateTime? selectedDate,
@@ -72,6 +73,7 @@ class MobkitCalendarWidget extends StatefulWidget {
     required this.headerWidget,
     required this.onDateChanged,
     required this.weeklyViewWidget,
+    required this.dateRangeChanged,
   }) : super(key: key) {
     selectDate = selectedDate ?? DateTime.now();
   }
@@ -306,6 +308,7 @@ class _MobkitCalendarWidgetState extends State<MobkitCalendarWidget> {
             headerWidget: widget.headerWidget,
             onDateChanged: widget.onDateChanged,
             weeklyViewWidget: widget.weeklyViewWidget,
+            dateRangeChanged: widget.dateRangeChanged,
           )
         : const Center(child: CircularProgressIndicator());
   }
