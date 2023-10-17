@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:infinite_listview/infinite_listview.dart';
 import 'package:intl/intl.dart';
 import 'package:mobkit_calendar/src/calendars/mobkit_calendar/model/mobkit_calendar_appointment_model.dart';
 import 'package:mobkit_calendar/src/calendars/mobkit_calendar/utils/date_utils.dart';
 import 'package:visibility_detector/visibility_detector.dart';
+import 'infinite_listview.dart';
 import 'model/configs/calendar_config_model.dart';
 
 class CalendarAgendaBar extends StatefulWidget {
@@ -105,9 +105,10 @@ class _CalendarAgendaBarState extends State<CalendarAgendaBar> {
 }
 
 class AgendaItemWidget extends StatefulWidget {
-  const AgendaItemWidget({super.key, required this.currentDate, required this.appoitnments});
+  const AgendaItemWidget({super.key, required this.currentDate, required this.appoitnments, this.config});
   final DateTime currentDate;
   final List<MobkitCalendarAppointmentModel> appoitnments;
+  final MobkitCalendarConfigModel? config;
 
   @override
   State<AgendaItemWidget> createState() => _AgendaItemWidgetState();
@@ -124,11 +125,13 @@ class _AgendaItemWidgetState extends State<AgendaItemWidget> with AutomaticKeepA
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          DateFormat("EEE, MMMM d", "tr").format(widget.currentDate),
-          style: const TextStyle(
-            fontSize: 14,
-            color: Colors.grey,
-          ),
+          DateFormat(widget.config?.agendaViewConfigModel?.dateFormatPattern ?? "EEE, MMMM d", widget.config?.locale)
+              .format(widget.currentDate),
+          style: widget.config?.agendaViewConfigModel?.dateTextStyle ??
+              const TextStyle(
+                fontSize: 14,
+                color: Colors.grey,
+              ),
         ),
         const SizedBox(
           height: 8,
@@ -152,11 +155,12 @@ class _AgendaItemWidgetState extends State<AgendaItemWidget> with AutomaticKeepA
                               "${widget.appoitnments[index].title}",
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
+                              style: widget.config?.agendaViewConfigModel?.titleTextStyle ??
+                                  const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
                             ),
                           ),
                         ),
@@ -175,10 +179,11 @@ class _AgendaItemWidgetState extends State<AgendaItemWidget> with AutomaticKeepA
                               padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                               child: Text(
                                 widget.appoitnments[index].detail,
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.white,
-                                ),
+                                style: widget.config?.agendaViewConfigModel?.detailTextStyle ??
+                                    const TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.white,
+                                    ),
                               ),
                             ),
                           ),
