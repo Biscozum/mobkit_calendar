@@ -58,6 +58,7 @@ class MobkitCalendarWidget extends StatefulWidget {
 
   final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) onPopupChange;
   final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) headerWidget;
+  final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) titleWidget;
   final Widget? Function(Map<DateTime, List<MobkitCalendarAppointmentModel>>) weeklyViewWidget;
   final Function(DateTime datetime) dateRangeChanged;
 
@@ -71,6 +72,7 @@ class MobkitCalendarWidget extends StatefulWidget {
     required this.calendarDate,
     required this.onPopupChange,
     required this.headerWidget,
+    required this.titleWidget,
     required this.onDateChanged,
     required this.weeklyViewWidget,
     required this.dateRangeChanged,
@@ -147,10 +149,10 @@ class _MobkitCalendarWidgetState extends State<MobkitCalendarWidget> {
                         .inDays
                         .abs();
                     List<DateTime> betweenDays = getDaysInBetween(
-                        weekDates.from.add(
-                            Duration(days: (withRecurrencyAppointments[i].recurrenceModel!.repeatOf * 7) + (y * 7))),
-                        weekDates.to.add(
-                            Duration(days: (withRecurrencyAppointments[i].recurrenceModel!.repeatOf * 7) + (y * 7))));
+                        weekDates.from
+                            .add(Duration(days: (withRecurrencyAppointments[i].recurrenceModel!.repeatOf * (y * 7)))),
+                        weekDates.to
+                            .add(Duration(days: (withRecurrencyAppointments[i].recurrenceModel!.repeatOf * (y * 7)))));
                     if (withRecurrencyAppointments[i]
                         .recurrenceModel!
                         .endDate
@@ -306,6 +308,7 @@ class _MobkitCalendarWidgetState extends State<MobkitCalendarWidget> {
             eventTap: widget.eventTap,
             onPopupChange: widget.onPopupChange,
             headerWidget: widget.headerWidget,
+            titleWidget: widget.titleWidget,
             onDateChanged: widget.onDateChanged,
             weeklyViewWidget: widget.weeklyViewWidget,
             dateRangeChanged: widget.dateRangeChanged,

@@ -1,12 +1,63 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
-
-import 'package:flutter/services.dart';
 import 'package:mobkit_calendar/mobkit_calendar.dart';
+import 'mobkit_calendar_types_view.dart';
 
 void main() {
   runApp(const MyApp());
 }
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+double pageHeight = MediaQuery.of(navigatorKey.currentContext!).size.height;
+double pageWidht = MediaQuery.of(navigatorKey.currentContext!).size.width;
+List<MobkitCalendarAppointmentModel> eventList = [
+  MobkitCalendarAppointmentModel(
+    title: "Recurring event every 2 days (10 repetitions)",
+    appointmentStartDate: DateTime.now().add(const Duration(days: -1)),
+    appointmentEndDate: DateTime.now(),
+    isAllDay: true,
+    color: Colors.red,
+    detail: "Recurring event every 2 days (10 repetitions)",
+    recurrenceModel: RecurrenceModel(
+        endDate: DateTime.now().add(const Duration(days: 500)), frequency: DailyFrequency(), interval: 10, repeatOf: 2),
+  ),
+  MobkitCalendarAppointmentModel(
+    title: "Every 2nd Monday of the month (10 reps)",
+    appointmentStartDate: DateTime.now().add(const Duration(days: -1)),
+    appointmentEndDate: DateTime.now(),
+    isAllDay: true,
+    color: Colors.blue,
+    detail: "Every 2nd Monday of the month (10 reps)",
+    recurrenceModel: RecurrenceModel(
+        endDate: DateTime.now().add(const Duration(days: 500)),
+        frequency: MonthlyFrequency(
+            monthlyFrequencyType: DayOfWeekAndRepetitionModel(dayOfMonthAndRepetition: const MapEntry(1, 2))),
+        interval: 10,
+        repeatOf: 1),
+  ),
+  MobkitCalendarAppointmentModel(
+    title: "The event will take place between 4 and 6 p.m.",
+    appointmentStartDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 16),
+    appointmentEndDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 18),
+    isAllDay: false,
+    color: Colors.green,
+    detail: "The event will take place between 4 and 6 p.m.",
+    recurrenceModel: null,
+  ),
+  MobkitCalendarAppointmentModel(
+    title: "Every 2 weeks on Tuesdays and Sundays of the week (10 repetitions)",
+    appointmentStartDate: DateTime.now().add(const Duration(days: -1)),
+    appointmentEndDate: DateTime.now(),
+    isAllDay: true,
+    color: Colors.orange,
+    detail: "Every 2 weeks on Tuesdays and Sundays of the week (10 repetitions)",
+    recurrenceModel: RecurrenceModel(
+        endDate: DateTime.now().add(const Duration(days: 500)),
+        frequency: WeeklyFrequency(daysOfWeek: [2, 7]),
+        interval: 10,
+        repeatOf: 2),
+  ),
+];
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -16,48 +67,16 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
-  final _mobkitCalendarPlugin = MobkitCalendar();
-
   @override
   void initState() {
     super.initState();
-    initPlatformState();
-  }
-
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    // We also handle the message potentially returning null.
-    try {
-      platformVersion =
-          await _mobkitCalendarPlugin.getPlatformVersion() ?? 'Unknown platform version';
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
-    setState(() {
-      _platformVersion = platformVersion;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-        ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
-        ),
-      ),
+      navigatorKey: navigatorKey,
+      home: const MobkitCalendarTypesView(),
     );
   }
 }

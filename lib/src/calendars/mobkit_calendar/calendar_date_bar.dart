@@ -50,7 +50,7 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
     _pageController.addListener(() {
       // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
       if (_pageController.position.activity is BallisticScrollActivity && _lastActivity is! DragScrollActivity) {
-        Future.delayed(const Duration(milliseconds: 350)).then(
+        Future.delayed(const Duration(milliseconds: 500)).then(
           (value) {
             _currentPage == 0 ? setShowDates(showDates[_currentPage]) : null;
             _currentPage == 2 ? setShowDates(showDates[_currentPage]) : null;

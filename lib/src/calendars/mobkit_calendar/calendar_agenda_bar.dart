@@ -11,14 +11,14 @@ class CalendarAgendaBar extends StatefulWidget {
   final MobkitCalendarConfigModel? config;
   final List<MobkitCalendarAppointmentModel> customCalendarModel;
   final Function(DateTime datetime) dateRangeChanged;
-  final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) headerWidget;
+  final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) titleWidget;
 
   const CalendarAgendaBar(
     this.calendarDate, {
     Key? key,
     this.config,
     required this.customCalendarModel,
-    required this.headerWidget,
+    required this.titleWidget,
     required this.dateRangeChanged,
   }) : super(key: key);
 
@@ -28,7 +28,7 @@ class CalendarAgendaBar extends StatefulWidget {
 
 class _CalendarAgendaBarState extends State<CalendarAgendaBar> {
   final InfiniteScrollController _infiniteScrollController = InfiniteScrollController();
-  DateTime? lastDate;
+  ValueNotifier<DateTime?> lastDate = ValueNotifier<DateTime?>(null);
 
   @override
   void initState() {
@@ -39,13 +39,13 @@ class _CalendarAgendaBarState extends State<CalendarAgendaBar> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _infiniteScrollController.position.isScrollingNotifier.addListener(() {
         if (!_infiniteScrollController.position.isScrollingNotifier.value) {
-          if (widget.config?.agendaViewConfigModel != null && lastDate != null) {
+          if (widget.config?.agendaViewConfigModel != null && lastDate.value != null) {
             if (widget.config!.agendaViewConfigModel!.endDate != null &&
-                lastDate!.isAfter(widget.config!.agendaViewConfigModel!.endDate!)) {
-              widget.dateRangeChanged(lastDate!);
+                lastDate.value!.isAfter(widget.config!.agendaViewConfigModel!.endDate!)) {
+              widget.dateRangeChanged(lastDate.value!);
             } else if (widget.config!.agendaViewConfigModel!.startDate != null &&
-                lastDate!.isBefore(widget.config!.agendaViewConfigModel!.startDate!)) {
-              widget.dateRangeChanged(lastDate!);
+                lastDate.value!.isBefore(widget.config!.agendaViewConfigModel!.startDate!)) {
+              widget.dateRangeChanged(lastDate.value!);
             }
           }
         }
@@ -63,17 +63,22 @@ class _CalendarAgendaBarState extends State<CalendarAgendaBar> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        ((widget.config?.topBarConfig.isVisibleHeaderWidget ?? false) &&
-                widget.headerWidget(
-                      findCustomModel(widget.customCalendarModel, lastDate ?? DateTime.now()),
-                      lastDate ?? DateTime.now(),
-                    ) !=
-                    null)
-            ? widget.headerWidget(
-                findCustomModel(widget.customCalendarModel, lastDate ?? DateTime.now()),
-                lastDate ?? DateTime.now(),
-              )!
-            : Container(),
+        ValueListenableBuilder(
+          valueListenable: lastDate,
+          builder: (_, DateTime? date, __) {
+            return ((widget.config?.topBarConfig.isVisibleHeaderWidget ?? false) &&
+                    widget.titleWidget(
+                          findCustomModel(widget.customCalendarModel, lastDate.value ?? DateTime.now()),
+                          lastDate.value ?? DateTime.now(),
+                        ) !=
+                        null)
+                ? widget.titleWidget(
+                    findCustomModel(widget.customCalendarModel, lastDate.value ?? DateTime.now()),
+                    lastDate.value ?? DateTime.now(),
+                  )!
+                : Container();
+          },
+        ),
         Expanded(
           child: InfiniteListView.builder(
             key: const PageStorageKey("keyy"),
@@ -84,7 +89,7 @@ class _CalendarAgendaBarState extends State<CalendarAgendaBar> {
                 key: ValueKey("$currentDate"),
                 onVisibilityChanged: (visibilityInfo) {
                   if (visibilityInfo.key is ValueKey) {
-                    lastDate =
+                    lastDate.value =
                         DateUtils.dateOnly(DateFormat("yyyy-MM-dd").parse((visibilityInfo.key as ValueKey).value));
                   }
                 },

@@ -2,43 +2,42 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../mobkit_calendar.dart';
-import 'agenda_view_config_model.dart';
 
 class MobkitCalendarConfigModel {
-  /// The title you want to appear at the top of the date picker.
+  /// The title you want to appear at the top of the calendar.
   String? title;
 
-  /// It determines in which locale the date picker will work.
+  /// It determines in which locale the calendar will work.
   String? locale;
 
-  /// Whether the date picker will show all days
+  /// Whether the calendar will show all days
   bool showAllDays;
 
-  /// Turns off all dates of the date picker
+  /// Turns off all dates of the calendar
   bool disableOffDays;
 
-  /// Whether to show the bar showing the days of the week above the date picker
+  /// Whether to show the bar showing the days of the week above the calendar
   bool disableWeekendsDays;
 
-  /// The date picker closes before the specified date.
+  /// The calendar closes before the specified date.
   DateTime? disableBefore;
 
-  /// The date picker closes after the specified date.
+  /// The calendar closes after the specified date.
   DateTime? disableAfter;
 
-  /// Specifies which types the date picker will turn off.
+  /// Specifies which types the calendar will turn off.
   List<DateTime>? disabledDates;
 
-  /// Space inside the cells of the date picker
+  /// Space inside the cells of the calendar
   EdgeInsetsGeometry itemSpace;
 
   /// Animation Duration
   Duration animationDuration;
 
-  /// If you are selecting a range with your date picker, the color of the first and last element of the range
+  /// If you are selecting a range with your calendar, the color of the first and last element of the range
   Color isFirstLastItemColor;
 
-  /// The main theme color of your date picker
+  /// The main theme color of your calendar
   Color primaryColor;
 
   Color gridBorderColor;
@@ -66,7 +65,7 @@ class MobkitCalendarConfigModel {
   double? dailyTopWidgetSize;
 
   late CalendarCellConfigModel cellConfig;
-  late CalendarMonthBarConfigModel topBarConfig;
+  late CalendarTopBarConfigModel topBarConfig;
   late DailyItemsConfigModel dailyItemsConfigModel;
   PageController? pageController;
   AgendaViewConfigModel? agendaViewConfigModel;
@@ -99,12 +98,12 @@ class MobkitCalendarConfigModel {
     this.dailyTopWidgetSize = 110,
     this.pageController,
     CalendarCellConfigModel? cellConfig,
-    CalendarMonthBarConfigModel? topBarConfig,
+    CalendarTopBarConfigModel? topBarConfig,
     DailyItemsConfigModel? dailyItemsConfigModel,
     AgendaViewConfigModel? agendaViewConfigModel,
   }) {
     this.cellConfig = cellConfig ?? CalendarCellConfigModel();
-    this.topBarConfig = topBarConfig ?? CalendarMonthBarConfigModel();
+    this.topBarConfig = topBarConfig ?? CalendarTopBarConfigModel();
     this.dailyItemsConfigModel = dailyItemsConfigModel ?? DailyItemsConfigModel();
     this.agendaViewConfigModel = agendaViewConfigModel ?? AgendaViewConfigModel();
   }
