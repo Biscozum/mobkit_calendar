@@ -34,23 +34,25 @@ class MobkitCalendarConfigModel {
   /// Animation Duration
   Duration animationDuration;
 
-  /// If you are selecting a range with your calendar, the color of the first and last element of the range
-  Color isFirstLastItemColor;
-
   /// The main theme color of your calendar
   Color primaryColor;
 
+  /// Determines the grid border color on the calendar
   Color gridBorderColor;
 
   /// If non-null, the corners of this box are rounded.
   BorderRadiusGeometry borderRadius;
 
+  /// Determines the border color of the WeekDaysBar.
   Color weekDaysBarBorderColor;
 
+  /// Determines what appearance the calendar will have.
   MobkitCalendarViewType mobkitCalendarViewType;
 
-  bool isNativePopup;
+  /// Determines whether a popup will open when the event is clicked.
+  bool popupEnable;
 
+  /// It allows you to customize the Popup that will open when the event is clicked.
   CalendarPopupConfigModel? calendarPopupConfigModel;
 
   double? viewportFraction;
@@ -71,7 +73,7 @@ class MobkitCalendarConfigModel {
   AgendaViewConfigModel? agendaViewConfigModel;
   MobkitCalendarConfigModel({
     this.title,
-    this.locale = 'tr_Tr',
+    this.locale,
     this.showAllDays = true,
     this.disableOffDays = true,
     this.disableWeekendsDays = true,
@@ -80,13 +82,12 @@ class MobkitCalendarConfigModel {
     this.disabledDates,
     this.itemSpace = const EdgeInsets.all(2.0),
     this.animationDuration = const Duration(milliseconds: 300),
-    this.isFirstLastItemColor = const Color.fromARGB(255, 236, 10, 10),
     this.primaryColor = const Color.fromRGBO(253, 165, 46, 1),
     this.gridBorderColor = Colors.transparent,
     this.borderRadius = const BorderRadius.all(Radius.circular(4)),
     this.weekDaysBarBorderColor = const Color.fromRGBO(253, 165, 46, 1),
     this.mobkitCalendarViewType = MobkitCalendarViewType.monthly,
-    this.isNativePopup = false,
+    this.popupEnable = false,
     this.calendarPopupConfigModel,
     this.viewportFraction = 1.0,
     this.showEventOffDay = false,

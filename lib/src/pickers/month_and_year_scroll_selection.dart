@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
-import 'package:mobkit_calendar/src/pickers/month_and_year_picker/model/month_and_year_config_model.dart';
+import 'package:mobkit_calendar/src/pickers/model/month_and_year_config_model.dart';
 
 class MonthAndYearScrollSelection extends StatefulWidget {
   final ValueNotifier<DateTime> calendarDate;

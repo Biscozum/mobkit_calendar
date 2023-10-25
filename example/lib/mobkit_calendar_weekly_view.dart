@@ -40,18 +40,16 @@ class _MobkitCalendarWeeklyViewState extends State<MobkitCalendarWeeklyView> {
                       ? Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 12),
                           child: Text(
-                            DateFormat(
-                              "EEE, MMMM d",
-                            ).format(controller.eventDate.value!),
+                            DateFormat("EEE, MMMM d", controller.configModel.locale)
+                                .format(controller.eventDate.value!),
                             style: const TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold),
                           ),
                         )
                       : Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                           child: Text(
-                            DateFormat(
-                              "EEE, MMMM d",
-                            ).format(controller.calendarDate ?? DateTime.now()),
+                            DateFormat("EEE, MMMM d", controller.configModel.locale)
+                                .format(controller.calendarDate ?? DateTime.now()),
                             style: const TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold),
                           ),
                         );
@@ -104,9 +102,7 @@ class _MobkitCalendarWeeklyViewState extends State<MobkitCalendarWeeklyView> {
           padding: const EdgeInsets.symmetric(vertical: 12),
           child: Column(children: [
             Text(
-              DateFormat(
-                "yyyy MMMM",
-              ).format(datetime),
+              DateFormat("yyyy MMMM", controller.configModel.locale).format(datetime),
               style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,

@@ -27,9 +27,7 @@ class MobkitCalendarAgendaView extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 12),
           child: Column(children: [
             Text(
-              DateFormat(
-                "yyyy MMMM",
-              ).format(datetime),
+              DateFormat("yyyy MMMM", controller.configModel.locale).format(datetime),
               style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -51,9 +49,7 @@ class MobkitCalendarAgendaView extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Text(
-                        DateFormat(
-                          "EEE, MMMM d",
-                        ).format(datetime),
+                        DateFormat("EEE, MMMM d", controller.configModel.locale).format(datetime),
                         style: const TextStyle(
                           fontSize: 18,
                           color: Colors.grey,
@@ -107,9 +103,7 @@ class MobkitCalendarAgendaView extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Text(
-                        DateFormat(
-                          "EEE, MMMM d",
-                        ).format(datetime),
+                        DateFormat("EEE, MMMM d", controller.configModel.locale).format(datetime),
                         style: const TextStyle(
                           fontSize: 18,
                           color: Colors.grey,

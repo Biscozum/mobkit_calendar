@@ -84,7 +84,7 @@ class _CarouselState extends State<NativeCarousel> {
                   duration: Duration(milliseconds: widget.config?.calendarPopupConfigModel?.animateDuration ?? 500),
                   margin: EdgeInsets.symmetric(
                       horizontal: widget.config?.calendarPopupConfigModel?.popupSpace ?? 10,
-                      vertical: active ? 0 : widget.config?.calendarPopupConfigModel?.passiveVerticalPadding ?? 30),
+                      vertical: active ? 0 : widget.config?.calendarPopupConfigModel?.verticalPadding ?? 30),
                   decoration: active
                       ? widget.config?.calendarPopupConfigModel?.popUpBoxDecoration
                       : widget.config?.calendarPopupConfigModel?.popUpBoxDecoration?.copyWith(

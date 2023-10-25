@@ -28,7 +28,7 @@ class CalendarController extends ChangeNotifier {
             const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(25))),
         popUpOpacity: true,
         animateDuration: 500,
-        passiveVerticalPadding: 30,
+        verticalPadding: 30,
         popupSpace: 10,
         popupHeight: MediaQuery.of(navigatorKey.currentContext!).size.height * 0.6,
         popupWidth: MediaQuery.of(navigatorKey.currentContext!).size.width,
@@ -44,12 +44,13 @@ class CalendarController extends ChangeNotifier {
         weekDaysStyle: const TextStyle(fontSize: 14, color: Colors.black),
       ),
       weekDaysBarBorderColor: Colors.transparent,
+      locale: "en",
       disableOffDays: true,
       disableWeekendsDays: false,
       monthBetweenPadding: 20,
       primaryColor: Colors.lightBlue,
       mobkitCalendarViewType: mobkitCalendarViewType,
-      isNativePopup: mobkitCalendarViewType == MobkitCalendarViewType.monthly ? true : false,
+      popupEnable: mobkitCalendarViewType == MobkitCalendarViewType.monthly ? true : false,
       viewportFraction: mobkitCalendarViewType == MobkitCalendarViewType.monthly
           ? isFullScreen
               ? 1

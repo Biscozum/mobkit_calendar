@@ -12,6 +12,7 @@ class CalendarAgendaBar extends StatefulWidget {
   final List<MobkitCalendarAppointmentModel> customCalendarModel;
   final Function(DateTime datetime) dateRangeChanged;
   final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) titleWidget;
+  final Function(MobkitCalendarAppointmentModel model) eventTap;
 
   const CalendarAgendaBar(
     this.calendarDate, {
@@ -20,6 +21,7 @@ class CalendarAgendaBar extends StatefulWidget {
     required this.customCalendarModel,
     required this.titleWidget,
     required this.dateRangeChanged,
+    required this.eventTap,
   }) : super(key: key);
 
   @override
@@ -89,8 +91,8 @@ class _CalendarAgendaBarState extends State<CalendarAgendaBar> {
                 key: ValueKey("$currentDate"),
                 onVisibilityChanged: (visibilityInfo) {
                   if (visibilityInfo.key is ValueKey) {
-                    lastDate.value =
-                        DateUtils.dateOnly(DateFormat("yyyy-MM-dd").parse((visibilityInfo.key as ValueKey).value));
+                    lastDate.value = DateUtils.dateOnly(
+                        DateFormat("yyyy-MM-dd", widget.config?.locale).parse((visibilityInfo.key as ValueKey).value));
                   }
                 },
                 child: Padding(
@@ -98,6 +100,7 @@ class _CalendarAgendaBarState extends State<CalendarAgendaBar> {
                   child: AgendaItemWidget(
                     appoitnments: findCustomModel(widget.customCalendarModel, currentDate),
                     currentDate: currentDate,
+                    eventTap: widget.eventTap,
                   ),
                 ),
               );
@@ -110,10 +113,12 @@ class _CalendarAgendaBarState extends State<CalendarAgendaBar> {
 }
 
 class AgendaItemWidget extends StatefulWidget {
-  const AgendaItemWidget({super.key, required this.currentDate, required this.appoitnments, this.config});
+  const AgendaItemWidget(
+      {super.key, required this.currentDate, required this.appoitnments, required this.eventTap, this.config});
   final DateTime currentDate;
   final List<MobkitCalendarAppointmentModel> appoitnments;
   final MobkitCalendarConfigModel? config;
+  final Function(MobkitCalendarAppointmentModel model) eventTap;
 
   @override
   State<AgendaItemWidget> createState() => _AgendaItemWidgetState();
@@ -149,51 +154,54 @@ class _AgendaItemWidgetState extends State<AgendaItemWidget> with AutomaticKeepA
                 itemBuilder: (context, index) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 4),
-                            child: Text(
-                              "${widget.appoitnments[index].title}",
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: widget.config?.agendaViewConfigModel?.titleTextStyle ??
-                                  const TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 8,
-                        ),
-                        Expanded(
-                          flex: 4,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(6),
-                              color: widget.appoitnments[index].color,
-                            ),
-                            height: 60,
+                    child: GestureDetector(
+                      onTap: () => widget.eventTap(widget.appoitnments[index]),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            flex: 1,
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                              padding: const EdgeInsets.symmetric(vertical: 4),
                               child: Text(
-                                widget.appoitnments[index].detail,
-                                style: widget.config?.agendaViewConfigModel?.detailTextStyle ??
+                                "${widget.appoitnments[index].title}",
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: widget.config?.agendaViewConfigModel?.titleTextStyle ??
                                     const TextStyle(
                                       fontSize: 14,
-                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
                                     ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                          const SizedBox(
+                            width: 8,
+                          ),
+                          Expanded(
+                            flex: 4,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(6),
+                                color: widget.appoitnments[index].color,
+                              ),
+                              height: 60,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                                child: Text(
+                                  widget.appoitnments[index].detail,
+                                  style: widget.config?.agendaViewConfigModel?.detailTextStyle ??
+                                      const TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.white,
+                                      ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 },

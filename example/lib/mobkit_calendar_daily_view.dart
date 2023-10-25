@@ -27,9 +27,7 @@ class MobkitCalendarDailyView extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 12),
           child: Column(children: [
             Text(
-              DateFormat(
-                "yyyy MMMM",
-              ).format(datetime),
+              DateFormat("yyyy MMMM", controller.configModel.locale).format(datetime),
               style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,

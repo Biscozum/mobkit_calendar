@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-class Foo extends SingleChildRenderObjectWidget {
+class Move extends SingleChildRenderObjectWidget {
   final int index;
 
-  const Foo({Widget? child, required this.index, Key? key}) : super(child: child, key: key);
+  const Move({Widget? child, required this.index, Key? key}) : super(child: child, key: key);
 
   @override
   Foo2 createRenderObject(BuildContext context) {

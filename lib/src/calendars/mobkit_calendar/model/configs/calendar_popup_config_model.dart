@@ -1,13 +1,28 @@
 import 'package:flutter/material.dart';
 
 class CalendarPopupConfigModel {
+  /// Popup height
   double? popupHeight;
+
+  /// Popup width
   double? popupWidth;
+
+  /// Popup decoration
   BoxDecoration? popUpBoxDecoration;
+
+  /// Popup Opacity
   bool? popUpOpacity;
+
+  /// Popup animation duration
   int? animateDuration;
+
+  /// Popup space
   double? popupSpace;
-  double? passiveVerticalPadding;
+
+  /// Padding to be applied to the popups that appear on the sides.
+  double? verticalPadding;
+
+  /// Determines the spreading rate of the opened carousel relative to the screen.
   double? viewportFraction;
   CalendarPopupConfigModel({
     this.popupHeight,
@@ -16,7 +31,7 @@ class CalendarPopupConfigModel {
     this.popUpOpacity = false,
     this.animateDuration = 500,
     this.popupSpace = 10,
-    this.passiveVerticalPadding = 30,
+    this.verticalPadding = 30,
     this.viewportFraction = 1.0,
   });
 }

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:mobkit_calendar/src/extensions/date_extensions.dart';
-import 'package:mobkit_calendar/src/pickers/month_and_year_picker/model/month_and_year_config_model.dart';
+import 'package:mobkit_calendar/src/pickers/model/month_and_year_config_model.dart';
+import 'package:mobkit_calendar/src/pickers/month_and_year_picker.dart';
 import 'calendars/mobkit_calendar/mobkit_calendar_widget.dart';
 import 'calendars/mobkit_calendar/model/configs/calendar_config_model.dart';
 import 'calendars/mobkit_calendar/model/daily_frequency.dart';
@@ -11,9 +12,8 @@ import 'calendars/mobkit_calendar/model/mobkit_calendar_appointment_model.dart';
 import 'calendars/mobkit_calendar/model/monthly_frequency.dart';
 import 'calendars/mobkit_calendar/model/weekly_frequency.dart';
 import 'extensions/model/week_dates_model.dart';
-import 'pickers/month_and_year_picker/month_and_year_picker.dart';
 
-class MobkitMonthAndYearCalendar extends StatelessWidget {
+class MobkitMonthAndYearPicker extends StatelessWidget {
   final DateTime calendarDate;
   late final DateTime selectDate;
   final MobkitMonthAndYearCalendarConfigModel? config;
@@ -21,7 +21,7 @@ class MobkitMonthAndYearCalendar extends StatelessWidget {
   final Function(DateTime firstDate, DateTime lastDate) onRangeSelectionChange;
   late final ValueNotifier<List<DateTime>> selectedDates = ValueNotifier<List<DateTime>>(List<DateTime>.from([]));
 
-  MobkitMonthAndYearCalendar({
+  MobkitMonthAndYearPicker({
     DateTime? selectedDate,
     Key? key,
     this.config,

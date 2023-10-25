@@ -38,7 +38,7 @@ class CalendarDateCell extends StatelessWidget {
               if (enabled || config?.mobkitCalendarViewType != MobkitCalendarViewType.monthly) {
                 this.selectedDate.value = calendarDate;
                 onSelectionChange(findCustomModel(customCalendarModel, calendarDate), calendarDate);
-                if (config != null && config!.isNativePopup) {
+                if (config != null && config!.popupEnable) {
                   await showDialog(
                     context: context,
                     useRootNavigator: true,
@@ -66,7 +66,8 @@ class CalendarDateCell extends StatelessWidget {
               isEnabled: enabled,
               isWeekend: calendarDate.isWeekend(),
               standardCalendarConfig: config,
-              isCurrent: DateFormat.yMd().format(DateTime.now()) == DateFormat.yMd().format(calendarDate),
+              isCurrent: DateFormat.yMd(config?.locale).format(DateTime.now()) ==
+                  DateFormat.yMd(config?.locale).format(calendarDate),
             ),
           );
         });

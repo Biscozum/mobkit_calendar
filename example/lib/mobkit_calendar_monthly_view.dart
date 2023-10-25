@@ -36,9 +36,7 @@ class _MobkitCalendarMonthlyViewState extends State<MobkitCalendarMonthlyView> {
               padding: const EdgeInsets.symmetric(vertical: 12),
               child: Column(children: [
                 Text(
-                  DateFormat(
-                    "MMMM",
-                  ).format(datetime),
+                  DateFormat("MMMM", controller.configModel.locale).format(datetime),
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w500,
@@ -51,9 +49,7 @@ class _MobkitCalendarMonthlyViewState extends State<MobkitCalendarMonthlyView> {
               padding: const EdgeInsets.symmetric(vertical: 12),
               child: Column(children: [
                 Text(
-                  DateFormat(
-                    "yyyy MMMM",
-                  ).format(datetime),
+                  DateFormat("yyyy MMMM", controller.configModel.locale).format(datetime),
                   style: const TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -76,9 +72,7 @@ class _MobkitCalendarMonthlyViewState extends State<MobkitCalendarMonthlyView> {
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 8),
                           child: Text(
-                            DateFormat(
-                              "EEE, MMMM d",
-                            ).format(datetime),
+                            DateFormat("EEE, MMMM d", controller.configModel.locale).format(datetime),
                             style: const TextStyle(
                               fontSize: 18,
                               color: Colors.grey,
@@ -132,9 +126,7 @@ class _MobkitCalendarMonthlyViewState extends State<MobkitCalendarMonthlyView> {
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 8),
                           child: Text(
-                            DateFormat(
-                              "EEE, MMMM d",
-                            ).format(datetime),
+                            DateFormat("EEE, MMMM d", controller.configModel.locale).format(datetime),
                             style: const TextStyle(
                               fontSize: 18,
                               color: Colors.grey,

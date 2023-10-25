@@ -74,6 +74,7 @@ class MobkitCalendarView extends StatelessWidget {
                   config: config,
                   titleWidget: titleWidget,
                   dateRangeChanged: dateRangeChanged,
+                  eventTap: eventTap,
                 ),
               ),
             ]
