@@ -20,7 +20,7 @@ class MethodChannelMobkitCalendar extends MobkitCalendarPlatform {
 
   @override
   Future<List<AccountGroupModel>> getAccountList() async {
-    PermissionStatus result = await Permission.calendarReadOnly.request();
+    PermissionStatus result = await Permission.calendar.request();
     List<AccountGroupModel> accounts = [];
     if (result.isGranted) {
       String? accountList = await methodChannel.invokeMethod<String?>('getAccountList');
@@ -58,7 +58,7 @@ class MethodChannelMobkitCalendar extends MobkitCalendarPlatform {
 
   @override
   Future<List<MobkitCalendarAppointmentModel>> getEventList(Map arguments) async {
-    PermissionStatus result = await Permission.calendarReadOnly.request();
+    PermissionStatus result = await Permission.calendar.request();
     List<MobkitCalendarAppointmentModel> events = [];
     if (result.isGranted) {
       String? eventList = await methodChannel.invokeMethod<String?>('getEventList', arguments);
