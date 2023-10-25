@@ -11,15 +11,17 @@ class CalendarAgendaBar extends StatefulWidget {
   final MobkitCalendarConfigModel? config;
   final List<MobkitCalendarAppointmentModel> customCalendarModel;
   final Function(DateTime datetime) dateRangeChanged;
-  final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) headerWidget;
+  final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) titleWidget;
+  final Function(MobkitCalendarAppointmentModel model) eventTap;
 
   const CalendarAgendaBar(
     this.calendarDate, {
     Key? key,
     this.config,
     required this.customCalendarModel,
-    required this.headerWidget,
+    required this.titleWidget,
     required this.dateRangeChanged,
+    required this.eventTap,
   }) : super(key: key);
 
   @override
@@ -28,7 +30,7 @@ class CalendarAgendaBar extends StatefulWidget {
 
 class _CalendarAgendaBarState extends State<CalendarAgendaBar> {
   final InfiniteScrollController _infiniteScrollController = InfiniteScrollController();
-  DateTime? lastDate;
+  ValueNotifier<DateTime?> lastDate = ValueNotifier<DateTime?>(null);
 
   @override
   void initState() {
@@ -39,13 +41,13 @@ class _CalendarAgendaBarState extends State<CalendarAgendaBar> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _infiniteScrollController.position.isScrollingNotifier.addListener(() {
         if (!_infiniteScrollController.position.isScrollingNotifier.value) {
-          if (widget.config?.agendaViewConfigModel != null && lastDate != null) {
+          if (widget.config?.agendaViewConfigModel != null && lastDate.value != null) {
             if (widget.config!.agendaViewConfigModel!.endDate != null &&
-                lastDate!.isAfter(widget.config!.agendaViewConfigModel!.endDate!)) {
-              widget.dateRangeChanged(lastDate!);
+                lastDate.value!.isAfter(widget.config!.agendaViewConfigModel!.endDate!)) {
+              widget.dateRangeChanged(lastDate.value!);
             } else if (widget.config!.agendaViewConfigModel!.startDate != null &&
-                lastDate!.isBefore(widget.config!.agendaViewConfigModel!.startDate!)) {
-              widget.dateRangeChanged(lastDate!);
+                lastDate.value!.isBefore(widget.config!.agendaViewConfigModel!.startDate!)) {
+              widget.dateRangeChanged(lastDate.value!);
             }
           }
         }
@@ -63,17 +65,22 @@ class _CalendarAgendaBarState extends State<CalendarAgendaBar> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        ((widget.config?.topBarConfig.isVisibleHeaderWidget ?? false) &&
-                widget.headerWidget(
-                      findCustomModel(widget.customCalendarModel, lastDate ?? DateTime.now()),
-                      lastDate ?? DateTime.now(),
-                    ) !=
-                    null)
-            ? widget.headerWidget(
-                findCustomModel(widget.customCalendarModel, lastDate ?? DateTime.now()),
-                lastDate ?? DateTime.now(),
-              )!
-            : Container(),
+        ValueListenableBuilder(
+          valueListenable: lastDate,
+          builder: (_, DateTime? date, __) {
+            return ((widget.config?.topBarConfig.isVisibleHeaderWidget ?? false) &&
+                    widget.titleWidget(
+                          findCustomModel(widget.customCalendarModel, lastDate.value ?? DateTime.now()),
+                          lastDate.value ?? DateTime.now(),
+                        ) !=
+                        null)
+                ? widget.titleWidget(
+                    findCustomModel(widget.customCalendarModel, lastDate.value ?? DateTime.now()),
+                    lastDate.value ?? DateTime.now(),
+                  )!
+                : Container();
+          },
+        ),
         Expanded(
           child: InfiniteListView.builder(
             key: const PageStorageKey("keyy"),
@@ -84,8 +91,8 @@ class _CalendarAgendaBarState extends State<CalendarAgendaBar> {
                 key: ValueKey("$currentDate"),
                 onVisibilityChanged: (visibilityInfo) {
                   if (visibilityInfo.key is ValueKey) {
-                    lastDate =
-                        DateUtils.dateOnly(DateFormat("yyyy-MM-dd").parse((visibilityInfo.key as ValueKey).value));
+                    lastDate.value = DateUtils.dateOnly(
+                        DateFormat("yyyy-MM-dd", widget.config?.locale).parse((visibilityInfo.key as ValueKey).value));
                   }
                 },
                 child: Padding(
@@ -93,6 +100,7 @@ class _CalendarAgendaBarState extends State<CalendarAgendaBar> {
                   child: AgendaItemWidget(
                     appoitnments: findCustomModel(widget.customCalendarModel, currentDate),
                     currentDate: currentDate,
+                    eventTap: widget.eventTap,
                   ),
                 ),
               );
@@ -105,10 +113,12 @@ class _CalendarAgendaBarState extends State<CalendarAgendaBar> {
 }
 
 class AgendaItemWidget extends StatefulWidget {
-  const AgendaItemWidget({super.key, required this.currentDate, required this.appoitnments, this.config});
+  const AgendaItemWidget(
+      {super.key, required this.currentDate, required this.appoitnments, required this.eventTap, this.config});
   final DateTime currentDate;
   final List<MobkitCalendarAppointmentModel> appoitnments;
   final MobkitCalendarConfigModel? config;
+  final Function(MobkitCalendarAppointmentModel model) eventTap;
 
   @override
   State<AgendaItemWidget> createState() => _AgendaItemWidgetState();
@@ -144,51 +154,54 @@ class _AgendaItemWidgetState extends State<AgendaItemWidget> with AutomaticKeepA
                 itemBuilder: (context, index) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 4),
-                            child: Text(
-                              "${widget.appoitnments[index].title}",
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: widget.config?.agendaViewConfigModel?.titleTextStyle ??
-                                  const TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 8,
-                        ),
-                        Expanded(
-                          flex: 4,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(6),
-                              color: widget.appoitnments[index].color,
-                            ),
-                            height: 60,
+                    child: GestureDetector(
+                      onTap: () => widget.eventTap(widget.appoitnments[index]),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            flex: 1,
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                              padding: const EdgeInsets.symmetric(vertical: 4),
                               child: Text(
-                                widget.appoitnments[index].detail,
-                                style: widget.config?.agendaViewConfigModel?.detailTextStyle ??
+                                "${widget.appoitnments[index].title}",
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: widget.config?.agendaViewConfigModel?.titleTextStyle ??
                                     const TextStyle(
                                       fontSize: 14,
-                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
                                     ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                          const SizedBox(
+                            width: 8,
+                          ),
+                          Expanded(
+                            flex: 4,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(6),
+                                color: widget.appoitnments[index].color,
+                              ),
+                              height: 60,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                                child: Text(
+                                  widget.appoitnments[index].detail,
+                                  style: widget.config?.agendaViewConfigModel?.detailTextStyle ??
+                                      const TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.white,
+                                      ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 },

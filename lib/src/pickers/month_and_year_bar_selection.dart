@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:mobkit_calendar/src/extensions/date_extensions.dart';
-import 'package:mobkit_calendar/src/pickers/month_and_year_picker/model/month_and_year_config_model.dart';
-import '../widgets/datecell_renderobject.dart';
-import '../widgets/month_cell.dart';
+import 'package:mobkit_calendar/src/pickers/widgets/month_cell.dart';
+
+import '../calendars/mobkit_calendar/datecell_renderobject.dart';
+import 'model/month_and_year_config_model.dart';
 
 class MonthList extends StatefulWidget {
   final DateTime date;
@@ -45,7 +46,7 @@ class _MonthListState extends State<MonthList> {
       for (int x = 1; x <= 3; x++) {
         DateTime dateTime = DateTime(newDate.year, newDate.month, 1);
         months.add(
-          Foo(
+          Move(
             index: dateTime.month,
             child: MonthCell(
                 dateTime,

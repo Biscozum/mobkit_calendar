@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:mobkit_calendar/src/calendars/mobkit_calendar/calendar_agenda_bar.dart';
 import 'package:mobkit_calendar/src/calendars/mobkit_calendar/calendar_date_bar.dart';
 import 'package:mobkit_calendar/src/calendars/mobkit_calendar/model/configs/calendar_config_model.dart';
+import 'package:mobkit_calendar/src/calendars/mobkit_calendar/utils/date_utils.dart';
 import 'package:mobkit_calendar/src/extensions/date_extensions.dart';
 import 'calendar_month_selection_bar.dart';
 import 'calendar_weekdays_bar.dart';
 import 'calendar_year_selection_bar.dart';
 import 'enum/mobkit_calendar_view_type_enum.dart';
 import 'model/mobkit_calendar_appointment_model.dart';
+import 'multiple_listenable_builder_widget.dart';
 
 class MobkitCalendarView extends StatelessWidget {
   const MobkitCalendarView({
@@ -20,6 +22,7 @@ class MobkitCalendarView extends StatelessWidget {
     required this.eventTap,
     required this.onPopupChange,
     required this.headerWidget,
+    required this.titleWidget,
     required this.onDateChanged,
     required this.weeklyViewWidget,
     required this.dateRangeChanged,
@@ -32,6 +35,7 @@ class MobkitCalendarView extends StatelessWidget {
   final Function(MobkitCalendarAppointmentModel model) eventTap;
   final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) onPopupChange;
   final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) headerWidget;
+  final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) titleWidget;
   final Function(DateTime datetime) onDateChanged;
   final Widget? Function(Map<DateTime, List<MobkitCalendarAppointmentModel>>) weeklyViewWidget;
   final Function(DateTime datetime) dateRangeChanged;
@@ -58,6 +62,7 @@ class MobkitCalendarView extends StatelessWidget {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     int maxGroupCount = 0;
+    DateTime? cSelectedDate = selectedDate.value;
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: config?.mobkitCalendarViewType == MobkitCalendarViewType.agenda
@@ -67,12 +72,45 @@ class MobkitCalendarView extends StatelessWidget {
                   calendarDate,
                   customCalendarModel: appointmentModel,
                   config: config,
-                  headerWidget: headerWidget,
+                  titleWidget: titleWidget,
                   dateRangeChanged: dateRangeChanged,
+                  eventTap: eventTap,
                 ),
               ),
             ]
           : [
+              ValueListenableBuilder(
+                  valueListenable: ValuesNotifier([
+                    calendarDate,
+                    selectedDate,
+                  ]),
+                  builder: (_, bool date, __) {
+                    if (cSelectedDate != selectedDate.value) {
+                      return ((config?.topBarConfig.isVisibleTitleWidget ?? false) &&
+                              titleWidget(
+                                    findCustomModel(appointmentModel, selectedDate.value),
+                                    selectedDate.value,
+                                  ) !=
+                                  null)
+                          ? titleWidget(
+                              findCustomModel(appointmentModel, selectedDate.value),
+                              selectedDate.value,
+                            )!
+                          : Container();
+                    } else {
+                      return ((config?.topBarConfig.isVisibleTitleWidget ?? false) &&
+                              titleWidget(
+                                    findCustomModel(appointmentModel, calendarDate.value),
+                                    calendarDate.value,
+                                  ) !=
+                                  null)
+                          ? titleWidget(
+                              findCustomModel(appointmentModel, calendarDate.value),
+                              calendarDate.value,
+                            )!
+                          : Container();
+                    }
+                  }),
               config?.topBarConfig.isVisibleMonthBar == true || config?.topBarConfig.isVisibleYearBar == true
                   ? SizedBox(
                       height: 30,

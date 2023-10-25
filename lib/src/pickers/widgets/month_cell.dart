@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mobkit_calendar/src/extensions/date_extensions.dart';
-import 'package:mobkit_calendar/src/model/calendar_type_model.dart';
-import '../month_and_year_picker/model/month_and_year_config_model.dart';
+import '../../model/calendar_type_model.dart';
+import '../model/month_and_year_config_model.dart';
 import 'picker_cell.dart';
 
 class MonthCell extends StatelessWidget {

@@ -86,11 +86,9 @@ class CellWidget extends StatelessWidget {
             duration: configStandardCalendar.animationDuration,
             decoration: BoxDecoration(
               color: isEnabled
-                  ? isFirstLastSelectedItem
-                      ? configStandardCalendar.isFirstLastItemColor
-                      : isSelected
-                          ? configStandardCalendar.cellConfig.selectedStyle?.color
-                          : configStandardCalendar.cellConfig.enabledStyle?.color
+                  ? isSelected
+                      ? configStandardCalendar.cellConfig.selectedStyle?.color
+                      : configStandardCalendar.cellConfig.enabledStyle?.color
                   : configStandardCalendar.cellConfig.disabledStyle?.color,
               border: isWeekDaysBar
                   ? Border.all(width: 1, color: configStandardCalendar.weekDaysBarBorderColor)

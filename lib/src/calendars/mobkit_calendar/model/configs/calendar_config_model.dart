@@ -2,56 +2,57 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../mobkit_calendar.dart';
-import 'agenda_view_config_model.dart';
 
 class MobkitCalendarConfigModel {
-  /// The title you want to appear at the top of the date picker.
+  /// The title you want to appear at the top of the calendar.
   String? title;
 
-  /// It determines in which locale the date picker will work.
+  /// It determines in which locale the calendar will work.
   String? locale;
 
-  /// Whether the date picker will show all days
+  /// Whether the calendar will show all days
   bool showAllDays;
 
-  /// Turns off all dates of the date picker
+  /// Turns off all dates of the calendar
   bool disableOffDays;
 
-  /// Whether to show the bar showing the days of the week above the date picker
+  /// Whether to show the bar showing the days of the week above the calendar
   bool disableWeekendsDays;
 
-  /// The date picker closes before the specified date.
+  /// The calendar closes before the specified date.
   DateTime? disableBefore;
 
-  /// The date picker closes after the specified date.
+  /// The calendar closes after the specified date.
   DateTime? disableAfter;
 
-  /// Specifies which types the date picker will turn off.
+  /// Specifies which types the calendar will turn off.
   List<DateTime>? disabledDates;
 
-  /// Space inside the cells of the date picker
+  /// Space inside the cells of the calendar
   EdgeInsetsGeometry itemSpace;
 
   /// Animation Duration
   Duration animationDuration;
 
-  /// If you are selecting a range with your date picker, the color of the first and last element of the range
-  Color isFirstLastItemColor;
-
-  /// The main theme color of your date picker
+  /// The main theme color of your calendar
   Color primaryColor;
 
+  /// Determines the grid border color on the calendar
   Color gridBorderColor;
 
   /// If non-null, the corners of this box are rounded.
   BorderRadiusGeometry borderRadius;
 
+  /// Determines the border color of the WeekDaysBar.
   Color weekDaysBarBorderColor;
 
+  /// Determines what appearance the calendar will have.
   MobkitCalendarViewType mobkitCalendarViewType;
 
-  bool isNativePopup;
+  /// Determines whether a popup will open when the event is clicked.
+  bool popupEnable;
 
+  /// It allows you to customize the Popup that will open when the event is clicked.
   CalendarPopupConfigModel? calendarPopupConfigModel;
 
   double? viewportFraction;
@@ -66,13 +67,13 @@ class MobkitCalendarConfigModel {
   double? dailyTopWidgetSize;
 
   late CalendarCellConfigModel cellConfig;
-  late CalendarMonthBarConfigModel topBarConfig;
+  late CalendarTopBarConfigModel topBarConfig;
   late DailyItemsConfigModel dailyItemsConfigModel;
   PageController? pageController;
   AgendaViewConfigModel? agendaViewConfigModel;
   MobkitCalendarConfigModel({
     this.title,
-    this.locale = 'tr_Tr',
+    this.locale,
     this.showAllDays = true,
     this.disableOffDays = true,
     this.disableWeekendsDays = true,
@@ -81,13 +82,12 @@ class MobkitCalendarConfigModel {
     this.disabledDates,
     this.itemSpace = const EdgeInsets.all(2.0),
     this.animationDuration = const Duration(milliseconds: 300),
-    this.isFirstLastItemColor = const Color.fromARGB(255, 236, 10, 10),
     this.primaryColor = const Color.fromRGBO(253, 165, 46, 1),
     this.gridBorderColor = Colors.transparent,
     this.borderRadius = const BorderRadius.all(Radius.circular(4)),
     this.weekDaysBarBorderColor = const Color.fromRGBO(253, 165, 46, 1),
     this.mobkitCalendarViewType = MobkitCalendarViewType.monthly,
-    this.isNativePopup = false,
+    this.popupEnable = false,
     this.calendarPopupConfigModel,
     this.viewportFraction = 1.0,
     this.showEventOffDay = false,
@@ -99,12 +99,12 @@ class MobkitCalendarConfigModel {
     this.dailyTopWidgetSize = 110,
     this.pageController,
     CalendarCellConfigModel? cellConfig,
-    CalendarMonthBarConfigModel? topBarConfig,
+    CalendarTopBarConfigModel? topBarConfig,
     DailyItemsConfigModel? dailyItemsConfigModel,
     AgendaViewConfigModel? agendaViewConfigModel,
   }) {
     this.cellConfig = cellConfig ?? CalendarCellConfigModel();
-    this.topBarConfig = topBarConfig ?? CalendarMonthBarConfigModel();
+    this.topBarConfig = topBarConfig ?? CalendarTopBarConfigModel();
     this.dailyItemsConfigModel = dailyItemsConfigModel ?? DailyItemsConfigModel();
     this.agendaViewConfigModel = agendaViewConfigModel ?? AgendaViewConfigModel();
   }
