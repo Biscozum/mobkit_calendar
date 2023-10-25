@@ -86,7 +86,7 @@ class MethodChannelMobkitCalendar extends MobkitCalendarPlatform {
 
   @override
   Future requestCalendarAccess() async {
-    PermissionStatus result = await Permission.calendarFullAccess.request();
+    PermissionStatus result = await Permission.calendar.request();
     return result.isGranted;
   }
 }
