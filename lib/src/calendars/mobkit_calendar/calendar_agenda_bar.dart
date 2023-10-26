@@ -101,6 +101,7 @@ class _CalendarAgendaBarState extends State<CalendarAgendaBar> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 18),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         DateFormat(widget.config?.agendaViewConfigModel?.dateFormatPattern ?? "EEE, MMMM d",
