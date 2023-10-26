@@ -24,7 +24,8 @@ List<MobkitCalendarAppointmentModel> findCustomModel(
           !today.isSameDay(element.appointmentEndDate) &&
               (today.isBetween(element.appointmentStartDate, element.appointmentEndDate) ?? false) ||
           today.isSameDay(element.appointmentStartDate) ||
-          (today.isSameDay(element.appointmentStartDate) && today.isSameDay(element.appointmentEndDate)))
+          (today.isSameDay(element.appointmentStartDate) ||
+              today.isSameDay(element.appointmentEndDate.add(const Duration(minutes: -1)))))
       .toList();
   return showCustomCalendarModelList;
 }
