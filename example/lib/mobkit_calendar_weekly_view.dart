@@ -27,6 +27,7 @@ class _MobkitCalendarWeeklyViewState extends State<MobkitCalendarWeeklyView> {
       body: MobkitCalendarWidget(
         calendarDate: DateTime.now(),
         config: controller.configModel,
+        agendaWidget: (MobkitCalendarAppointmentModel model, DateTime datetime) => null,
         weeklyViewWidget: (val) => Expanded(
           child: ListView(
             children: [

@@ -20,6 +20,7 @@ class MobkitCalendarDailyView extends StatelessWidget {
       body: MobkitCalendarWidget(
         calendarDate: DateTime.now(),
         config: controller.configModel,
+        agendaWidget: (MobkitCalendarAppointmentModel model, DateTime datetime) => null,
         weeklyViewWidget: (val) => null,
         dateRangeChanged: (datetime) => null,
         headerWidget: (List<MobkitCalendarAppointmentModel> models, DateTime datetime) => null,
