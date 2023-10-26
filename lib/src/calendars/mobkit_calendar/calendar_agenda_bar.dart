@@ -125,7 +125,53 @@ class _CalendarAgendaBarState extends State<CalendarAgendaBar> {
                                   padding: const EdgeInsets.symmetric(vertical: 4),
                                   child: GestureDetector(
                                     onTap: () => widget.eventTap(listData[index]),
-                                    child: widget.agendaWidget(widget.customCalendarModel, currentDate) ?? Container(),
+                                    child: widget.agendaWidget(widget.customCalendarModel, currentDate) ??
+                                        Row(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Expanded(
+                                              flex: 1,
+                                              child: Padding(
+                                                padding: const EdgeInsets.symmetric(vertical: 4),
+                                                child: Text(
+                                                  "${listData[index].title}",
+                                                  maxLines: 1,
+                                                  overflow: TextOverflow.ellipsis,
+                                                  style: widget.config?.agendaViewConfigModel?.titleTextStyle ??
+                                                      const TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight: FontWeight.bold,
+                                                        color: Colors.black,
+                                                      ),
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              width: 8,
+                                            ),
+                                            Expanded(
+                                              flex: 4,
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(6),
+                                                  color: listData[index].color,
+                                                ),
+                                                height: 60,
+                                                child: Padding(
+                                                  padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                                                  child: Text(
+                                                    listData[index].detail,
+                                                    style: widget.config?.agendaViewConfigModel?.detailTextStyle ??
+                                                        const TextStyle(
+                                                          fontSize: 14,
+                                                          color: Colors.white,
+                                                        ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                   ),
                                 );
                               },
