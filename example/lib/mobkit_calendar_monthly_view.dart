@@ -29,6 +29,7 @@ class _MobkitCalendarMonthlyViewState extends State<MobkitCalendarMonthlyView> {
           ),
           body: MobkitCalendarWidget(
             calendarDate: DateTime.now(),
+            agendaWidget: (MobkitCalendarAppointmentModel model, DateTime datetime) => null,
             key: UniqueKey(),
             config: controller.configModel,
             dateRangeChanged: (datetime) => null,

@@ -12,7 +12,7 @@ class CalendarAgendaBar extends StatefulWidget {
   final List<MobkitCalendarAppointmentModel> customCalendarModel;
   final Function(DateTime datetime) dateRangeChanged;
   final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) titleWidget;
-  final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) agendaWidget;
+  final Widget? Function(MobkitCalendarAppointmentModel list, DateTime datetime) agendaWidget;
   final Function(MobkitCalendarAppointmentModel model) eventTap;
 
   const CalendarAgendaBar(
@@ -126,7 +126,7 @@ class _CalendarAgendaBarState extends State<CalendarAgendaBar> {
                                   padding: const EdgeInsets.symmetric(vertical: 4),
                                   child: GestureDetector(
                                     onTap: () => widget.eventTap(listData[index]),
-                                    child: widget.agendaWidget(widget.customCalendarModel, currentDate) ??
+                                    child: widget.agendaWidget(listData[index], currentDate) ??
                                         Row(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
