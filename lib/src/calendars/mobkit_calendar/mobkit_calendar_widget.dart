@@ -196,10 +196,9 @@ class MobkitCalendarView extends StatelessWidget {
                                           .isBetween(element.appointmentStartDate, element.appointmentEndDate) ??
                                       false) ||
                                   (DateTime(selectedDate.value.year, selectedDate.value.month, selectedDate.value.day)
-                                          .isSameDay(element.appointmentStartDate)) &&
-                                      DateTime(
-                                              selectedDate.value.year, selectedDate.value.month, selectedDate.value.day)
-                                          .isSameDay(element.appointmentEndDate));
+                                      .isSameDay(element.appointmentStartDate)) ||
+                                  DateTime(selectedDate.value.year, selectedDate.value.month, selectedDate.value.day)
+                                      .isSameDay(element.appointmentEndDate.add(const Duration(minutes: -1))));
                           return item;
                         }).toList();
                         List<MobkitCalendarAppointmentModel> allDayList = appointmentModel
