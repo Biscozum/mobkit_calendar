@@ -23,6 +23,7 @@ class MobkitCalendarView extends StatelessWidget {
     required this.onPopupChange,
     required this.headerWidget,
     required this.titleWidget,
+    required this.agendaWidget,
     required this.onDateChanged,
     required this.weeklyViewWidget,
     required this.dateRangeChanged,
@@ -36,6 +37,7 @@ class MobkitCalendarView extends StatelessWidget {
   final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) onPopupChange;
   final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) headerWidget;
   final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) titleWidget;
+  final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) agendaWidget;
   final Function(DateTime datetime) onDateChanged;
   final Widget? Function(Map<DateTime, List<MobkitCalendarAppointmentModel>>) weeklyViewWidget;
   final Function(DateTime datetime) dateRangeChanged;
@@ -73,6 +75,7 @@ class MobkitCalendarView extends StatelessWidget {
                   customCalendarModel: appointmentModel,
                   config: config,
                   titleWidget: titleWidget,
+                  agendaWidget: agendaWidget,
                   dateRangeChanged: dateRangeChanged,
                   eventTap: eventTap,
                 ),
