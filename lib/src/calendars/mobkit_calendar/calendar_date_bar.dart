@@ -362,7 +362,7 @@ class _DateListState extends State<DateList> {
     if (config.disableAfter != null && newDate.isAfter(config.disableAfter!)) {
       return false;
     }
-    if (config.disabledDates != null && config.disabledDates!.any((element) => element.isSameDay(date))) {
+    if (config.disabledDates != null && config.disabledDates!.any((element) => element.isSameDay(newDate))) {
       return false;
     }
     if (newDate.isWeekend() && config.disableWeekendsDays) return false;

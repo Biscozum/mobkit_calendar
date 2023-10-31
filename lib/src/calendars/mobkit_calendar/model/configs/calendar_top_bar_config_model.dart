@@ -8,7 +8,6 @@ class CalendarTopBarConfigModel {
   bool? isVisibleHeaderWidget;
   bool? isVisibleTitleWidget;
   TextStyle monthDaysStyle;
-
   TextStyle weekDaysStyle;
   CalendarTopBarConfigModel({
     this.isVisibleMonthBar,

@@ -27,6 +27,8 @@ class _CarouselState extends State<NativeCarousel> {
   late PageController _pageController;
   late int activePage = widget.date.value.day;
   List<DateTime> showDates = [];
+  ScrollActivity? _lastActivity;
+
   @override
   void initState() {
     super.initState();
@@ -44,18 +46,60 @@ class _CarouselState extends State<NativeCarousel> {
 
   setShowDates(bool isNext) {
     if (isNext) {
-      showDates = getDaysInBetween(DateTime(widget.date.value.year, widget.date.value.month, 0),
-          DateTime(widget.date.value.year, widget.date.value.month + 1, 1));
-      _pageController.jumpToPage(
-        1,
-      );
+      // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+      if (_pageController.position.activity is BallisticScrollActivity && _lastActivity is! DragScrollActivity) {
+        Future.delayed(const Duration(milliseconds: 500)).then(
+          (value) {
+            showDates = getDaysInBetween(DateTime(widget.date.value.year, widget.date.value.month, 0),
+                DateTime(widget.date.value.year, widget.date.value.month + 1, 1));
+            _pageController.jumpToPage(
+              1,
+            );
+          },
+        );
+      }
+      // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+      else if (_pageController.position.activity is DrivenScrollActivity && _lastActivity is! DrivenScrollActivity) {
+        Future.delayed(const Duration(milliseconds: 250)).then(
+          (value) {
+            showDates = getDaysInBetween(DateTime(widget.date.value.year, widget.date.value.month, 0),
+                DateTime(widget.date.value.year, widget.date.value.month + 1, 1));
+            _pageController.jumpToPage(
+              1,
+            );
+          },
+        );
+      }
+      // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+      _lastActivity = _pageController.position.activity;
       widget.onSelectionChange([], widget.date.value);
     } else {
-      showDates = getDaysInBetween(DateTime(widget.date.value.year, widget.date.value.month, 0),
-          DateTime(widget.date.value.year, widget.date.value.month + 1, 1));
-      _pageController.jumpToPage(
-        showDates.length - 2,
-      );
+      // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+      if (_pageController.position.activity is BallisticScrollActivity && _lastActivity is! DragScrollActivity) {
+        Future.delayed(const Duration(milliseconds: 500)).then(
+          (value) {
+            showDates = getDaysInBetween(DateTime(widget.date.value.year, widget.date.value.month, 0),
+                DateTime(widget.date.value.year, widget.date.value.month + 1, 1));
+            _pageController.jumpToPage(
+              showDates.length - 2,
+            );
+          },
+        );
+      }
+      // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+      else if (_pageController.position.activity is DrivenScrollActivity && _lastActivity is! DrivenScrollActivity) {
+        Future.delayed(const Duration(milliseconds: 250)).then(
+          (value) {
+            showDates = getDaysInBetween(DateTime(widget.date.value.year, widget.date.value.month, 0),
+                DateTime(widget.date.value.year, widget.date.value.month + 1, 1));
+            _pageController.jumpToPage(
+              showDates.length - 2,
+            );
+          },
+        );
+      }
+      // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+      _lastActivity = _pageController.position.activity;
       widget.onSelectionChange([], widget.date.value);
     }
   }
