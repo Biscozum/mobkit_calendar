@@ -128,6 +128,7 @@ Mobkit Calendar.
     * **`bool showAllDays`** - Whether the calendar will show all days
     * **`bool disableOffDays`** - Turns off all dates of the calendar
     * **`bool disableWeekendsDays`** - Whether to show the bar showing the days of the week above the calendar
+    * **`List<int>? disableWeekDays`** - It determines which days of the week to disable
     * **`DateTime? disableBefore`** - The calendar closes before the specified date.
     * **`DateTime? disableAfter`** - The calendar closes after the specified date.
     * **`List<DateTime>? disabledDates`** - Specifies which types the calendar will turn off.

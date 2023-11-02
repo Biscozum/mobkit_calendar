@@ -19,6 +19,9 @@ class MobkitCalendarConfigModel {
   /// Whether to show the bar showing the days of the week above the calendar
   bool disableWeekendsDays;
 
+  /// It determines which days of the week to disable.
+  List<int>? disableWeekDays;
+
   /// The calendar closes before the specified date.
   DateTime? disableBefore;
 
@@ -56,9 +59,7 @@ class MobkitCalendarConfigModel {
   CalendarPopupConfigModel? calendarPopupConfigModel;
 
   double? viewportFraction;
-
   bool? showEventOffDay;
-
   double? monthBetweenPadding;
   double? agendaDayBetweenPadding;
   bool? showEventLineMaxCountText;
@@ -78,6 +79,7 @@ class MobkitCalendarConfigModel {
     this.disableOffDays = true,
     this.disableWeekendsDays = true,
     this.disableBefore,
+    this.disableWeekDays,
     this.disableAfter,
     this.disabledDates,
     this.itemSpace = const EdgeInsets.all(2.0),

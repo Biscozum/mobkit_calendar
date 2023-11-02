@@ -84,7 +84,7 @@ class CalendarCellWidget extends StatelessWidget {
                                   ),
                                   Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    children: generateAllDayItems(showedCustomCalendarModelList, context),
+                                    children: generateAllDayItems(showedCustomCalendarModelList),
                                   ),
                                   showedCustomCalendarModelList!.where((element) => element.isAllDay).length >
                                           configStandardCalendar.cellConfig.maxEventLineCount
@@ -152,8 +152,7 @@ class CalendarCellWidget extends StatelessWidget {
     return items;
   }
 
-  List<Widget> generateAllDayItems(
-      List<MobkitCalendarAppointmentModel>? showedCustomCalendarModelList, BuildContext context) {
+  List<Widget> generateAllDayItems(List<MobkitCalendarAppointmentModel>? showedCustomCalendarModelList) {
     List<Widget> items = [];
     if (showedCustomCalendarModelList != null && showedCustomCalendarModelList.isNotEmpty) {
       List<MobkitCalendarAppointmentModel> listModel =
