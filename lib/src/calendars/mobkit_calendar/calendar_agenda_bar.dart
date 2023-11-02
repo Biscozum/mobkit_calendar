@@ -33,7 +33,6 @@ class CalendarAgendaBar extends StatefulWidget {
 class _CalendarAgendaBarState extends State<CalendarAgendaBar> {
   final InfiniteScrollController _infiniteScrollController = InfiniteScrollController();
   ValueNotifier<DateTime?> lastDate = ValueNotifier<DateTime?>(null);
-
   @override
   void initState() {
     super.initState();
@@ -85,7 +84,6 @@ class _CalendarAgendaBarState extends State<CalendarAgendaBar> {
         ),
         Expanded(
           child: InfiniteListView.builder(
-            key: const PageStorageKey("keyy"),
             controller: _infiniteScrollController,
             itemBuilder: (BuildContext context, int index) {
               DateTime currentDate = DateUtils.dateOnly(DateTime.now().add(Duration(days: index)));

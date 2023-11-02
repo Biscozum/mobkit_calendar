@@ -22,6 +22,9 @@ class MobkitMonthAndYearCalendarConfigModel {
   /// Whether to show the bar showing the days of the week above the date picker
   bool disableWeekendsDays;
 
+  /// It determines which days of the week to disable.
+  List<int>? disableWeekDays;
+
   /// The date picker closes before the specified date.
   DateTime? disableBefore;
 
@@ -103,6 +106,7 @@ class MobkitMonthAndYearCalendarConfigModel {
     this.showAllDays = true,
     this.disableOffDays = true,
     this.disableWeekendsDays = true,
+    this.disableWeekDays,
     this.disableBefore,
     this.disableAfter,
     this.disabledDates,
