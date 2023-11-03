@@ -211,8 +211,6 @@ class MobkitCalendarView extends StatelessWidget {
                                         false) ||
                                     DateTime(selectedDate.value.year, selectedDate.value.month, selectedDate.value.day)
                                         .isSameDay(element.appointmentStartDate)) &&
-                                !DateTime(selectedDate.value.year, selectedDate.value.month, selectedDate.value.day)
-                                    .isSameDay(element.appointmentEndDate) &&
                                 element.isAllDay)
                             .toList();
                         modelList.sort((a, b) => a.appointmentStartDate.compareTo(b.appointmentStartDate));
