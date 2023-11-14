@@ -18,29 +18,29 @@ class MobkitCalendarView extends StatelessWidget {
     required this.appointmentModel,
     required this.calendarDate,
     required this.selectedDate,
-    required this.onSelectionChange,
-    required this.eventTap,
-    required this.onPopupChange,
-    required this.headerWidget,
-    required this.titleWidget,
-    required this.agendaWidget,
-    required this.onDateChanged,
-    required this.weeklyViewWidget,
-    required this.dateRangeChanged,
+    this.onSelectionChange,
+    this.eventTap,
+    this.onPopupChange,
+    this.headerWidget,
+    this.titleWidget,
+    this.agendaWidget,
+    this.onDateChanged,
+    this.weeklyViewWidget,
+    this.dateRangeChanged,
   }) : super(key: key);
   final MobkitCalendarConfigModel? config;
   final List<MobkitCalendarAppointmentModel> appointmentModel;
   final ValueNotifier<DateTime> selectedDate;
   final ValueNotifier<DateTime> calendarDate;
-  final Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime) onSelectionChange;
-  final Function(MobkitCalendarAppointmentModel model) eventTap;
-  final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) onPopupChange;
-  final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) headerWidget;
-  final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) titleWidget;
-  final Widget? Function(MobkitCalendarAppointmentModel list, DateTime datetime) agendaWidget;
-  final Function(DateTime datetime) onDateChanged;
-  final Widget? Function(Map<DateTime, List<MobkitCalendarAppointmentModel>>) weeklyViewWidget;
-  final Function(DateTime datetime) dateRangeChanged;
+  final Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime)? onSelectionChange;
+  final Function(MobkitCalendarAppointmentModel model)? eventTap;
+  final Widget Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime)? onPopupChange;
+  final Widget Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime)? headerWidget;
+  final Widget Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime)? titleWidget;
+  final Widget Function(MobkitCalendarAppointmentModel list, DateTime datetime)? agendaWidget;
+  final Function(DateTime datetime)? onDateChanged;
+  final Widget Function(Map<DateTime, List<MobkitCalendarAppointmentModel>>)? weeklyViewWidget;
+  final Function(DateTime datetime)? dateRangeChanged;
 
   bool? isIntersect(
     DateTime firstStartDate,
@@ -78,6 +78,7 @@ class MobkitCalendarView extends StatelessWidget {
                   agendaWidget: agendaWidget,
                   dateRangeChanged: dateRangeChanged,
                   eventTap: eventTap,
+                  onDateChanged: onDateChanged,
                 ),
               ),
             ]
@@ -89,28 +90,20 @@ class MobkitCalendarView extends StatelessWidget {
                   ]),
                   builder: (_, bool date, __) {
                     if (cSelectedDate != selectedDate.value) {
-                      return ((config?.topBarConfig.isVisibleTitleWidget ?? false) &&
-                              titleWidget(
-                                    findCustomModel(appointmentModel, selectedDate.value),
-                                    selectedDate.value,
-                                  ) !=
-                                  null)
-                          ? titleWidget(
-                              findCustomModel(appointmentModel, selectedDate.value),
-                              selectedDate.value,
-                            )!
+                      return (config?.topBarConfig.isVisibleTitleWidget ?? false)
+                          ? titleWidget?.call(
+                                findCustomModel(appointmentModel, selectedDate.value),
+                                selectedDate.value,
+                              ) ??
+                              Container()
                           : Container();
                     } else {
-                      return ((config?.topBarConfig.isVisibleTitleWidget ?? false) &&
-                              titleWidget(
-                                    findCustomModel(appointmentModel, calendarDate.value),
-                                    calendarDate.value,
-                                  ) !=
-                                  null)
-                          ? titleWidget(
-                              findCustomModel(appointmentModel, calendarDate.value),
-                              calendarDate.value,
-                            )!
+                      return ((config?.topBarConfig.isVisibleTitleWidget ?? false))
+                          ? titleWidget?.call(
+                                findCustomModel(appointmentModel, calendarDate.value),
+                                calendarDate.value,
+                              ) ??
+                              Container()
                           : Container();
                     }
                   }),
@@ -261,7 +254,7 @@ class MobkitCalendarView extends StatelessWidget {
                                                   .map(
                                                     (item) => Expanded(
                                                       child: GestureDetector(
-                                                        onTap: () => eventTap(item),
+                                                        onTap: () => eventTap?.call(item),
                                                         child: Container(
                                                           padding: config
                                                                   ?.dailyItemsConfigModel.allDayFrameStyle?.padding ??
@@ -356,7 +349,7 @@ class MobkitCalendarView extends StatelessWidget {
                                                               .inHours *
                                                           80,
                                           child: GestureDetector(
-                                            onTap: () => eventTap(modelList[i]),
+                                            onTap: () => eventTap?.call(modelList[i]),
                                             child: Padding(
                                               padding: const EdgeInsets.only(left: 1.5),
                                               child: Container(

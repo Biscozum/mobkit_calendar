@@ -14,8 +14,8 @@ class CalendarDateCell extends StatelessWidget {
   final ValueNotifier<DateTime> selectedDate;
   final MobkitCalendarConfigModel? config;
   final List<MobkitCalendarAppointmentModel> customCalendarModel;
-  final Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime) onSelectionChange;
-  final Widget? Function(List<MobkitCalendarAppointmentModel>, DateTime datetime) onPopupChange;
+  final Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime)? onSelectionChange;
+  final Widget Function(List<MobkitCalendarAppointmentModel>, DateTime datetime)? onPopupChange;
 
   const CalendarDateCell(
     this.calendarDate,
@@ -25,7 +25,7 @@ class CalendarDateCell extends StatelessWidget {
     this.config,
     required this.customCalendarModel,
     this.enabled = true,
-    required this.onPopupChange,
+    this.onPopupChange,
   }) : super(key: key);
 
   @override
@@ -37,7 +37,7 @@ class CalendarDateCell extends StatelessWidget {
             onTap: () async {
               if (enabled || config?.mobkitCalendarViewType != MobkitCalendarViewType.monthly) {
                 this.selectedDate.value = calendarDate;
-                onSelectionChange(findCustomModel(customCalendarModel, calendarDate), calendarDate);
+                onSelectionChange?.call(findCustomModel(customCalendarModel, calendarDate), calendarDate);
                 if (config != null && config!.popupEnable) {
                   await showDialog(
                     context: context,

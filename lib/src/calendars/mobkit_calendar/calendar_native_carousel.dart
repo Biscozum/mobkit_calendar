@@ -7,15 +7,15 @@ class NativeCarousel extends StatefulWidget {
     Key? key,
     required this.listAppointmentModel,
     required this.date,
-    required this.onPopupChange,
-    required this.onSelectionChange,
+    this.onPopupChange,
+    this.onSelectionChange,
     required this.customCalendarModel,
     this.config,
   }) : super(key: key);
   final ValueNotifier<DateTime> date;
   final List<MobkitCalendarAppointmentModel> listAppointmentModel;
-  final Widget? Function(List<MobkitCalendarAppointmentModel>, DateTime datetime) onPopupChange;
-  final Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime) onSelectionChange;
+  final Widget Function(List<MobkitCalendarAppointmentModel>, DateTime datetime)? onPopupChange;
+  final Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime)? onSelectionChange;
   final List<MobkitCalendarAppointmentModel> customCalendarModel;
   final MobkitCalendarConfigModel? config;
 
@@ -72,7 +72,7 @@ class _CarouselState extends State<NativeCarousel> {
       }
       // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
       _lastActivity = _pageController.position.activity;
-      widget.onSelectionChange([], widget.date.value);
+      widget.onSelectionChange?.call([], widget.date.value);
     } else {
       // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
       if (_pageController.position.activity is BallisticScrollActivity && _lastActivity is! DragScrollActivity) {
@@ -100,7 +100,7 @@ class _CarouselState extends State<NativeCarousel> {
       }
       // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
       _lastActivity = _pageController.position.activity;
-      widget.onSelectionChange([], widget.date.value);
+      widget.onSelectionChange?.call([], widget.date.value);
     }
   }
 
@@ -116,7 +116,8 @@ class _CarouselState extends State<NativeCarousel> {
               pageSnapping: true,
               controller: _pageController,
               onPageChanged: (page) {
-                widget.onSelectionChange(findCustomModel(widget.customCalendarModel, showDates[page]), showDates[page]);
+                widget.onSelectionChange
+                    ?.call(findCustomModel(widget.customCalendarModel, showDates[page]), showDates[page]);
                 widget.date.value = showDates[page];
                 showDates.first == showDates[page] ? setShowDates(false) : null;
                 showDates.last == showDates[page] ? setShowDates(true) : null;
@@ -133,8 +134,8 @@ class _CarouselState extends State<NativeCarousel> {
                       ? widget.config?.calendarPopupConfigModel?.popUpBoxDecoration
                       : widget.config?.calendarPopupConfigModel?.popUpBoxDecoration?.copyWith(
                           color: widget.config?.calendarPopupConfigModel?.popUpBoxDecoration?.color?.withOpacity(0.6)),
-                  child: widget.onPopupChange(
-                      findCustomModel(widget.customCalendarModel, showDates[index]), showDates[index]),
+                  child: widget.onPopupChange
+                      ?.call(findCustomModel(widget.customCalendarModel, showDates[index]), showDates[index]),
                 );
               }),
         ),

@@ -29,7 +29,6 @@ class _MobkitCalendarMonthlyViewState extends State<MobkitCalendarMonthlyView> {
           ),
           body: MobkitCalendarWidget(
             calendarDate: DateTime.now(),
-            agendaWidget: (MobkitCalendarAppointmentModel model, DateTime datetime) => null,
             key: UniqueKey(),
             config: controller.configModel,
             dateRangeChanged: (datetime) => null,
@@ -63,7 +62,6 @@ class _MobkitCalendarMonthlyViewState extends State<MobkitCalendarMonthlyView> {
                 controller.setCalendarDate(model, date),
             appointmentModel: eventList,
             eventTap: (model) => null,
-            weeklyViewWidget: (val) => null,
             onPopupChange: (List<MobkitCalendarAppointmentModel> models, DateTime datetime) => Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 18),
               child: models.isNotEmpty

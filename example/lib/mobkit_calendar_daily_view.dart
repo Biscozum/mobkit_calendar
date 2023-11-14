@@ -20,10 +20,6 @@ class MobkitCalendarDailyView extends StatelessWidget {
       body: MobkitCalendarWidget(
         calendarDate: DateTime.now(),
         config: controller.configModel,
-        agendaWidget: (MobkitCalendarAppointmentModel model, DateTime datetime) => null,
-        weeklyViewWidget: (val) => null,
-        dateRangeChanged: (datetime) => null,
-        headerWidget: (List<MobkitCalendarAppointmentModel> models, DateTime datetime) => null,
         titleWidget: (List<MobkitCalendarAppointmentModel> models, DateTime datetime) => Padding(
           padding: const EdgeInsets.symmetric(vertical: 12),
           child: Column(children: [
@@ -40,9 +36,6 @@ class MobkitCalendarDailyView extends StatelessWidget {
         onSelectionChange: (List<MobkitCalendarAppointmentModel> model, DateTime date) =>
             controller.setCalendarDate(model, date),
         appointmentModel: eventList,
-        eventTap: (model) => null,
-        onPopupChange: (List<MobkitCalendarAppointmentModel> models, DateTime datetime) => null,
-        onDateChanged: (DateTime datetime) => null,
       ),
     );
   }
