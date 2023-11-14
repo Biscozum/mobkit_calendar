@@ -27,7 +27,6 @@ class _MobkitCalendarWeeklyViewState extends State<MobkitCalendarWeeklyView> {
       body: MobkitCalendarWidget(
         calendarDate: DateTime.now(),
         config: controller.configModel,
-        agendaWidget: (MobkitCalendarAppointmentModel model, DateTime datetime) => null,
         weeklyViewWidget: (val) => Expanded(
           child: ListView(
             children: [
@@ -98,7 +97,6 @@ class _MobkitCalendarWeeklyViewState extends State<MobkitCalendarWeeklyView> {
           ),
         ),
         dateRangeChanged: (datetime) => null,
-        headerWidget: (List<MobkitCalendarAppointmentModel> models, DateTime datetime) => null,
         titleWidget: (List<MobkitCalendarAppointmentModel> models, DateTime datetime) => Padding(
           padding: const EdgeInsets.symmetric(vertical: 12),
           child: Column(children: [
@@ -115,8 +113,6 @@ class _MobkitCalendarWeeklyViewState extends State<MobkitCalendarWeeklyView> {
         onSelectionChange: (List<MobkitCalendarAppointmentModel> model, DateTime date) =>
             controller.setCalendarDate(model, date),
         appointmentModel: eventList,
-        eventTap: (model) => null,
-        onPopupChange: (List<MobkitCalendarAppointmentModel> models, DateTime datetime) => null,
         onDateChanged: (DateTime datetime) {},
       ),
     );

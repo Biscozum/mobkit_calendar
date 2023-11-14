@@ -5,7 +5,7 @@ import '../../../mobkit_calendar.dart';
 class CalendarMonthSelectionBar extends StatelessWidget {
   final ValueNotifier<DateTime> calendarDate;
   final MobkitCalendarConfigModel? config;
-  final Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime) onSelectionChange;
+  final Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime)? onSelectionChange;
 
   const CalendarMonthSelectionBar(this.calendarDate, this.onSelectionChange, this.config, {Key? key}) : super(key: key);
 

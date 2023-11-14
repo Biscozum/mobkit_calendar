@@ -10,20 +10,22 @@ class CalendarAgendaBar extends StatefulWidget {
   final ValueNotifier<DateTime> calendarDate;
   final MobkitCalendarConfigModel? config;
   final List<MobkitCalendarAppointmentModel> customCalendarModel;
-  final Function(DateTime datetime) dateRangeChanged;
-  final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) titleWidget;
-  final Widget? Function(MobkitCalendarAppointmentModel list, DateTime datetime) agendaWidget;
-  final Function(MobkitCalendarAppointmentModel model) eventTap;
+  final Function(DateTime datetime)? dateRangeChanged;
+  final Function(DateTime datetime)? onDateChanged;
+  final Widget Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime)? titleWidget;
+  final Widget Function(MobkitCalendarAppointmentModel list, DateTime datetime)? agendaWidget;
+  final Function(MobkitCalendarAppointmentModel model)? eventTap;
 
   const CalendarAgendaBar(
     this.calendarDate, {
     Key? key,
     this.config,
     required this.customCalendarModel,
-    required this.titleWidget,
-    required this.agendaWidget,
-    required this.dateRangeChanged,
-    required this.eventTap,
+    this.titleWidget,
+    this.agendaWidget,
+    this.dateRangeChanged,
+    this.onDateChanged,
+    this.eventTap,
   }) : super(key: key);
 
   @override
@@ -45,11 +47,15 @@ class _CalendarAgendaBarState extends State<CalendarAgendaBar> {
           if (widget.config?.agendaViewConfigModel != null && lastDate.value != null) {
             if (widget.config!.agendaViewConfigModel!.endDate != null &&
                 lastDate.value!.isAfter(widget.config!.agendaViewConfigModel!.endDate!)) {
-              widget.dateRangeChanged(lastDate.value!);
+              widget.dateRangeChanged?.call(lastDate.value!);
             } else if (widget.config!.agendaViewConfigModel!.startDate != null &&
                 lastDate.value!.isBefore(widget.config!.agendaViewConfigModel!.startDate!)) {
-              widget.dateRangeChanged(lastDate.value!);
+              widget.dateRangeChanged?.call(lastDate.value!);
             }
+          } else if (widget.config?.agendaViewConfigModel == null ||
+              widget.config?.agendaViewConfigModel?.endDate == null ||
+              widget.config?.agendaViewConfigModel?.startDate == null) {
+            widget.onDateChanged?.call(lastDate.value!);
           }
         }
       });
@@ -69,16 +75,11 @@ class _CalendarAgendaBarState extends State<CalendarAgendaBar> {
         ValueListenableBuilder(
           valueListenable: lastDate,
           builder: (_, DateTime? date, __) {
-            return ((widget.config?.topBarConfig.isVisibleHeaderWidget ?? false) &&
-                    widget.titleWidget(
-                          findCustomModel(widget.customCalendarModel, lastDate.value ?? DateTime.now()),
-                          lastDate.value ?? DateTime.now(),
-                        ) !=
-                        null)
-                ? widget.titleWidget(
+            return ((widget.config?.topBarConfig.isVisibleHeaderWidget ?? false) && widget.titleWidget != null)
+                ? widget.titleWidget!.call(
                     findCustomModel(widget.customCalendarModel, lastDate.value ?? DateTime.now()),
                     lastDate.value ?? DateTime.now(),
-                  )!
+                  )
                 : Container();
           },
         ),
@@ -123,8 +124,8 @@ class _CalendarAgendaBarState extends State<CalendarAgendaBar> {
                                 return Padding(
                                   padding: const EdgeInsets.symmetric(vertical: 4),
                                   child: GestureDetector(
-                                    onTap: () => widget.eventTap(listData[index]),
-                                    child: widget.agendaWidget(listData[index], currentDate) ??
+                                    onTap: () => widget.eventTap?.call(listData[index]),
+                                    child: widget.agendaWidget?.call(listData[index], currentDate) ??
                                         Row(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [

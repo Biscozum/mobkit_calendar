@@ -53,31 +53,31 @@ class MobkitCalendarWidget extends StatefulWidget {
   final MobkitCalendarConfigModel? config;
   final List<MobkitCalendarAppointmentModel> appointmentModel;
   final Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime) onSelectionChange;
-  final Function(MobkitCalendarAppointmentModel model) eventTap;
-  final Function(DateTime datetime) onDateChanged;
+  final Function(MobkitCalendarAppointmentModel model)? eventTap;
+  final Function(DateTime datetime)? onDateChanged;
 
-  final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) onPopupChange;
-  final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) headerWidget;
-  final Widget? Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime) titleWidget;
-  final Widget? Function(MobkitCalendarAppointmentModel list, DateTime datetime) agendaWidget;
-  final Widget? Function(Map<DateTime, List<MobkitCalendarAppointmentModel>>) weeklyViewWidget;
-  final Function(DateTime datetime) dateRangeChanged;
+  final Widget Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime)? onPopupChange;
+  final Widget Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime)? headerWidget;
+  final Widget Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime)? titleWidget;
+  final Widget Function(MobkitCalendarAppointmentModel list, DateTime datetime)? agendaWidget;
+  final Widget Function(Map<DateTime, List<MobkitCalendarAppointmentModel>>)? weeklyViewWidget;
+  final Function(DateTime datetime)? dateRangeChanged;
 
   MobkitCalendarWidget({
     DateTime? selectedDate,
     Key? key,
     this.config,
     required this.onSelectionChange,
-    required this.eventTap,
+    this.eventTap,
     required this.appointmentModel,
     required this.calendarDate,
-    required this.onPopupChange,
-    required this.headerWidget,
-    required this.titleWidget,
-    required this.agendaWidget,
-    required this.onDateChanged,
-    required this.weeklyViewWidget,
-    required this.dateRangeChanged,
+    this.onPopupChange,
+    this.headerWidget,
+    this.titleWidget,
+    this.agendaWidget,
+    this.onDateChanged,
+    this.weeklyViewWidget,
+    this.dateRangeChanged,
   }) : super(key: key) {
     selectDate = selectedDate ?? DateTime.now();
   }

@@ -20,10 +20,6 @@ class MobkitCalendarAgendaView extends StatelessWidget {
       body: MobkitCalendarWidget(
         calendarDate: DateTime.now(),
         config: controller.configModel,
-        agendaWidget: (MobkitCalendarAppointmentModel model, DateTime datetime) => null,
-        weeklyViewWidget: (val) => null,
-        dateRangeChanged: (datetime) => null,
-        headerWidget: (List<MobkitCalendarAppointmentModel> models, DateTime datetime) => null,
         titleWidget: (List<MobkitCalendarAppointmentModel> models, DateTime datetime) => Padding(
           padding: const EdgeInsets.symmetric(vertical: 12),
           child: Column(children: [
