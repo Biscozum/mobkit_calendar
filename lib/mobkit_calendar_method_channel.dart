@@ -20,8 +20,8 @@ class MethodChannelMobkitCalendar extends MobkitCalendarPlatform {
 
   @override
   Future openEventDetail(Map arguments) async {
-    final version = await methodChannel.invokeMethod<String>('openEventDetail', arguments);
-    return version;
+    final success = await methodChannel.invokeMethod<bool>('openEventDetail', arguments);
+    return success;
   }
 
   @override

@@ -17,7 +17,12 @@ public class MobkitCalendarPlugin: NSObject, FlutterPlugin {
     switch call.method {
     case "getPlatformVersion":
       result("iOS " + UIDevice.current.systemVersion)
-    
+    case "openEventDetail":
+        if let args = call.arguments as? Dictionary<String, Any>
+             {
+            calendarManager.openEventDetail(isoDate: (args["isoDate"] as! String))
+            result(true)
+            }
     case "requestCalendarAccess":
         calendarManager.requestCalendarAccess { granted in
                     result(String(granted))
@@ -86,5 +91,16 @@ class CalendarManager {
     func fetchCalendarAccounts(completion: @escaping ([EKCalendar]) -> Void) {
         let calendars = eventStore.calendars(for: .event)
         completion(calendars)
+    }
+    func openEventDetail(isoDate: String) {
+        let dateFormatter = ISO8601DateFormatter()
+        dateFormatter.formatOptions = ISO8601DateFormatter.Options.withInternetDateTime.subtracting(.withTimeZone)
+        if let date = dateFormatter.date(from:isoDate) {
+            let interval = date.timeIntervalSinceReferenceDate
+            guard let url = URL(string: "calshow:\(interval)") else {return}
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        }
+        else
+        {return}
     }
 }
