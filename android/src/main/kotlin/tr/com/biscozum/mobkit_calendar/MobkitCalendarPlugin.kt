@@ -1,17 +1,16 @@
 package tr.com.biscozum.mobkit_calendar
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
-import android.content.pm.PackageManager
+import android.content.Intent
 import android.database.Cursor
+import android.net.Uri
 import android.os.Build
 import android.provider.CalendarContract
 import androidx.annotation.NonNull
 import androidx.annotation.RequiresApi
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -21,7 +20,6 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import org.json.JSONObject
 import java.text.SimpleDateFormat
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
@@ -64,7 +62,16 @@ class MobkitCalendarPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
         if (call.method == "getPlatformVersion") {
             result.success("Android ${Build.VERSION.RELEASE}")
-        } else if (call.method == "getAccountList") {
+        } else if(call.method == "openEventDetail"){
+            val intent = Intent(Intent.ACTION_VIEW)
+            val uri: Uri.Builder = CalendarContract.Events.CONTENT_URI.buildUpon()
+            var eventId: String = ((call.arguments as HashMap<*, *>)["eventId"] as String);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            uri.appendPath(eventId)
+            intent.setData(uri.build())
+            startActivity(this.context, intent, null);
+        }
+        else if (call.method == "getAccountList") {
             val calendarsProjection: Array<String> = arrayOf<String>(
                 CalendarContract.Calendars._ID,
                 CalendarContract.Calendars.ACCOUNT_NAME,

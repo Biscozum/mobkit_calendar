@@ -19,6 +19,12 @@ class MethodChannelMobkitCalendar extends MobkitCalendarPlatform {
   }
 
   @override
+  Future openEventDetail(Map arguments) async {
+    final success = await methodChannel.invokeMethod<bool>('openEventDetail', arguments);
+    return success;
+  }
+
+  @override
   Future<List<AccountGroupModel>> getAccountList() async {
     PermissionStatus result = await Permission.calendar.request();
     List<AccountGroupModel> accounts = [];

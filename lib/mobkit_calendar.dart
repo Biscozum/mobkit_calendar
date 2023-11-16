@@ -39,4 +39,8 @@ class MobkitCalendar {
   Future requestCalendarAccess() {
     return MobkitCalendarPlatform.instance.requestCalendarAccess();
   }
+
+  Future openEventDetail(Map arguments) {
+    return MobkitCalendarPlatform.instance.openEventDetail(arguments);
+  }
 }
