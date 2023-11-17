@@ -49,12 +49,12 @@ class MobkitMonthAndYearPicker extends StatelessWidget {
 
 class MobkitCalendarWidget extends StatefulWidget {
   final DateTime calendarDate;
-  late final DateTime selectDate;
   final MobkitCalendarConfigModel? config;
   final List<MobkitCalendarAppointmentModel> appointmentModel;
   final Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime) onSelectionChange;
   final Function(MobkitCalendarAppointmentModel model)? eventTap;
   final Function(DateTime datetime)? onDateChanged;
+  final DateTime? selectedDate;
 
   final Widget Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime)? onPopupChange;
   final Widget Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime)? headerWidget;
@@ -63,10 +63,10 @@ class MobkitCalendarWidget extends StatefulWidget {
   final Widget Function(Map<DateTime, List<MobkitCalendarAppointmentModel>>)? weeklyViewWidget;
   final Function(DateTime datetime)? dateRangeChanged;
 
-  MobkitCalendarWidget({
-    DateTime? selectedDate,
+  const MobkitCalendarWidget({
     Key? key,
     this.config,
+    this.selectedDate,
     required this.onSelectionChange,
     this.eventTap,
     required this.appointmentModel,
@@ -78,9 +78,7 @@ class MobkitCalendarWidget extends StatefulWidget {
     this.onDateChanged,
     this.weeklyViewWidget,
     this.dateRangeChanged,
-  }) : super(key: key) {
-    selectDate = selectedDate ?? DateTime.now();
-  }
+  }) : super(key: key);
 
   @override
   State<MobkitCalendarWidget> createState() => _MobkitCalendarWidgetState();
@@ -297,7 +295,7 @@ class _MobkitCalendarWidgetState extends State<MobkitCalendarWidget> {
   @override
   Widget build(BuildContext context) {
     ValueNotifier<DateTime> widgetCalendarDate = ValueNotifier<DateTime>(widget.calendarDate);
-    ValueNotifier<DateTime> widgetSelectedDate = ValueNotifier<DateTime>(widget.selectDate);
+    ValueNotifier<DateTime?> widgetSelectedDate = ValueNotifier<DateTime?>(widget.selectedDate);
     initializeDateFormatting();
     parseAppointmentModel();
     return isLoadData
