@@ -9,7 +9,7 @@ import 'multiple_listenable_builder_widget.dart';
 
 class CalendarDateSelectionBar extends StatefulWidget {
   final ValueNotifier<DateTime> calendarDate;
-  final ValueNotifier<DateTime> selectedDate;
+  final ValueNotifier<DateTime?> selectedDate;
 
   final MobkitCalendarConfigModel? config;
   final List<MobkitCalendarAppointmentModel> customCalendarModel;
@@ -138,10 +138,10 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
               itemBuilder: (context, index) {
                 DateTime firstWeekDay = showDates[index];
                 var headerDate =
-                    (findFirstDateOfTheWeek(showDates[index]).isBeforeOrEqualTo(widget.selectedDate.value) ?? false) &&
-                            (findLastDateOfTheWeek(showDates[index]).isAfterOrEqualTo(widget.selectedDate.value) ??
+                    (findFirstDateOfTheWeek(showDates[index]).isBeforeOrEqualTo(widget.calendarDate.value) ?? false) &&
+                            (findLastDateOfTheWeek(showDates[index]).isAfterOrEqualTo(widget.calendarDate.value) ??
                                 false)
-                        ? widget.selectedDate.value
+                        ? widget.calendarDate.value
                         : showDates[index];
                 return Padding(
                   padding: EdgeInsets.only(
@@ -227,7 +227,7 @@ class DateList extends StatefulWidget {
   final MobkitCalendarConfigModel? config;
   final List<MobkitCalendarAppointmentModel> customCalendarModel;
   final DateTime date;
-  final ValueNotifier<DateTime> selectedDate;
+  final ValueNotifier<DateTime?> selectedDate;
   final Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime)? onSelectionChange;
   final Widget Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime)? onPopupChange;
   final Widget Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime)? headerWidget;
@@ -260,7 +260,7 @@ class _DateListState extends State<DateList> {
 
   List<Widget> getDatesMonthly(
     DateTime date,
-    ValueNotifier<DateTime> selectedDate,
+    ValueNotifier<DateTime?> selectedDate,
     Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime)? onSelectionChange,
     final MobkitCalendarConfigModel? config,
     final List<MobkitCalendarAppointmentModel> customCalendarModel,
@@ -306,7 +306,7 @@ class _DateListState extends State<DateList> {
 
   List<Widget> getDatesWeekly(
     DateTime date,
-    ValueNotifier<DateTime> selectedDate,
+    ValueNotifier<DateTime?> selectedDate,
     Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime)? onSelectionChange,
     final MobkitCalendarConfigModel? config,
     final List<MobkitCalendarAppointmentModel> customCalendarModel,

@@ -12,7 +12,7 @@ class NativeCarousel extends StatefulWidget {
     required this.customCalendarModel,
     this.config,
   }) : super(key: key);
-  final ValueNotifier<DateTime> date;
+  final ValueNotifier<DateTime?> date;
   final List<MobkitCalendarAppointmentModel> listAppointmentModel;
   final Widget Function(List<MobkitCalendarAppointmentModel>, DateTime datetime)? onPopupChange;
   final Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime)? onSelectionChange;
@@ -25,7 +25,7 @@ class NativeCarousel extends StatefulWidget {
 
 class _CarouselState extends State<NativeCarousel> {
   late PageController _pageController;
-  late int activePage = widget.date.value.day;
+  late int activePage = widget.date.value!.day;
   List<DateTime> showDates = [];
   ScrollActivity? _lastActivity;
 
@@ -34,9 +34,9 @@ class _CarouselState extends State<NativeCarousel> {
     super.initState();
     _pageController = PageController(
         viewportFraction: widget.config?.calendarPopupConfigModel?.viewportFraction ?? 1.0,
-        initialPage: widget.date.value.day);
-    showDates = getDaysInBetween(DateTime(widget.date.value.year, widget.date.value.month, 0),
-        DateTime(widget.date.value.year, widget.date.value.month + 1, 1));
+        initialPage: widget.date.value!.day);
+    showDates = getDaysInBetween(DateTime(widget.date.value!.year, widget.date.value!.month, 0),
+        DateTime(widget.date.value!.year, widget.date.value!.month + 1, 1));
   }
 
   int calculateMonth(DateTime today) {
@@ -50,8 +50,8 @@ class _CarouselState extends State<NativeCarousel> {
       if (_pageController.position.activity is BallisticScrollActivity && _lastActivity is! DragScrollActivity) {
         Future.delayed(const Duration(milliseconds: 500)).then(
           (value) {
-            showDates = getDaysInBetween(DateTime(widget.date.value.year, widget.date.value.month, 0),
-                DateTime(widget.date.value.year, widget.date.value.month + 1, 1));
+            showDates = getDaysInBetween(DateTime(widget.date.value!.year, widget.date.value!.month, 0),
+                DateTime(widget.date.value!.year, widget.date.value!.month + 1, 1));
             _pageController.jumpToPage(
               1,
             );
@@ -62,8 +62,8 @@ class _CarouselState extends State<NativeCarousel> {
       else if (_pageController.position.activity is DrivenScrollActivity && _lastActivity is! DrivenScrollActivity) {
         Future.delayed(const Duration(milliseconds: 250)).then(
           (value) {
-            showDates = getDaysInBetween(DateTime(widget.date.value.year, widget.date.value.month, 0),
-                DateTime(widget.date.value.year, widget.date.value.month + 1, 1));
+            showDates = getDaysInBetween(DateTime(widget.date.value!.year, widget.date.value!.month, 0),
+                DateTime(widget.date.value!.year, widget.date.value!.month + 1, 1));
             _pageController.jumpToPage(
               1,
             );
@@ -72,14 +72,14 @@ class _CarouselState extends State<NativeCarousel> {
       }
       // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
       _lastActivity = _pageController.position.activity;
-      widget.onSelectionChange?.call([], widget.date.value);
+      widget.onSelectionChange?.call([], widget.date.value!);
     } else {
       // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
       if (_pageController.position.activity is BallisticScrollActivity && _lastActivity is! DragScrollActivity) {
         Future.delayed(const Duration(milliseconds: 500)).then(
           (value) {
-            showDates = getDaysInBetween(DateTime(widget.date.value.year, widget.date.value.month, 0),
-                DateTime(widget.date.value.year, widget.date.value.month + 1, 1));
+            showDates = getDaysInBetween(DateTime(widget.date.value!.year, widget.date.value!.month, 0),
+                DateTime(widget.date.value!.year, widget.date.value!.month + 1, 1));
             _pageController.jumpToPage(
               showDates.length - 2,
             );
@@ -90,8 +90,8 @@ class _CarouselState extends State<NativeCarousel> {
       else if (_pageController.position.activity is DrivenScrollActivity && _lastActivity is! DrivenScrollActivity) {
         Future.delayed(const Duration(milliseconds: 250)).then(
           (value) {
-            showDates = getDaysInBetween(DateTime(widget.date.value.year, widget.date.value.month, 0),
-                DateTime(widget.date.value.year, widget.date.value.month + 1, 1));
+            showDates = getDaysInBetween(DateTime(widget.date.value!.year, widget.date.value!.month, 0),
+                DateTime(widget.date.value!.year, widget.date.value!.month + 1, 1));
             _pageController.jumpToPage(
               showDates.length - 2,
             );
@@ -100,7 +100,7 @@ class _CarouselState extends State<NativeCarousel> {
       }
       // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
       _lastActivity = _pageController.position.activity;
-      widget.onSelectionChange?.call([], widget.date.value);
+      widget.onSelectionChange?.call([], widget.date.value!);
     }
   }
 

@@ -11,7 +11,7 @@ import 'model/configs/calendar_config_model.dart';
 class CalendarDateCell extends StatelessWidget {
   final DateTime calendarDate;
   final bool enabled;
-  final ValueNotifier<DateTime> selectedDate;
+  final ValueNotifier<DateTime?> selectedDate;
   final MobkitCalendarConfigModel? config;
   final List<MobkitCalendarAppointmentModel> customCalendarModel;
   final Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime)? onSelectionChange;
@@ -32,7 +32,7 @@ class CalendarDateCell extends StatelessWidget {
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
         valueListenable: selectedDate,
-        builder: (context, DateTime selectedDate, widget) {
+        builder: (context, DateTime? selectedDate, widget) {
           return GestureDetector(
             onTap: () async {
               if (enabled || config?.mobkitCalendarViewType != MobkitCalendarViewType.monthly) {
@@ -44,7 +44,7 @@ class CalendarDateCell extends StatelessWidget {
                     useRootNavigator: true,
                     builder: (_) => ValueListenableBuilder(
                         valueListenable: this.selectedDate,
-                        builder: (_, DateTime date, __) {
+                        builder: (_, DateTime? date, __) {
                           return NativeCarousel(
                             date: this.selectedDate,
                             listAppointmentModel: customCalendarModel,
@@ -61,7 +61,7 @@ class CalendarDateCell extends StatelessWidget {
             key: Key("${DateUtils.dateOnly(calendarDate)}"),
             child: CalendarCellWidget(
               calendarDate.day.toString(),
-              isSelected: selectedDate.isSameDay(calendarDate),
+              isSelected: selectedDate != null && selectedDate.isSameDay(calendarDate),
               showedCustomCalendarModelList: findCustomModel(customCalendarModel, calendarDate),
               isEnabled: enabled,
               isWeekend: calendarDate.isWeekend(),

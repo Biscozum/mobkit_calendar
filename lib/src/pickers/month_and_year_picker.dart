@@ -9,7 +9,7 @@ class MonthAndYearPicker extends StatelessWidget {
   late final MobkitMonthAndYearCalendarConfigModel config;
   final MobkitMonthAndYearCalendarConfigModel? monthAndYearConfigModel;
   final ValueNotifier<DateTime> calendarDate;
-  final ValueNotifier<DateTime> selectedDate;
+  final ValueNotifier<DateTime?> selectedDate;
   final ValueNotifier<List<DateTime>> selectedDates;
   final ValueChanged<DateTime> onSelectionChange;
   final Function(DateTime, DateTime) onRangeSelectionChange;

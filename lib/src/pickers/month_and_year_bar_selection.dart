@@ -8,7 +8,7 @@ import 'model/month_and_year_config_model.dart';
 
 class MonthList extends StatefulWidget {
   final DateTime date;
-  final ValueNotifier<DateTime> selectedDate;
+  final ValueNotifier<DateTime?> selectedDate;
   final ValueNotifier<List<DateTime>> selectedDates;
   final MobkitMonthAndYearCalendarConfigModel? config;
   final ValueChanged<DateTime> onSelectionChange;
@@ -33,7 +33,7 @@ class _MonthListState extends State<MonthList> {
 
   List<TableRow> generateMonths(
       DateTime date,
-      ValueNotifier<DateTime> selectedDate,
+      ValueNotifier<DateTime?> selectedDate,
       final MobkitMonthAndYearCalendarConfigModel? config,
       ValueNotifier<List<DateTime>> selectedDates,
       ValueChanged<DateTime> onSelectionChange,
@@ -92,7 +92,7 @@ class _MonthListState extends State<MonthList> {
 
 class MonthAndYearBarSelection extends StatefulWidget {
   final ValueNotifier<DateTime> calendarDate;
-  final ValueNotifier<DateTime> selectedDate;
+  final ValueNotifier<DateTime?> selectedDate;
   final ValueNotifier<List<DateTime>> selectedDates;
   final MobkitMonthAndYearCalendarConfigModel? config;
   final ValueChanged<DateTime> onSelectionChange;

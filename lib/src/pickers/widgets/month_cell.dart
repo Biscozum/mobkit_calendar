@@ -8,7 +8,7 @@ import 'picker_cell.dart';
 class MonthCell extends StatelessWidget {
   final DateTime date;
   final bool enabled;
-  final ValueNotifier<DateTime> selectedDate;
+  final ValueNotifier<DateTime?> selectedDate;
   final ValueNotifier<List<DateTime>> selectedDates;
   final MobkitMonthAndYearCalendarConfigModel? config;
   final bool isSelectedNew;
@@ -25,7 +25,7 @@ class MonthCell extends StatelessWidget {
     var isEnabled = true;
     return ValueListenableBuilder(
         valueListenable: selectedDate,
-        builder: (context, DateTime selectedDate, widget) {
+        builder: (context, DateTime? selectedDate, widget) {
           return config != null
               ? config!.selectionType == MobkitMonthAndYearCalendarSelectionType.selectionRange
                   ? CellWidget(
@@ -44,7 +44,7 @@ class MonthCell extends StatelessWidget {
                       },
                       child: CellWidget(
                         DateFormat('MMMM', config!.locale).format(DateTime(0, date.month)),
-                        isSelected: selectedDate.isSameDay(date),
+                        isSelected: selectedDate != null && selectedDate.isSameDay(date),
                         isCurrent: DateFormat.yMd().format(DateTime.now()) == DateFormat.yMd().format(date),
                         monthAndYearConfig: config,
                         calendarType: CalendarType.monthAndYearCalendar,
@@ -57,7 +57,7 @@ class MonthCell extends StatelessWidget {
                   },
                   child: CellWidget(
                     DateFormat('MMMM', config!.locale).format(DateTime(0, date.month)),
-                    isSelected: selectedDate.isSameDay(date),
+                    isSelected: selectedDate != null && selectedDate.isSameDay(date),
                     isCurrent: DateFormat.yMd().format(DateTime.now()) == DateFormat.yMd().format(date),
                   ),
                 );
