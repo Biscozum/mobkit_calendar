@@ -95,12 +95,12 @@ class MobkitCalendarPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                     var model: HashMap<String, Any> = HashMap<String, Any>();
                     model.put(
                         "groupName",
-                        if (cur.getString(0) == "1") "Telefon" else cur.getString(1),
+                        if (cur.getString(0) == "1") "Phone" else cur.getString(1),
                     )
                     model.put("accountId", cur.getString(0))
                     model.put(
                         "accountName",
-                        if (cur.getString(0) == "1") "Yerel Takvim" else cur.getString(
+                        if (cur.getString(0) == "1") "Local Calendar" else cur.getString(
                             2
                         )
                     )
