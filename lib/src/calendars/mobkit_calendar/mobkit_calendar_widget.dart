@@ -59,7 +59,6 @@ class MobkitCalendarView extends StatelessWidget {
                 .isBetween(secondStartDate, secondEndDate.add(const Duration(minutes: -1))) ??
             false);
   }
-
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
