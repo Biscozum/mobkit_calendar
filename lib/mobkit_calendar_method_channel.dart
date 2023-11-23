@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:mobkit_calendar/mobkit_calendar.dart';
 import 'mobkit_calendar_platform_interface.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -71,17 +73,32 @@ class MethodChannelMobkitCalendar extends MobkitCalendarPlatform {
       if (eventMap["events"] is List<Object?>) {
         for (var event in eventMap["events"]) {
           if (event is Map) {
-            MobkitCalendarAppointmentModel mobkitCalendarAppointmentModel = MobkitCalendarAppointmentModel(
-              nativeEventId: event["nativeEventId"].toString(),
-              title: event["fullName"],
-              appointmentStartDate:
-                  DateTime.fromMillisecondsSinceEpoch(event["startDate"], isUtc: event["isFullDayEvent"]),
-              appointmentEndDate: DateTime.fromMillisecondsSinceEpoch(event["endDate"], isUtc: event["isFullDayEvent"]),
-              isAllDay: event["isFullDayEvent"],
-              detail: event["description"] ?? "",
-              color: const Color(0xff7209b7),
-              recurrenceModel: null,
-            );
+            late MobkitCalendarAppointmentModel mobkitCalendarAppointmentModel;
+            if (Platform.isAndroid) {
+              mobkitCalendarAppointmentModel = MobkitCalendarAppointmentModel(
+                nativeEventId: event["nativeEventId"].toString(),
+                title: event["fullName"],
+                appointmentStartDate:
+                    DateTime.fromMillisecondsSinceEpoch(event["startDate"], isUtc: event["isFullDayEvent"]),
+                appointmentEndDate:
+                    DateTime.fromMillisecondsSinceEpoch(event["endDate"], isUtc: event["isFullDayEvent"]),
+                isAllDay: event["isFullDayEvent"],
+                detail: event["description"] ?? "",
+                color: const Color(0xff7209b7),
+                recurrenceModel: null,
+              );
+            } else {
+              mobkitCalendarAppointmentModel = MobkitCalendarAppointmentModel(
+                nativeEventId: event["nativeEventId"].toString(),
+                title: event["fullName"],
+                appointmentStartDate: DateFormat('dd/MM/yyyy HH:mm:ss').parse(event["startDate"]),
+                appointmentEndDate: DateFormat('dd/MM/yyyy HH:mm:ss').parse(event["endDate"]),
+                isAllDay: event["isFullDayEvent"],
+                detail: event["description"] ?? "",
+                color: const Color(0xff7209b7),
+                recurrenceModel: null,
+              );
+            }
             events.add(mobkitCalendarAppointmentModel);
           }
         }
