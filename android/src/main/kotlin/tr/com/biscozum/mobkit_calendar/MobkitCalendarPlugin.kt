@@ -123,7 +123,6 @@ class MobkitCalendarPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                 CalendarContract.Events.ALL_DAY,
                 CalendarContract.Events.CALENDAR_COLOR
             );
-            val format = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
 
             var eventModelList: MutableList<HashMap<String, Any>> =
                 mutableListOf<HashMap<String, Any>>();
@@ -173,8 +172,8 @@ class MobkitCalendarPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                 if (cur != null && cur.count > 0) {
                     while (cur.moveToNext()) {
                         var eventModel: HashMap<String, Any> = HashMap<String, Any>();
-                        val startDate = format.format(Date(cur.getLong(2)))
-                        val endDate = format.format(Date(cur.getLong(3)))
+                        val startDate = cur.getLong(2);
+                        val endDate = cur.getLong(3);
                         eventModel.put(
                             "nativeEventId", cur.getString(0)
                         )
