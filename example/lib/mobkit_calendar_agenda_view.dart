@@ -19,6 +19,7 @@ class MobkitCalendarAgendaView extends StatelessWidget {
       ),
       body: MobkitCalendarWidget(
         calendarDate: DateTime.now(),
+        minDate: DateTime(1800),
         config: controller.configModel,
         titleWidget: (List<MobkitCalendarAppointmentModel> models, DateTime datetime) => Padding(
           padding: const EdgeInsets.symmetric(vertical: 12),

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:mobkit_calendar/src/calendars/mobkit_calendar/model/mobkit_calendar_appointment_model.dart';
 import 'package:mobkit_calendar/src/calendars/mobkit_calendar/utils/date_utils.dart';
@@ -10,6 +12,7 @@ import 'multiple_listenable_builder_widget.dart';
 class CalendarDateSelectionBar extends StatefulWidget {
   final ValueNotifier<DateTime> calendarDate;
   final ValueNotifier<DateTime?> selectedDate;
+  final DateTime minDate;
 
   final MobkitCalendarConfigModel? config;
   final List<MobkitCalendarAppointmentModel> customCalendarModel;
@@ -21,6 +24,7 @@ class CalendarDateSelectionBar extends StatefulWidget {
 
   const CalendarDateSelectionBar(
     this.calendarDate,
+    this.minDate,
     this.selectedDate, {
     Key? key,
     this.config,
@@ -38,82 +42,41 @@ class CalendarDateSelectionBar extends StatefulWidget {
 
 class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
   late PageController _pageController;
-  List<DateTime> showDates = [];
-  ScrollActivity? _lastActivity;
+  Timer? timer;
 
-  int _currentPage = 1;
+  late int _currentPage;
   @override
   void initState() {
     super.initState();
+    _currentPage = ((widget.calendarDate.value.year * 12) + widget.calendarDate.value.month) -
+        ((widget.minDate.year * 12) + widget.minDate.month);
     _pageController = widget.config?.pageController ??
-        PageController(initialPage: 1, viewportFraction: widget.config?.viewportFraction ?? 1.0);
-    _pageController.addListener(() {
-      // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-      if (_pageController.position.activity is BallisticScrollActivity && _lastActivity is! DragScrollActivity) {
-        Future.delayed(const Duration(milliseconds: 500)).then(
-          (value) {
-            _currentPage == 0 ? setShowDates(showDates[_currentPage]) : null;
-            _currentPage == 2 ? setShowDates(showDates[_currentPage]) : null;
-          },
-        );
-      }
-      // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-      else if (_pageController.position.activity is DrivenScrollActivity && _lastActivity is! DrivenScrollActivity) {
-        Future.delayed(const Duration(milliseconds: 250)).then(
-          (value) {
-            _currentPage == 0 ? setShowDates(showDates[_currentPage]) : null;
-            _currentPage == 2 ? setShowDates(showDates[_currentPage]) : null;
-            _lastActivity = null;
-          },
-        );
-      }
-      // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-      _lastActivity = _pageController.position.activity;
+        PageController(
+            initialPage: widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.monthly
+                ? (((widget.calendarDate.value.year * 12) + widget.calendarDate.value.month) -
+                    ((widget.minDate.year * 12) + widget.minDate.month))
+                : ((findFirstDateOfTheWeek(widget.calendarDate.value)
+                            .difference(findFirstDateOfTheWeek(widget.minDate))
+                            .inDays) ~/
+                        7)
+                    .abs(),
+            viewportFraction: widget.config?.viewportFraction ?? 1.0);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _pageController.position.isScrollingNotifier.addListener(() {
+        timer?.cancel();
+        if (!_pageController.position.isScrollingNotifier.value) {
+          timer = Timer(const Duration(milliseconds: 500), () {
+            widget.onDateChanged?.call(widget.calendarDate.value);
+          });
+        }
+      });
     });
-    if (widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.daily ||
-        widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.weekly) {
-      showDates = [
-        findFirstDateOfTheWeek(DateTime(
-            widget.calendarDate.value.year, widget.calendarDate.value.month, widget.calendarDate.value.day - 7)),
-        findFirstDateOfTheWeek(widget.calendarDate.value),
-        findFirstDateOfTheWeek(DateTime(
-            widget.calendarDate.value.year, widget.calendarDate.value.month, widget.calendarDate.value.day + 7)),
-        findFirstDateOfTheWeek(DateTime(
-            widget.calendarDate.value.year, widget.calendarDate.value.month, widget.calendarDate.value.day + 14)),
-      ];
-    } else {
-      showDates = [
-        DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month - 1, 1),
-        DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month, widget.calendarDate.value.day),
-        DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month + 1, 1),
-        DateTime(widget.calendarDate.value.year, widget.calendarDate.value.month + 2, 1),
-      ];
-    }
   }
 
-  setShowDates(DateTime time) {
-    if (widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.daily ||
-        widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.weekly) {
-      showDates = [
-        findFirstDateOfTheWeek(DateTime(time.year, time.month, time.day - 7)),
-        findFirstDateOfTheWeek(time),
-        findFirstDateOfTheWeek(DateTime(time.year, time.month, time.day + 7)),
-        findFirstDateOfTheWeek(DateTime(time.year, time.month, time.day + 14)),
-      ];
-    } else {
-      showDates = [
-        DateTime(time.year, time.month - 1, 1),
-        DateTime(time.year, time.month, time.day),
-        DateTime(time.year, time.month + 1, 1),
-        DateTime(time.year, time.month + 2, 1),
-      ];
-    }
-    _pageController.jumpToPage(
-      1,
-    );
-
-    widget.calendarDate.value = time;
-    widget.onDateChanged?.call(time);
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -125,7 +88,6 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
         ]),
         builder: (_, bool date, __) {
           return PageView.builder(
-              itemCount: showDates.length,
               pageSnapping: true,
               controller: _pageController,
               scrollDirection: widget.config?.mobkitCalendarViewType != MobkitCalendarViewType.monthly
@@ -133,16 +95,26 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
                   : Axis.vertical,
               padEnds: false,
               onPageChanged: (page) {
+                if (widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.daily ||
+                    widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.weekly) {
+                  widget.calendarDate.value = findFirstDateOfTheWeek(
+                      widget.calendarDate.value.add(Duration(days: _currentPage < page ? 7 : -7)));
+                }
                 _currentPage = page;
+                if (widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.monthly) {
+                  widget.calendarDate.value = addMonth(widget.minDate, _currentPage);
+                }
               },
               itemBuilder: (context, index) {
-                DateTime firstWeekDay = showDates[index];
+                DateTime currentDate = widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.monthly
+                    ? addMonth(widget.minDate, index)
+                    : findFirstDateOfTheWeek(widget.minDate).add(Duration(days: index * 7));
+                DateTime firstWeekDay = currentDate;
                 var headerDate =
-                    (findFirstDateOfTheWeek(showDates[index]).isBeforeOrEqualTo(widget.calendarDate.value) ?? false) &&
-                            (findLastDateOfTheWeek(showDates[index]).isAfterOrEqualTo(widget.calendarDate.value) ??
-                                false)
+                    (findFirstDateOfTheWeek(currentDate).isBeforeOrEqualTo(widget.calendarDate.value) ?? false) &&
+                            (findLastDateOfTheWeek(currentDate).isAfterOrEqualTo(widget.calendarDate.value) ?? false)
                         ? widget.calendarDate.value
-                        : showDates[index];
+                        : currentDate;
                 return Padding(
                   padding: EdgeInsets.only(
                       bottom: widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.monthly
@@ -164,7 +136,7 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
                           child: DateList(
                             config: widget.config,
                             customCalendarModel: widget.customCalendarModel,
-                            date: showDates[index],
+                            date: currentDate,
                             selectedDate: widget.selectedDate,
                             onSelectionChange: widget.onSelectionChange,
                             onPopupChange: widget.onPopupChange,
@@ -187,7 +159,7 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
                                 child: DateList(
                                   config: widget.config,
                                   customCalendarModel: widget.customCalendarModel,
-                                  date: showDates[index],
+                                  date: currentDate,
                                   selectedDate: widget.selectedDate,
                                   onSelectionChange: widget.onSelectionChange,
                                   onPopupChange: widget.onPopupChange,

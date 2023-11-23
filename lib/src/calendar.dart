@@ -48,6 +48,7 @@ class MobkitMonthAndYearPicker extends StatelessWidget {
 }
 
 class MobkitCalendarWidget extends StatefulWidget {
+  final DateTime minDate;
   final DateTime calendarDate;
   final MobkitCalendarConfigModel? config;
   final List<MobkitCalendarAppointmentModel> appointmentModel;
@@ -64,13 +65,14 @@ class MobkitCalendarWidget extends StatefulWidget {
   final Function(DateTime datetime)? dateRangeChanged;
 
   const MobkitCalendarWidget({
-    Key? key,
+    super.key,
     this.config,
     this.selectedDate,
     required this.onSelectionChange,
     this.eventTap,
     required this.appointmentModel,
     required this.calendarDate,
+    required this.minDate,
     this.onPopupChange,
     this.headerWidget,
     this.titleWidget,
@@ -78,13 +80,19 @@ class MobkitCalendarWidget extends StatefulWidget {
     this.onDateChanged,
     this.weeklyViewWidget,
     this.dateRangeChanged,
-  }) : super(key: key);
+  });
 
   @override
   State<MobkitCalendarWidget> createState() => _MobkitCalendarWidgetState();
 }
 
 class _MobkitCalendarWidgetState extends State<MobkitCalendarWidget> {
+  @override
+  void initState() {
+    super.initState();
+    assert(widget.minDate.isBefore(widget.calendarDate), "Minimum Date cannot be greater than Calendar Date.");
+  }
+
   late final ValueNotifier<List<DateTime>> selectedDates = ValueNotifier<List<DateTime>>(List<DateTime>.from([]));
   List<MobkitCalendarAppointmentModel> lastAppointments = [];
   bool isLoadData = false;
@@ -304,6 +312,7 @@ class _MobkitCalendarWidgetState extends State<MobkitCalendarWidget> {
             appointmentModel: lastAppointments,
             selectedDate: widgetSelectedDate,
             calendarDate: widgetCalendarDate,
+            minDate: widget.minDate,
             onSelectionChange: widget.onSelectionChange,
             eventTap: widget.eventTap,
             onPopupChange: widget.onPopupChange,

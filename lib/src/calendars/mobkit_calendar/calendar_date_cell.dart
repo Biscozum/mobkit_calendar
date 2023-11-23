@@ -61,6 +61,7 @@ class CalendarDateCell extends StatelessWidget {
             key: Key("${DateUtils.dateOnly(calendarDate)}"),
             child: CalendarCellWidget(
               calendarDate.day.toString(),
+              key: Key("CalendarCell-${DateFormat("dd-MM-yyyy").format(calendarDate)}"),
               isSelected: selectedDate != null && selectedDate.isSameDay(calendarDate),
               showedCustomCalendarModelList: findCustomModel(customCalendarModel, calendarDate),
               isEnabled: enabled,

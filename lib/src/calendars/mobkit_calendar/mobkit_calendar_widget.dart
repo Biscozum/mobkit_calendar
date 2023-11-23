@@ -17,6 +17,7 @@ class MobkitCalendarView extends StatelessWidget {
     required this.config,
     required this.appointmentModel,
     required this.calendarDate,
+    required this.minDate,
     required this.selectedDate,
     this.onSelectionChange,
     this.eventTap,
@@ -32,6 +33,7 @@ class MobkitCalendarView extends StatelessWidget {
   final List<MobkitCalendarAppointmentModel> appointmentModel;
   final ValueNotifier<DateTime?> selectedDate;
   final ValueNotifier<DateTime> calendarDate;
+  final DateTime minDate;
   final Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime)? onSelectionChange;
   final Function(MobkitCalendarAppointmentModel model)? eventTap;
   final Widget Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime)? onPopupChange;
@@ -59,6 +61,7 @@ class MobkitCalendarView extends StatelessWidget {
                 .isBetween(secondStartDate, secondEndDate.add(const Duration(minutes: -1))) ??
             false);
   }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -158,6 +161,7 @@ class MobkitCalendarView extends StatelessWidget {
                       height: config?.dailyTopWidgetSize,
                       child: CalendarDateSelectionBar(
                         calendarDate,
+                        minDate,
                         selectedDate,
                         onSelectionChange: onSelectionChange,
                         customCalendarModel: appointmentModel,
@@ -171,6 +175,7 @@ class MobkitCalendarView extends StatelessWidget {
                   : Expanded(
                       child: CalendarDateSelectionBar(
                         calendarDate,
+                        minDate,
                         selectedDate,
                         onSelectionChange: onSelectionChange,
                         customCalendarModel: appointmentModel,

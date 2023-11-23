@@ -35,9 +35,11 @@ class CalendarAgendaBar extends StatefulWidget {
 class _CalendarAgendaBarState extends State<CalendarAgendaBar> {
   final InfiniteScrollController _infiniteScrollController = InfiniteScrollController();
   ValueNotifier<DateTime?> lastDate = ValueNotifier<DateTime?>(null);
+  late DateTime initialDate;
   @override
   void initState() {
     super.initState();
+    initialDate = widget.calendarDate.value;
     widget.customCalendarModel.sort((a, b) {
       return a.appointmentStartDate.compareTo(b.appointmentStartDate);
     });
@@ -87,7 +89,7 @@ class _CalendarAgendaBarState extends State<CalendarAgendaBar> {
           child: InfiniteListView.builder(
             controller: _infiniteScrollController,
             itemBuilder: (BuildContext context, int index) {
-              DateTime currentDate = DateUtils.dateOnly(DateTime.now().add(Duration(days: index)));
+              DateTime currentDate = DateUtils.dateOnly(initialDate.add(Duration(days: index)));
               List<MobkitCalendarAppointmentModel> listData = findCustomModel(widget.customCalendarModel, currentDate);
               return VisibilityDetector(
                 key: ValueKey("$currentDate"),
