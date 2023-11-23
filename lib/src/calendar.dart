@@ -57,7 +57,7 @@ class MobkitCalendarWidget extends StatefulWidget {
   final Function(DateTime datetime)? onDateChanged;
   final DateTime? selectedDate;
 
-  final Widget Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime)? onPopupChange;
+  final Widget Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime, bool isSameMonth)? onPopupChange;
   final Widget Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime)? headerWidget;
   final Widget Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime)? titleWidget;
   final Widget Function(MobkitCalendarAppointmentModel list, DateTime datetime)? agendaWidget;

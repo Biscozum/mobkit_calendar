@@ -63,7 +63,8 @@ class _MobkitCalendarMonthlyViewState extends State<MobkitCalendarMonthlyView> {
                 controller.setCalendarDate(model, date),
             appointmentModel: eventList,
             eventTap: (model) => null,
-            onPopupChange: (List<MobkitCalendarAppointmentModel> models, DateTime datetime) => Padding(
+            onPopupChange: (List<MobkitCalendarAppointmentModel> models, DateTime datetime, bool isSameMonth) =>
+                Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 18),
               child: models.isNotEmpty
                   ? Column(

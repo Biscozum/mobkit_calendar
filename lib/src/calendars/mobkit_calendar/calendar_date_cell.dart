@@ -10,15 +10,17 @@ import 'model/configs/calendar_config_model.dart';
 
 class CalendarDateCell extends StatelessWidget {
   final DateTime calendarDate;
+  final DateTime minDate;
   final bool enabled;
   final ValueNotifier<DateTime?> selectedDate;
   final MobkitCalendarConfigModel? config;
   final List<MobkitCalendarAppointmentModel> customCalendarModel;
   final Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime)? onSelectionChange;
-  final Widget Function(List<MobkitCalendarAppointmentModel>, DateTime datetime)? onPopupChange;
+  final Widget Function(List<MobkitCalendarAppointmentModel>, DateTime datetime, bool isSameMonth)? onPopupChange;
 
   const CalendarDateCell(
     this.calendarDate,
+    this.minDate,
     this.selectedDate,
     this.onSelectionChange, {
     Key? key,
@@ -46,7 +48,8 @@ class CalendarDateCell extends StatelessWidget {
                         valueListenable: this.selectedDate,
                         builder: (_, DateTime? date, __) {
                           return NativeCarousel(
-                            date: this.selectedDate,
+                            calendarDate: this.selectedDate,
+                            minDate: minDate,
                             listAppointmentModel: customCalendarModel,
                             onPopupChange: onPopupChange,
                             onSelectionChange: onSelectionChange,
