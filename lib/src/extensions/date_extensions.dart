@@ -66,6 +66,11 @@ extension DateTimeExtension on DateTime {
     return item;
   }
 
+  bool isSameMonth(DateTime other) {
+    var item = year == other.year && month == other.month;
+    return item;
+  }
+
   int numOfWeeks(int year) {
     DateTime dec28 = DateTime(year, 12, 28);
     int dayOfDec28 = int.parse(DateFormat("D").format(dec28));

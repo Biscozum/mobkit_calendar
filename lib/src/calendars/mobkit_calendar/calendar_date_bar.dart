@@ -18,7 +18,7 @@ class CalendarDateSelectionBar extends StatefulWidget {
   final List<MobkitCalendarAppointmentModel> customCalendarModel;
   final Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime)? onSelectionChange;
   final Function(DateTime datetime)? onDateChanged;
-  final Widget Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime)? onPopupChange;
+  final Widget Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime, bool isSameMonth)? onPopupChange;
   final Widget Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime)? headerWidget;
   final Widget Function(Map<DateTime, List<MobkitCalendarAppointmentModel>>)? weeklyViewWidget;
 
@@ -135,6 +135,7 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
                         Expanded(
                           child: DateList(
                             config: widget.config,
+                            minDate: widget.minDate,
                             customCalendarModel: widget.customCalendarModel,
                             date: currentDate,
                             selectedDate: widget.selectedDate,
@@ -160,6 +161,7 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
                                   config: widget.config,
                                   customCalendarModel: widget.customCalendarModel,
                                   date: currentDate,
+                                  minDate: widget.minDate,
                                   selectedDate: widget.selectedDate,
                                   onSelectionChange: widget.onSelectionChange,
                                   onPopupChange: widget.onPopupChange,
@@ -199,13 +201,15 @@ class DateList extends StatefulWidget {
   final MobkitCalendarConfigModel? config;
   final List<MobkitCalendarAppointmentModel> customCalendarModel;
   final DateTime date;
+  final DateTime minDate;
   final ValueNotifier<DateTime?> selectedDate;
   final Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime)? onSelectionChange;
-  final Widget Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime)? onPopupChange;
+  final Widget Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime, bool isSameMonth)? onPopupChange;
   final Widget Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime)? headerWidget;
   const DateList({
     Key? key,
     required this.date,
+    required this.minDate,
     required this.selectedDate,
     this.config,
     required this.customCalendarModel,
@@ -223,20 +227,21 @@ class _DateListState extends State<DateList> {
   Widget build(BuildContext context) {
     return Column(
       children: widget.config?.mobkitCalendarViewType == MobkitCalendarViewType.monthly
-          ? getDatesMonthly(widget.date, widget.selectedDate, widget.onSelectionChange, widget.config,
+          ? getDatesMonthly(widget.date, widget.minDate, widget.selectedDate, widget.onSelectionChange, widget.config,
               widget.customCalendarModel, widget.onPopupChange)
-          : getDatesWeekly(widget.date, widget.selectedDate, widget.onSelectionChange, widget.config,
+          : getDatesWeekly(widget.date, widget.minDate, widget.selectedDate, widget.onSelectionChange, widget.config,
               widget.customCalendarModel, widget.onPopupChange),
     );
   }
 
   List<Widget> getDatesMonthly(
     DateTime date,
+    DateTime minDate,
     ValueNotifier<DateTime?> selectedDate,
     Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime)? onSelectionChange,
     final MobkitCalendarConfigModel? config,
     final List<MobkitCalendarAppointmentModel> customCalendarModel,
-    final Widget Function(List<MobkitCalendarAppointmentModel>, DateTime datetime)? onPopupChange,
+    final Widget Function(List<MobkitCalendarAppointmentModel>, DateTime datetime, bool isSameMonth)? onPopupChange,
   ) {
     List<Widget> rowList = [];
     var firstDay = DateTime(date.year, date.month, 1);
@@ -252,6 +257,7 @@ class _DateListState extends State<DateList> {
           Expanded(
             child: CalendarDateCell(
               newDate,
+              minDate,
               selectedDate,
               onSelectionChange,
               customCalendarModel: customCalendarModel,
@@ -278,11 +284,12 @@ class _DateListState extends State<DateList> {
 
   List<Widget> getDatesWeekly(
     DateTime date,
+    DateTime minDate,
     ValueNotifier<DateTime?> selectedDate,
     Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime)? onSelectionChange,
     final MobkitCalendarConfigModel? config,
     final List<MobkitCalendarAppointmentModel> customCalendarModel,
-    final Widget Function(List<MobkitCalendarAppointmentModel>, DateTime datetime)? onPopupChange,
+    final Widget Function(List<MobkitCalendarAppointmentModel>, DateTime datetime, bool isSameMonth)? onPopupChange,
   ) {
     List<Widget> rowList = [];
     var firstDay = date.add(const Duration(days: 1));
@@ -298,6 +305,7 @@ class _DateListState extends State<DateList> {
           Expanded(
             child: CalendarDateCell(
               newDate,
+              minDate,
               selectedDate,
               onSelectionChange,
               customCalendarModel: customCalendarModel,
