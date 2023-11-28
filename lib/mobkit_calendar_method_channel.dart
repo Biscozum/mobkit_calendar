@@ -67,7 +67,7 @@ class MethodChannelMobkitCalendar extends MobkitCalendarPlatform {
   Future<List<MobkitCalendarAppointmentModel>> getEventList(Map arguments) async {
     PermissionStatus result = await Permission.calendar.request();
     List<MobkitCalendarAppointmentModel> events = [];
-    if (result.isGranted) {
+    if (result.isGranted && (arguments["idlist"] as List<String>).isNotEmpty) {
       String? eventList = await methodChannel.invokeMethod<String?>('getEventList', arguments);
       Map eventMap = json.decode(eventList ?? "");
       if (eventMap["events"] is List<Object?>) {
