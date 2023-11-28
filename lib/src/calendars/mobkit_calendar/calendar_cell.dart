@@ -10,6 +10,8 @@ class CalendarCellWidget extends StatelessWidget {
   final bool isWeekend;
   late final MobkitCalendarConfigModel configStandardCalendar;
   final List<MobkitCalendarAppointmentModel>? showedCustomCalendarModelList;
+  final MobkitCalendarController mobkitCalendarController;
+
   CalendarCellWidget(
     this.text, {
     this.isSelected = false,
@@ -17,6 +19,7 @@ class CalendarCellWidget extends StatelessWidget {
     this.isWeekDaysBar = false,
     this.isCurrent = false,
     this.isWeekend = false,
+    required this.mobkitCalendarController,
     MobkitCalendarConfigModel? standardCalendarConfig,
     this.showedCustomCalendarModelList,
     Key? key,
@@ -29,7 +32,7 @@ class CalendarCellWidget extends StatelessWidget {
   }
   @override
   Widget build(BuildContext context) {
-    var style = isEnabled || configStandardCalendar.mobkitCalendarViewType != MobkitCalendarViewType.monthly
+    var style = isEnabled || mobkitCalendarController.mobkitCalendarViewType != MobkitCalendarViewType.monthly
         ? isSelected
             ? configStandardCalendar.cellConfig.selectedStyle
             : isCurrent
@@ -70,7 +73,7 @@ class CalendarCellWidget extends StatelessWidget {
                           ),
                         ),
                         ((!isEnabled && !(configStandardCalendar.showEventOffDay ?? false)) &&
-                                configStandardCalendar.mobkitCalendarViewType == MobkitCalendarViewType.monthly)
+                                mobkitCalendarController.mobkitCalendarViewType == MobkitCalendarViewType.monthly)
                             ? Container()
                             : Column(
                                 mainAxisAlignment: MainAxisAlignment.end,

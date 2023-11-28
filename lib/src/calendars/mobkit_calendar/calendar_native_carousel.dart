@@ -6,21 +6,19 @@ import '../../../mobkit_calendar.dart';
 class NativeCarousel extends StatefulWidget {
   const NativeCarousel({
     Key? key,
-    required this.listAppointmentModel,
-    required this.calendarDate,
     required this.minDate,
-    this.onPopupChange,
+    this.onPopupWidget,
     this.onSelectionChange,
-    required this.customCalendarModel,
+    required this.mobkitCalendarController,
     this.config,
+    this.onDateChanged,
   }) : super(key: key);
-  final ValueNotifier<DateTime?> calendarDate;
   final DateTime minDate;
-  final List<MobkitCalendarAppointmentModel> listAppointmentModel;
-  final Widget Function(List<MobkitCalendarAppointmentModel>, DateTime datetime, bool isSameMonth)? onPopupChange;
+  final Widget Function(List<MobkitCalendarAppointmentModel>, DateTime datetime)? onPopupWidget;
   final Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime)? onSelectionChange;
-  final List<MobkitCalendarAppointmentModel> customCalendarModel;
   final MobkitCalendarConfigModel? config;
+  final MobkitCalendarController mobkitCalendarController;
+  final Function(DateTime datetime)? onDateChanged;
 
   @override
   State<NativeCarousel> createState() => _CarouselState();
@@ -29,22 +27,21 @@ class NativeCarousel extends StatefulWidget {
 class _CarouselState extends State<NativeCarousel> {
   late PageController _pageController;
   Timer? timer;
-  late int _currentPage;
 
   @override
   void initState() {
     super.initState();
-    _currentPage = (widget.calendarDate.value ?? DateTime.now()).difference(widget.minDate).inDays.abs();
     _pageController = PageController(
       viewportFraction: widget.config?.calendarPopupConfigModel?.viewportFraction ?? 1.0,
-      initialPage: (widget.calendarDate.value ?? DateTime.now()).difference(widget.minDate).inDays.abs(),
+      initialPage:
+          (widget.mobkitCalendarController.selectedDate ?? DateTime.now()).difference(widget.minDate).inDays.abs(),
     );
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _pageController.position.isScrollingNotifier.addListener(() {
         timer?.cancel();
         if (!_pageController.position.isScrollingNotifier.value) {
           timer = Timer(const Duration(milliseconds: 500), () {
-            widget.onSelectionChange?.call([], widget.calendarDate.value!);
+            widget.onSelectionChange?.call([], widget.mobkitCalendarController.selectedDate!);
           });
         }
       });
@@ -72,13 +69,10 @@ class _CarouselState extends State<NativeCarousel> {
           child: PageView.builder(
               pageSnapping: true,
               controller: _pageController,
-              onPageChanged: (page) {
-                widget.calendarDate.value = widget.minDate.add(Duration(days: page));
-                _currentPage = page;
-              },
+              onPageChanged: (page) => widget.mobkitCalendarController.popupChanged(widget.minDate, page),
               itemBuilder: (context, index) {
                 DateTime currentDate = widget.minDate.add(Duration(days: index));
-                bool active = currentDate == widget.calendarDate.value;
+                bool active = currentDate == widget.mobkitCalendarController.selectedDate;
                 return AnimatedContainer(
                   duration: Duration(milliseconds: widget.config?.calendarPopupConfigModel?.animateDuration ?? 500),
                   margin: EdgeInsets.symmetric(
@@ -88,11 +82,10 @@ class _CarouselState extends State<NativeCarousel> {
                       ? widget.config?.calendarPopupConfigModel?.popUpBoxDecoration
                       : widget.config?.calendarPopupConfigModel?.popUpBoxDecoration?.copyWith(
                           color: widget.config?.calendarPopupConfigModel?.popUpBoxDecoration?.color?.withOpacity(0.6)),
-                  child: widget.onPopupChange?.call(
-                      findCustomModel(widget.customCalendarModel, currentDate),
-                      currentDate,
-                      (widget.calendarDate.value != null &&
-                          !widget.calendarDate.value!.isSameMonth(widget.minDate.add(Duration(days: _currentPage))))),
+                  child: widget.onPopupWidget?.call(
+                    findCustomModel(widget.mobkitCalendarController.appoitnments, currentDate),
+                    currentDate,
+                  ),
                 );
               }),
         ),

@@ -49,9 +49,6 @@ class MobkitCalendarConfigModel {
   /// Determines the border color of the WeekDaysBar.
   Color weekDaysBarBorderColor;
 
-  /// Determines what appearance the calendar will have.
-  MobkitCalendarViewType mobkitCalendarViewType;
-
   /// Determines whether a popup will open when the event is clicked.
   bool popupEnable;
 
@@ -88,7 +85,6 @@ class MobkitCalendarConfigModel {
     this.gridBorderColor = Colors.transparent,
     this.borderRadius = const BorderRadius.all(Radius.circular(4)),
     this.weekDaysBarBorderColor = const Color.fromRGBO(253, 165, 46, 1),
-    this.mobkitCalendarViewType = MobkitCalendarViewType.monthly,
     this.popupEnable = false,
     this.calendarPopupConfigModel,
     this.viewportFraction = 1.0,

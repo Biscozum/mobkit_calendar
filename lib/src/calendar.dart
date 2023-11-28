@@ -3,6 +3,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:mobkit_calendar/src/extensions/date_extensions.dart';
 import 'package:mobkit_calendar/src/pickers/model/month_and_year_config_model.dart';
 import 'package:mobkit_calendar/src/pickers/month_and_year_picker.dart';
+import 'calendars/mobkit_calendar/controller/mobkit_calendar_controller.dart';
 import 'calendars/mobkit_calendar/mobkit_calendar_widget.dart';
 import 'calendars/mobkit_calendar/model/configs/calendar_config_model.dart';
 import 'calendars/mobkit_calendar/model/daily_frequency.dart';
@@ -49,15 +50,12 @@ class MobkitMonthAndYearPicker extends StatelessWidget {
 
 class MobkitCalendarWidget extends StatefulWidget {
   final DateTime minDate;
-  final DateTime calendarDate;
   final MobkitCalendarConfigModel? config;
-  final List<MobkitCalendarAppointmentModel> appointmentModel;
   final Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime) onSelectionChange;
   final Function(MobkitCalendarAppointmentModel model)? eventTap;
   final Function(DateTime datetime)? onDateChanged;
-  final DateTime? selectedDate;
-
-  final Widget Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime, bool isSameMonth)? onPopupChange;
+  final MobkitCalendarController? mobkitCalendarController;
+  final Widget Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime)? onPopupWidget;
   final Widget Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime)? headerWidget;
   final Widget Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime)? titleWidget;
   final Widget Function(MobkitCalendarAppointmentModel list, DateTime datetime)? agendaWidget;
@@ -67,19 +65,17 @@ class MobkitCalendarWidget extends StatefulWidget {
   const MobkitCalendarWidget({
     super.key,
     this.config,
-    this.selectedDate,
     required this.onSelectionChange,
     this.eventTap,
-    required this.appointmentModel,
-    required this.calendarDate,
     required this.minDate,
-    this.onPopupChange,
+    this.onPopupWidget,
     this.headerWidget,
     this.titleWidget,
     this.agendaWidget,
     this.onDateChanged,
     this.weeklyViewWidget,
     this.dateRangeChanged,
+    required this.mobkitCalendarController,
   });
 
   @override
@@ -87,10 +83,14 @@ class MobkitCalendarWidget extends StatefulWidget {
 }
 
 class _MobkitCalendarWidgetState extends State<MobkitCalendarWidget> {
+  late MobkitCalendarController mobkitCalendarController;
+
   @override
   void initState() {
+    mobkitCalendarController = widget.mobkitCalendarController ?? MobkitCalendarController();
     super.initState();
-    assert(widget.minDate.isBefore(widget.calendarDate), "Minimum Date cannot be greater than Calendar Date.");
+    assert(widget.minDate.isBefore(mobkitCalendarController.calendarDate),
+        "Minimum Date cannot be greater than Calendar Date.");
   }
 
   late final ValueNotifier<List<DateTime>> selectedDates = ValueNotifier<List<DateTime>>(List<DateTime>.from([]));
@@ -99,21 +99,21 @@ class _MobkitCalendarWidgetState extends State<MobkitCalendarWidget> {
 
   parseAppointmentModel() {
     lastAppointments = [];
-    if (widget.appointmentModel.isNotEmpty) {
+    if (mobkitCalendarController.appoitnments.isNotEmpty) {
       List<MobkitCalendarAppointmentModel> withRecurrencyAppointments = [];
       List<MobkitCalendarAppointmentModel> addNewAppointments = [];
-      for (var appointment in widget.appointmentModel
+      for (var appointment in mobkitCalendarController.appoitnments
           .where((element) => element.appointmentStartDate.isAfter(element.appointmentEndDate))) {
-        int index = widget.appointmentModel.indexOf(appointment);
-        widget.appointmentModel.removeAt(index);
-        if (widget.appointmentModel.isEmpty) {
+        int index = mobkitCalendarController.appoitnments.indexOf(appointment);
+        mobkitCalendarController.appoitnments.removeAt(index);
+        if (mobkitCalendarController.appoitnments.isEmpty) {
           break;
         }
       }
-      if (widget.appointmentModel.isNotEmpty) {
-        if (widget.appointmentModel.where((element) => element.recurrenceModel != null).isNotEmpty) {
+      if (mobkitCalendarController.appoitnments.isNotEmpty) {
+        if (mobkitCalendarController.appoitnments.where((element) => element.recurrenceModel != null).isNotEmpty) {
           withRecurrencyAppointments =
-              widget.appointmentModel.where((element) => element.recurrenceModel != null).toList();
+              mobkitCalendarController.appoitnments.where((element) => element.recurrenceModel != null).toList();
           for (int i = 0; i < withRecurrencyAppointments.length; i++) {
             addNewAppointments = [];
             if (withRecurrencyAppointments[i].recurrenceModel!.frequency is DailyFrequency
@@ -288,12 +288,12 @@ class _MobkitCalendarWidgetState extends State<MobkitCalendarWidget> {
           }
         }
       }
-      lastAppointments.addAll(widget.appointmentModel);
+      lastAppointments.addAll(mobkitCalendarController.appoitnments);
       setState(() {
         isLoadData = true;
       });
     } else {
-      lastAppointments.addAll(widget.appointmentModel);
+      lastAppointments.addAll(mobkitCalendarController.appoitnments);
       setState(() {
         isLoadData = true;
       });
@@ -302,20 +302,15 @@ class _MobkitCalendarWidgetState extends State<MobkitCalendarWidget> {
 
   @override
   Widget build(BuildContext context) {
-    ValueNotifier<DateTime> widgetCalendarDate = ValueNotifier<DateTime>(widget.calendarDate);
-    ValueNotifier<DateTime?> widgetSelectedDate = ValueNotifier<DateTime?>(widget.selectedDate);
-    initializeDateFormatting();
     parseAppointmentModel();
     return isLoadData
         ? MobkitCalendarView(
             config: widget.config,
-            appointmentModel: lastAppointments,
-            selectedDate: widgetSelectedDate,
-            calendarDate: widgetCalendarDate,
+            mobkitCalendarController: mobkitCalendarController,
             minDate: widget.minDate,
             onSelectionChange: widget.onSelectionChange,
             eventTap: widget.eventTap,
-            onPopupChange: widget.onPopupChange,
+            onPopupWidget: widget.onPopupWidget,
             headerWidget: widget.headerWidget,
             titleWidget: widget.titleWidget,
             agendaWidget: widget.agendaWidget,

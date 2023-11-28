@@ -20,6 +20,7 @@ export 'src/calendars/mobkit_calendar/model/yearly_frequency.dart';
 export 'src/calendars/mobkit_calendar/model/day_of_month_model.dart';
 export 'src/calendars/mobkit_calendar/model/day_of_week_and_repetition_model.dart';
 export 'src/extensions/date_extensions.dart';
+export 'src/calendars/mobkit_calendar/controller/mobkit_calendar_controller.dart';
 import 'mobkit_calendar.dart';
 import 'mobkit_calendar_platform_interface.dart';
 

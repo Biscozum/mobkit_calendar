@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mobkit_calendar/mobkit_calendar.dart';
 import 'package:provider/provider.dart';
-
 import 'controller/calendar_controller.dart';
-import 'main.dart';
 
 class MobkitCalendarDailyView extends StatelessWidget {
   const MobkitCalendarDailyView({super.key});
@@ -18,7 +16,6 @@ class MobkitCalendarDailyView extends StatelessWidget {
         title: const Text('Mobkit Calendar Daily View'),
       ),
       body: MobkitCalendarWidget(
-        calendarDate: DateTime.now(),
         minDate: DateTime(1800),
         config: controller.configModel,
         titleWidget: (List<MobkitCalendarAppointmentModel> models, DateTime datetime) => Padding(
@@ -36,7 +33,7 @@ class MobkitCalendarDailyView extends StatelessWidget {
         ),
         onSelectionChange: (List<MobkitCalendarAppointmentModel> model, DateTime date) =>
             controller.setCalendarDate(model, date),
-        appointmentModel: eventList,
+        mobkitCalendarController: controller.mobkitCalendarController,
       ),
     );
   }

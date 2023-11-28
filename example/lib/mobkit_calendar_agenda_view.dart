@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mobkit_calendar/mobkit_calendar.dart';
 import 'package:provider/provider.dart';
-
 import 'controller/calendar_controller.dart';
-import 'main.dart';
 
 class MobkitCalendarAgendaView extends StatelessWidget {
   const MobkitCalendarAgendaView({super.key});
@@ -18,7 +16,6 @@ class MobkitCalendarAgendaView extends StatelessWidget {
         title: const Text('Mobkit Calendar Agenda View'),
       ),
       body: MobkitCalendarWidget(
-        calendarDate: DateTime.now(),
         minDate: DateTime(1800),
         config: controller.configModel,
         titleWidget: (List<MobkitCalendarAppointmentModel> models, DateTime datetime) => Padding(
@@ -36,9 +33,8 @@ class MobkitCalendarAgendaView extends StatelessWidget {
         ),
         onSelectionChange: (List<MobkitCalendarAppointmentModel> model, DateTime date) =>
             controller.setCalendarDate(model, date),
-        appointmentModel: eventList,
         eventTap: (model) => null,
-        onPopupChange: (List<MobkitCalendarAppointmentModel> models, DateTime datetime, bool isSameMonth) => Padding(
+        onPopupWidget: (List<MobkitCalendarAppointmentModel> models, DateTime datetime) => Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 18),
           child: models.isNotEmpty
               ? Column(
@@ -116,6 +112,7 @@ class MobkitCalendarAgendaView extends StatelessWidget {
                 ),
         ),
         onDateChanged: (DateTime datetime) => null,
+        mobkitCalendarController: controller.mobkitCalendarController,
       ),
     );
   }

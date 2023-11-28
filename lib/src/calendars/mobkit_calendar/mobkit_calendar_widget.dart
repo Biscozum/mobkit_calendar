@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobkit_calendar/src/calendars/mobkit_calendar/calendar_agenda_bar.dart';
 import 'package:mobkit_calendar/src/calendars/mobkit_calendar/calendar_date_bar.dart';
+import 'package:mobkit_calendar/src/calendars/mobkit_calendar/controller/mobkit_calendar_controller.dart';
 import 'package:mobkit_calendar/src/calendars/mobkit_calendar/model/configs/calendar_config_model.dart';
 import 'package:mobkit_calendar/src/calendars/mobkit_calendar/utils/date_utils.dart';
 import 'package:mobkit_calendar/src/extensions/date_extensions.dart';
@@ -9,19 +10,16 @@ import 'calendar_weekdays_bar.dart';
 import 'calendar_year_selection_bar.dart';
 import 'enum/mobkit_calendar_view_type_enum.dart';
 import 'model/mobkit_calendar_appointment_model.dart';
-import 'multiple_listenable_builder_widget.dart';
 
 class MobkitCalendarView extends StatelessWidget {
   const MobkitCalendarView({
     Key? key,
+    required this.mobkitCalendarController,
     required this.config,
-    required this.appointmentModel,
-    required this.calendarDate,
     required this.minDate,
-    required this.selectedDate,
     this.onSelectionChange,
     this.eventTap,
-    this.onPopupChange,
+    this.onPopupWidget,
     this.headerWidget,
     this.titleWidget,
     this.agendaWidget,
@@ -29,14 +27,12 @@ class MobkitCalendarView extends StatelessWidget {
     this.weeklyViewWidget,
     this.dateRangeChanged,
   }) : super(key: key);
+  final MobkitCalendarController mobkitCalendarController;
   final MobkitCalendarConfigModel? config;
-  final List<MobkitCalendarAppointmentModel> appointmentModel;
-  final ValueNotifier<DateTime?> selectedDate;
-  final ValueNotifier<DateTime> calendarDate;
   final DateTime minDate;
   final Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime)? onSelectionChange;
   final Function(MobkitCalendarAppointmentModel model)? eventTap;
-  final Widget Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime, bool isSameMonth)? onPopupChange;
+  final Widget Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime)? onPopupWidget;
   final Widget Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime)? headerWidget;
   final Widget Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime)? titleWidget;
   final Widget Function(MobkitCalendarAppointmentModel list, DateTime datetime)? agendaWidget;
@@ -66,15 +62,13 @@ class MobkitCalendarView extends StatelessWidget {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     int maxGroupCount = 0;
-    DateTime? cSelectedDate = selectedDate.value;
     return Column(
       mainAxisSize: MainAxisSize.max,
-      children: config?.mobkitCalendarViewType == MobkitCalendarViewType.agenda
+      children: mobkitCalendarController.mobkitCalendarViewType == MobkitCalendarViewType.agenda
           ? [
               Expanded(
                 child: CalendarAgendaBar(
-                  calendarDate,
-                  customCalendarModel: appointmentModel,
+                  mobkitCalendarController: mobkitCalendarController,
                   config: config,
                   titleWidget: titleWidget,
                   agendaWidget: agendaWidget,
@@ -85,29 +79,17 @@ class MobkitCalendarView extends StatelessWidget {
               ),
             ]
           : [
-              ValueListenableBuilder(
-                  valueListenable: ValuesNotifier([
-                    calendarDate,
-                    selectedDate,
-                  ]),
-                  builder: (_, bool date, __) {
-                    if (cSelectedDate != selectedDate.value) {
-                      return (config?.topBarConfig.isVisibleTitleWidget ?? false)
-                          ? titleWidget?.call(
-                                findCustomModel(appointmentModel, selectedDate.value!),
-                                selectedDate.value!,
-                              ) ??
-                              Container()
-                          : Container();
-                    } else {
-                      return ((config?.topBarConfig.isVisibleTitleWidget ?? false))
-                          ? titleWidget?.call(
-                                findCustomModel(appointmentModel, calendarDate.value),
-                                calendarDate.value,
-                              ) ??
-                              Container()
-                          : Container();
-                    }
+              ListenableBuilder(
+                  listenable: mobkitCalendarController,
+                  builder: (BuildContext context, Widget? widget) {
+                    return ((config?.topBarConfig.isVisibleTitleWidget ?? false))
+                        ? titleWidget?.call(
+                              findCustomModel(
+                                  mobkitCalendarController.appoitnments, mobkitCalendarController.calendarDate),
+                              mobkitCalendarController.calendarDate,
+                            ) ??
+                            Container()
+                        : Container();
                   }),
               config?.topBarConfig.isVisibleMonthBar == true || config?.topBarConfig.isVisibleYearBar == true
                   ? SizedBox(
@@ -119,7 +101,7 @@ class MobkitCalendarView extends StatelessWidget {
                           children: [
                             config?.topBarConfig.isVisibleMonthBar == true
                                 ? CalendarMonthSelectionBar(
-                                    calendarDate,
+                                    mobkitCalendarController,
                                     onSelectionChange,
                                     config,
                                   )
@@ -130,7 +112,7 @@ class MobkitCalendarView extends StatelessWidget {
                                   )
                                 : Container(),
                             config?.topBarConfig.isVisibleYearBar == true
-                                ? CalendarYearSelectionBar(calendarDate, onSelectionChange, config)
+                                ? CalendarYearSelectionBar(mobkitCalendarController, onSelectionChange, config)
                                 : Container(),
                           ],
                         ),
@@ -147,7 +129,8 @@ class MobkitCalendarView extends StatelessWidget {
                       height: 30,
                       child: CalendarWeekDaysBar(
                         config: config,
-                        customCalendarModel: appointmentModel,
+                        customCalendarModel: mobkitCalendarController.appoitnments,
+                        mobkitCalendarController: mobkitCalendarController,
                       ),
                     )
                   : Container(),
@@ -156,17 +139,15 @@ class MobkitCalendarView extends StatelessWidget {
                       height: 10,
                     )
                   : Container(),
-              config?.mobkitCalendarViewType == MobkitCalendarViewType.daily
+              mobkitCalendarController.mobkitCalendarViewType == MobkitCalendarViewType.daily
                   ? SizedBox(
                       height: config?.dailyTopWidgetSize,
                       child: CalendarDateSelectionBar(
-                        calendarDate,
                         minDate,
-                        selectedDate,
                         onSelectionChange: onSelectionChange,
-                        customCalendarModel: appointmentModel,
+                        mobkitCalendarController: mobkitCalendarController,
                         config: config,
-                        onPopupChange: onPopupChange,
+                        onPopupWidget: onPopupWidget,
                         headerWidget: headerWidget,
                         onDateChanged: onDateChanged,
                         weeklyViewWidget: weeklyViewWidget,
@@ -174,24 +155,23 @@ class MobkitCalendarView extends StatelessWidget {
                     )
                   : Expanded(
                       child: CalendarDateSelectionBar(
-                        calendarDate,
                         minDate,
-                        selectedDate,
                         onSelectionChange: onSelectionChange,
-                        customCalendarModel: appointmentModel,
+                        mobkitCalendarController: mobkitCalendarController,
                         config: config,
-                        onPopupChange: onPopupChange,
+                        onPopupWidget: onPopupWidget,
                         headerWidget: headerWidget,
                         onDateChanged: onDateChanged,
                         weeklyViewWidget: weeklyViewWidget,
                       ),
                     ),
-              config?.mobkitCalendarViewType == MobkitCalendarViewType.daily
-                  ? ValueListenableBuilder(
-                      valueListenable: selectedDate,
-                      builder: (_, DateTime? date, __) {
-                        DateTime newDate = date ?? DateTime.now();
-                        List<MobkitCalendarAppointmentModel> modelList = appointmentModel.where((element) {
+              mobkitCalendarController.mobkitCalendarViewType == MobkitCalendarViewType.daily
+                  ? ListenableBuilder(
+                      listenable: mobkitCalendarController,
+                      builder: (BuildContext context, Widget? widget) {
+                        DateTime newDate = mobkitCalendarController.selectedDate ?? DateTime.now();
+                        List<MobkitCalendarAppointmentModel> modelList =
+                            mobkitCalendarController.appoitnments.where((element) {
                           var item = !element.isAllDay &&
                               ((DateTime(newDate.year, newDate.month, newDate.day)
                                           .isBetween(element.appointmentStartDate, element.appointmentEndDate) ??
@@ -202,7 +182,7 @@ class MobkitCalendarView extends StatelessWidget {
                                       .isSameDay(element.appointmentEndDate.add(const Duration(minutes: -1))));
                           return item;
                         }).toList();
-                        List<MobkitCalendarAppointmentModel> allDayList = appointmentModel
+                        List<MobkitCalendarAppointmentModel> allDayList = mobkitCalendarController.appoitnments
                             .where((element) =>
                                 ((DateTime(newDate.year, newDate.month, newDate.day)
                                             .isBetween(element.appointmentStartDate, element.appointmentEndDate) ??

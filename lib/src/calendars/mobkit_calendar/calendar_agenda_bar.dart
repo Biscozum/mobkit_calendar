@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mobkit_calendar/src/calendars/mobkit_calendar/controller/mobkit_calendar_controller.dart';
 import 'package:mobkit_calendar/src/calendars/mobkit_calendar/model/mobkit_calendar_appointment_model.dart';
 import 'package:mobkit_calendar/src/calendars/mobkit_calendar/utils/date_utils.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -7,20 +8,18 @@ import 'infinite_listview.dart';
 import 'model/configs/calendar_config_model.dart';
 
 class CalendarAgendaBar extends StatefulWidget {
-  final ValueNotifier<DateTime> calendarDate;
+  final MobkitCalendarController mobkitCalendarController;
   final MobkitCalendarConfigModel? config;
-  final List<MobkitCalendarAppointmentModel> customCalendarModel;
   final Function(DateTime datetime)? dateRangeChanged;
   final Function(DateTime datetime)? onDateChanged;
   final Widget Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime)? titleWidget;
   final Widget Function(MobkitCalendarAppointmentModel list, DateTime datetime)? agendaWidget;
   final Function(MobkitCalendarAppointmentModel model)? eventTap;
 
-  const CalendarAgendaBar(
-    this.calendarDate, {
+  const CalendarAgendaBar({
     Key? key,
+    required this.mobkitCalendarController,
     this.config,
-    required this.customCalendarModel,
     this.titleWidget,
     this.agendaWidget,
     this.dateRangeChanged,
@@ -39,8 +38,8 @@ class _CalendarAgendaBarState extends State<CalendarAgendaBar> {
   @override
   void initState() {
     super.initState();
-    initialDate = widget.calendarDate.value;
-    widget.customCalendarModel.sort((a, b) {
+    initialDate = widget.mobkitCalendarController.calendarDate;
+    widget.mobkitCalendarController.appoitnments.sort((a, b) {
       return a.appointmentStartDate.compareTo(b.appointmentStartDate);
     });
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -79,7 +78,7 @@ class _CalendarAgendaBarState extends State<CalendarAgendaBar> {
           builder: (_, DateTime? date, __) {
             return ((widget.config?.topBarConfig.isVisibleHeaderWidget ?? false) && widget.titleWidget != null)
                 ? widget.titleWidget!.call(
-                    findCustomModel(widget.customCalendarModel, lastDate.value ?? DateTime.now()),
+                    findCustomModel(widget.mobkitCalendarController.appoitnments, lastDate.value ?? DateTime.now()),
                     lastDate.value ?? DateTime.now(),
                   )
                 : Container();
@@ -90,7 +89,8 @@ class _CalendarAgendaBarState extends State<CalendarAgendaBar> {
             controller: _infiniteScrollController,
             itemBuilder: (BuildContext context, int index) {
               DateTime currentDate = DateUtils.dateOnly(initialDate.add(Duration(days: index)));
-              List<MobkitCalendarAppointmentModel> listData = findCustomModel(widget.customCalendarModel, currentDate);
+              List<MobkitCalendarAppointmentModel> listData =
+                  findCustomModel(widget.mobkitCalendarController.appoitnments, currentDate);
               return VisibilityDetector(
                 key: ValueKey("$currentDate"),
                 onVisibilityChanged: (visibilityInfo) {

@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 import 'package:mobkit_calendar/mobkit_calendar.dart';
 import 'package:mobkit_calendar_example/controller/calendar_controller.dart';
 import 'package:provider/provider.dart';
-import 'main.dart';
 
 class MobkitCalendarMonthlyView extends StatefulWidget {
   const MobkitCalendarMonthlyView({super.key});
@@ -28,7 +27,6 @@ class _MobkitCalendarMonthlyViewState extends State<MobkitCalendarMonthlyView> {
             child: Icon(controller.isFullScreen ? Icons.close_fullscreen : Icons.open_in_full),
           ),
           body: MobkitCalendarWidget(
-            calendarDate: DateTime.now(),
             minDate: DateTime(1800),
             key: UniqueKey(),
             config: controller.configModel,
@@ -61,10 +59,8 @@ class _MobkitCalendarMonthlyViewState extends State<MobkitCalendarMonthlyView> {
             ),
             onSelectionChange: (List<MobkitCalendarAppointmentModel> model, DateTime date) =>
                 controller.setCalendarDate(model, date),
-            appointmentModel: eventList,
             eventTap: (model) => null,
-            onPopupChange: (List<MobkitCalendarAppointmentModel> models, DateTime datetime, bool isSameMonth) =>
-                Padding(
+            onPopupWidget: (List<MobkitCalendarAppointmentModel> models, DateTime datetime) => Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 18),
               child: models.isNotEmpty
                   ? Column(
@@ -142,6 +138,7 @@ class _MobkitCalendarMonthlyViewState extends State<MobkitCalendarMonthlyView> {
                     ),
             ),
             onDateChanged: (DateTime datetime) => null,
+            mobkitCalendarController: controller.mobkitCalendarController,
           ),
         );
       },
