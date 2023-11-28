@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mobkit_calendar/mobkit_calendar.dart';
 import 'package:provider/provider.dart';
-
 import 'controller/calendar_controller.dart';
-import 'main.dart';
 
 class MobkitCalendarWeeklyView extends StatefulWidget {
   const MobkitCalendarWeeklyView({super.key});
@@ -25,7 +23,6 @@ class _MobkitCalendarWeeklyViewState extends State<MobkitCalendarWeeklyView> {
         title: const Text('Mobkit Calendar Weekly View'),
       ),
       body: MobkitCalendarWidget(
-        calendarDate: DateTime.now(),
         minDate: DateTime(1800),
         config: controller.configModel,
         weeklyViewWidget: (val) => Expanded(
@@ -113,8 +110,8 @@ class _MobkitCalendarWeeklyViewState extends State<MobkitCalendarWeeklyView> {
         ),
         onSelectionChange: (List<MobkitCalendarAppointmentModel> model, DateTime date) =>
             controller.setCalendarDate(model, date),
-        appointmentModel: eventList,
         onDateChanged: (DateTime datetime) {},
+        mobkitCalendarController: controller.mobkitCalendarController,
       ),
     );
   }
