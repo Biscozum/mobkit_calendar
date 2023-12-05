@@ -9,7 +9,7 @@ import 'enum/mobkit_calendar_view_type_enum.dart';
 import 'model/configs/calendar_config_model.dart';
 
 class CalendarDateSelectionBar extends StatefulWidget {
-  final DateTime minDate;
+  final DateTime? minDate;
 
   final MobkitCalendarController mobkitCalendarController;
   final MobkitCalendarConfigModel? config;
@@ -19,8 +19,8 @@ class CalendarDateSelectionBar extends StatefulWidget {
   final Widget Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime)? headerWidget;
   final Widget Function(Map<DateTime, List<MobkitCalendarAppointmentModel>>)? weeklyViewWidget;
 
-  const CalendarDateSelectionBar(
-    this.minDate, {
+  const CalendarDateSelectionBar({
+    this.minDate,
     Key? key,
     this.config,
     required this.mobkitCalendarController,
@@ -36,6 +36,7 @@ class CalendarDateSelectionBar extends StatefulWidget {
 }
 
 class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
+  late final DateTime _mindate = widget.minDate ?? DateTime(0, 0, 0);
   Timer? timer;
 
   late int _currentPage;
@@ -45,13 +46,13 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
     _currentPage = widget.mobkitCalendarController.mobkitCalendarViewType == MobkitCalendarViewType.monthly
         ? ((widget.mobkitCalendarController.calendarDate.year * 12) +
                 widget.mobkitCalendarController.calendarDate.month) -
-            ((widget.minDate.year * 12) + widget.minDate.month)
+            ((_mindate.year * 12) + _mindate.month)
         : ((findFirstDateOfTheWeek(widget.mobkitCalendarController.calendarDate)
-                    .difference(findFirstDateOfTheWeek(widget.minDate))
+                    .difference(findFirstDateOfTheWeek(_mindate))
                     .inDays) ~/
                 7)
             .abs();
-    widget.mobkitCalendarController.setPageController(widget.minDate, widget.config?.viewportFraction ?? 1);
+    widget.mobkitCalendarController.setPageController(_mindate, widget.config?.viewportFraction ?? 1);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       widget.mobkitCalendarController.pageController.position.isScrollingNotifier.addListener(() {
         timer?.cancel();
@@ -85,28 +86,30 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
               onPageChanged: (page) {
                 if (widget.mobkitCalendarController.mobkitCalendarViewType == MobkitCalendarViewType.daily ||
                     widget.mobkitCalendarController.mobkitCalendarViewType == MobkitCalendarViewType.weekly) {
-                  widget.mobkitCalendarController.calendarDate = (findFirstDateOfTheWeek(
-                      widget.mobkitCalendarController.calendarDate.add(Duration(days: _currentPage < page ? 7 : -7))));
+                  widget.mobkitCalendarController.selectedDate = widget.mobkitCalendarController.calendarDate =
+                      (findFirstDateOfTheWeek(widget.mobkitCalendarController.calendarDate
+                          .add(Duration(days: _currentPage < page ? 7 : -7))));
                 }
                 _currentPage = page;
                 if (widget.mobkitCalendarController.mobkitCalendarViewType == MobkitCalendarViewType.monthly) {
-                  widget.mobkitCalendarController.calendarDate = (addMonth(widget.minDate, _currentPage));
+                  widget.mobkitCalendarController.calendarDate = (addMonth(_mindate, _currentPage));
                 }
               },
               itemBuilder: (context, index) {
                 DateTime currentDate =
                     widget.mobkitCalendarController.mobkitCalendarViewType == MobkitCalendarViewType.monthly
-                        ? addMonth(widget.minDate, index)
-                        : findFirstDateOfTheWeek(widget.minDate).add(Duration(days: index * 7));
+                        ? addMonth(_mindate, index)
+                        : findFirstDateOfTheWeek(_mindate).add(Duration(days: index * 7));
                 DateTime firstWeekDay = currentDate;
-                var headerDate = (findFirstDateOfTheWeek(currentDate)
+                var headerDate = widget.mobkitCalendarController.selectedDate ?? currentDate;
+                headerDate = (findFirstDateOfTheWeek(headerDate)
                                 .isBeforeOrEqualTo(widget.mobkitCalendarController.calendarDate) ??
                             false) &&
-                        (findLastDateOfTheWeek(currentDate)
+                        (findLastDateOfTheWeek(headerDate)
                                 .isAfterOrEqualTo(widget.mobkitCalendarController.calendarDate) ??
                             false)
-                    ? widget.mobkitCalendarController.calendarDate
-                    : currentDate;
+                    ? headerDate
+                    : widget.mobkitCalendarController.calendarDate;
                 return Padding(
                   padding: EdgeInsets.only(
                       bottom: widget.mobkitCalendarController.mobkitCalendarViewType == MobkitCalendarViewType.monthly
@@ -127,7 +130,7 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
                         Expanded(
                           child: DateList(
                             config: widget.config,
-                            minDate: widget.minDate,
+                            minDate: _mindate,
                             date: currentDate,
                             mobkitCalendarController: widget.mobkitCalendarController,
                             onSelectionChange: widget.onSelectionChange,
@@ -152,7 +155,7 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
                                 child: DateList(
                                   config: widget.config,
                                   date: currentDate,
-                                  minDate: widget.minDate,
+                                  minDate: _mindate,
                                   mobkitCalendarController: widget.mobkitCalendarController,
                                   onSelectionChange: widget.onSelectionChange,
                                   onPopupWidget: widget.onPopupWidget,

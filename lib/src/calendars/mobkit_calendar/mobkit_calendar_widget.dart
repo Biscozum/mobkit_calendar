@@ -16,7 +16,7 @@ class MobkitCalendarView extends StatelessWidget {
     Key? key,
     required this.mobkitCalendarController,
     required this.config,
-    required this.minDate,
+    this.minDate,
     this.onSelectionChange,
     this.eventTap,
     this.onPopupWidget,
@@ -29,7 +29,7 @@ class MobkitCalendarView extends StatelessWidget {
   }) : super(key: key);
   final MobkitCalendarController mobkitCalendarController;
   final MobkitCalendarConfigModel? config;
-  final DateTime minDate;
+  final DateTime? minDate;
   final Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime)? onSelectionChange;
   final Function(MobkitCalendarAppointmentModel model)? eventTap;
   final Widget Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime)? onPopupWidget;
@@ -143,7 +143,7 @@ class MobkitCalendarView extends StatelessWidget {
                   ? SizedBox(
                       height: config?.dailyTopWidgetSize,
                       child: CalendarDateSelectionBar(
-                        minDate,
+                        minDate: minDate,
                         onSelectionChange: onSelectionChange,
                         mobkitCalendarController: mobkitCalendarController,
                         config: config,
@@ -155,7 +155,7 @@ class MobkitCalendarView extends StatelessWidget {
                     )
                   : Expanded(
                       child: CalendarDateSelectionBar(
-                        minDate,
+                        minDate: minDate,
                         onSelectionChange: onSelectionChange,
                         mobkitCalendarController: mobkitCalendarController,
                         config: config,
