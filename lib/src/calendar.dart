@@ -49,7 +49,7 @@ class MobkitMonthAndYearPicker extends StatelessWidget {
 }
 
 class MobkitCalendarWidget extends StatefulWidget {
-  final DateTime minDate;
+  final DateTime? minDate;
   final MobkitCalendarConfigModel? config;
   final Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime) onSelectionChange;
   final Function(MobkitCalendarAppointmentModel model)? eventTap;
@@ -67,7 +67,7 @@ class MobkitCalendarWidget extends StatefulWidget {
     this.config,
     required this.onSelectionChange,
     this.eventTap,
-    required this.minDate,
+    this.minDate,
     this.onPopupWidget,
     this.headerWidget,
     this.titleWidget,
@@ -89,7 +89,7 @@ class _MobkitCalendarWidgetState extends State<MobkitCalendarWidget> {
   void initState() {
     mobkitCalendarController = widget.mobkitCalendarController ?? MobkitCalendarController();
     super.initState();
-    assert(widget.minDate.isBefore(mobkitCalendarController.calendarDate),
+    assert((widget.minDate ?? DateTime.utc(0, 0, 0)).isBefore(mobkitCalendarController.calendarDate),
         "Minimum Date cannot be greater than Calendar Date.");
   }
 
