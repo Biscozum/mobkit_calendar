@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:mobkit_calendar/src/mobkit_calendar/utils/date_utils.dart';
 import '../../mobkit_calendar.dart';
 
-class NativeCarousel extends StatefulWidget {
-  const NativeCarousel({
+/// When any event in the month view of [MobkitCalendarWidget] is clicked
+/// (if the popupEnable value is true), it creates an event list in the form of a carousel.
+class CarouselEvent extends StatefulWidget {
+  const CarouselEvent({
     Key? key,
     required this.minDate,
     this.onPopupWidget,
@@ -21,10 +23,10 @@ class NativeCarousel extends StatefulWidget {
   final Function(DateTime datetime)? onDateChanged;
 
   @override
-  State<NativeCarousel> createState() => _CarouselState();
+  State<CarouselEvent> createState() => _CarouselState();
 }
 
-class _CarouselState extends State<NativeCarousel> {
+class _CarouselState extends State<CarouselEvent> {
   late PageController _pageController;
   Timer? timer;
 
@@ -52,11 +54,6 @@ class _CarouselState extends State<NativeCarousel> {
   void dispose() {
     timer?.cancel();
     super.dispose();
-  }
-
-  int calculateMonth(DateTime today) {
-    final DateTime firstDayOfMonth = DateTime(today.year, today.month);
-    return calculateWeekCount(firstDayOfMonth);
   }
 
   @override

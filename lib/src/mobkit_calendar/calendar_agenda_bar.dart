@@ -6,7 +6,9 @@ import 'package:mobkit_calendar/src/mobkit_calendar/utils/date_utils.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'infinite_listview.dart';
 import 'model/configs/calendar_config_model.dart';
+import '../calendar.dart';
 
+/// Creates the agenda information view available in various views of  [MobkitCalendarWidget].
 class CalendarAgendaBar extends StatefulWidget {
   final MobkitCalendarController mobkitCalendarController;
   final MobkitCalendarConfigModel? config;

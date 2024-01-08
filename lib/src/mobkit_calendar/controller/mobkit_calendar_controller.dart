@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobkit_calendar/mobkit_calendar.dart';
 
+/// Controller that allows you to use [MobkitCalendar] with all its functions
 class MobkitCalendarController extends ChangeNotifier {
   DateTime _calendarDate = DateTime.now();
   DateTime? _selectedDate;
@@ -43,7 +44,7 @@ class MobkitCalendarController extends ChangeNotifier {
     _pageController = PageController(
         initialPage: mobkitCalendarViewType == MobkitCalendarViewType.monthly
             ? (((calendarDate.year * 12) + calendarDate.month) - ((minDate.year * 12) + minDate.month))
-            : ((findFirstDateOfTheWeek(calendarDate).difference(findFirstDateOfTheWeek(minDate)).inDays) ~/ 7).abs(),
+            : ((calendarDate.findFirstDateOfTheWeek().difference(minDate.findFirstDateOfTheWeek()).inDays) ~/ 7).abs(),
         viewportFraction: viewportFraction);
   }
 

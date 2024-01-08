@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../mobkit_calendar.dart';
 
+/// Creates the month information view available in various views of  [MobkitCalendarWidget].
 class CalendarMonthSelectionBar extends StatelessWidget {
   final MobkitCalendarConfigModel? config;
   final MobkitCalendarController mobkitCalendarController;

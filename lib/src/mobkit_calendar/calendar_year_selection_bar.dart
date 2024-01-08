@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../mobkit_calendar.dart';
 
+/// Creates the year information view available in various views of  [MobkitCalendarWidget].
 class CalendarYearSelectionBar extends StatelessWidget {
   final MobkitCalendarController mobkitCalendarController;
   final MobkitCalendarConfigModel? config;

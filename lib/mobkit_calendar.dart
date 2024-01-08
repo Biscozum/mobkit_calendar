@@ -23,23 +23,25 @@ export 'src/mobkit_calendar/controller/mobkit_calendar_controller.dart';
 import 'mobkit_calendar.dart';
 import 'mobkit_calendar_platform_interface.dart';
 
+/// Mobkit Calendar [MobkitCalendar] has built-in configurable views such as day, week, month and timeline day
+/// that provide basic functionalities for scheduling and representing appointments/events efficiently.
 class MobkitCalendar {
-  Future<String?> getPlatformVersion() {
-    return MobkitCalendarPlatform.instance.getPlatformVersion();
-  }
-
+  /// Returns the calendar accounts available on the phone.
   Future<List<AccountGroupModel>> getAccountList() {
     return MobkitCalendarPlatform.instance.getAccountList();
   }
 
+  /// Returns events in the selected accounts.
   Future<List<MobkitCalendarAppointmentModel>> getEventList(Map arguments) {
     return MobkitCalendarPlatform.instance.getEventList(arguments);
   }
 
+  /// Requests calendar permission from the user.
   Future requestCalendarAccess() {
     return MobkitCalendarPlatform.instance.requestCalendarAccess();
   }
 
+  /// Returns the details of the relevant event.
   Future openEventDetail(Map arguments) {
     return MobkitCalendarPlatform.instance.openEventDetail(arguments);
   }

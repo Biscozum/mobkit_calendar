@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../mobkit_calendar.dart';
 
+/// Creates the tile used to indicate the relevant day in various views of [MobkitCalendarWidget].
 class CalendarCellWidget extends StatelessWidget {
   final String text;
   final bool isSelected;

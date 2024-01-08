@@ -7,7 +7,9 @@ import '../extensions/date_extensions.dart';
 import 'calendar_date_cell.dart';
 import 'enum/mobkit_calendar_view_type_enum.dart';
 import 'model/configs/calendar_config_model.dart';
+import '../calendar.dart';
 
+/// Creates the month information view available in various views of  [MobkitCalendarWidget].
 class CalendarDateSelectionBar extends StatefulWidget {
   final DateTime? minDate;
 
@@ -47,8 +49,9 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
         ? ((widget.mobkitCalendarController.calendarDate.year * 12) +
                 widget.mobkitCalendarController.calendarDate.month) -
             ((_mindate.year * 12) + _mindate.month)
-        : ((findFirstDateOfTheWeek(widget.mobkitCalendarController.calendarDate)
-                    .difference(findFirstDateOfTheWeek(_mindate))
+        : ((widget.mobkitCalendarController.calendarDate
+                    .findFirstDateOfTheWeek()
+                    .difference(_mindate.findFirstDateOfTheWeek())
                     .inDays) ~/
                 7)
             .abs();
@@ -86,9 +89,10 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
               onPageChanged: (page) {
                 if (widget.mobkitCalendarController.mobkitCalendarViewType == MobkitCalendarViewType.daily ||
                     widget.mobkitCalendarController.mobkitCalendarViewType == MobkitCalendarViewType.weekly) {
-                  widget.mobkitCalendarController.selectedDate = widget.mobkitCalendarController.calendarDate =
-                      (findFirstDateOfTheWeek(widget.mobkitCalendarController.calendarDate
-                          .add(Duration(days: _currentPage < page ? 7 : -7))));
+                  widget.mobkitCalendarController.selectedDate = widget.mobkitCalendarController.calendarDate = (widget
+                      .mobkitCalendarController.calendarDate
+                      .add(Duration(days: _currentPage < page ? 7 : -7))
+                      .findFirstDateOfTheWeek());
                 }
                 _currentPage = page;
                 if (widget.mobkitCalendarController.mobkitCalendarViewType == MobkitCalendarViewType.monthly) {
@@ -99,13 +103,15 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
                 DateTime currentDate =
                     widget.mobkitCalendarController.mobkitCalendarViewType == MobkitCalendarViewType.monthly
                         ? addMonth(_mindate, index)
-                        : findFirstDateOfTheWeek(_mindate).add(Duration(days: index * 7));
+                        : _mindate.findFirstDateOfTheWeek().add(Duration(days: index * 7));
                 DateTime firstWeekDay = currentDate;
                 var headerDate = widget.mobkitCalendarController.selectedDate ?? currentDate;
-                headerDate = (findFirstDateOfTheWeek(headerDate)
+                headerDate = (headerDate
+                                .findFirstDateOfTheWeek()
                                 .isBeforeOrEqualTo(widget.mobkitCalendarController.calendarDate) ??
                             false) &&
-                        (findLastDateOfTheWeek(headerDate)
+                        (headerDate
+                                .findLastDateOfTheWeek()
                                 .isAfterOrEqualTo(widget.mobkitCalendarController.calendarDate) ??
                             false)
                     ? headerDate
@@ -251,7 +257,7 @@ class _DateListState extends State<DateList> {
     List<Widget> rowList = [];
     var firstDay = DateTime(date.year, date.month, 1);
     DateTime newDate = firstDay.isFirstDay(DateTime.monday) ? firstDay : firstDay.previous(DateTime.monday);
-    for (var i = 0; i < calculateMonth(date); i++) {
+    for (var i = 0; i < calculateWeekCount(date); i++) {
       List<Widget> cellList = [];
       rowList.add(Container(
         color: config?.gridBorderColor ?? Colors.transparent,
