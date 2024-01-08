@@ -1,7 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 
-import '../../../../../mobkit_calendar.dart';
+import '../../../../mobkit_calendar.dart';
 
 class MobkitCalendarConfigModel {
   /// The title you want to appear at the top of the calendar.

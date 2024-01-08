@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:mobkit_calendar/src/calendars/mobkit_calendar/controller/mobkit_calendar_controller.dart';
-import 'package:mobkit_calendar/src/calendars/mobkit_calendar/model/mobkit_calendar_appointment_model.dart';
-import 'package:mobkit_calendar/src/calendars/mobkit_calendar/utils/date_utils.dart';
-import '../../extensions/date_extensions.dart';
+import 'package:mobkit_calendar/src/mobkit_calendar/controller/mobkit_calendar_controller.dart';
+import 'package:mobkit_calendar/src/mobkit_calendar/model/mobkit_calendar_appointment_model.dart';
+import 'package:mobkit_calendar/src/mobkit_calendar/utils/date_utils.dart';
+import '../extensions/date_extensions.dart';
 import 'calendar_date_cell.dart';
 import 'enum/mobkit_calendar_view_type_enum.dart';
 import 'model/configs/calendar_config_model.dart';

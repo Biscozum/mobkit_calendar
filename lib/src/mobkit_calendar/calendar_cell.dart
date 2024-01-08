@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../mobkit_calendar.dart';
+import '../../mobkit_calendar.dart';
 
 class CalendarCellWidget extends StatelessWidget {
   final String text;

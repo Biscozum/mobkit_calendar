@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:mobkit_calendar/src/calendars/mobkit_calendar/utils/date_utils.dart';
-import '../../../mobkit_calendar.dart';
+import 'package:mobkit_calendar/src/mobkit_calendar/utils/date_utils.dart';
+import '../../mobkit_calendar.dart';
 
 class NativeCarousel extends StatefulWidget {
   const NativeCarousel({

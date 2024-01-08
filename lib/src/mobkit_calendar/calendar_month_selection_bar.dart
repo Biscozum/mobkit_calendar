@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../../../mobkit_calendar.dart';
+import '../../mobkit_calendar.dart';
 
 class CalendarMonthSelectionBar extends StatelessWidget {
   final MobkitCalendarConfigModel? config;

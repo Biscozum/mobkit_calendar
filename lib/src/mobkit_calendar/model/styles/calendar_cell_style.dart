@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mobkit_calendar/src/calendars/mobkit_calendar/model/styles/frame_style.dart';
+import 'package:mobkit_calendar/src/mobkit_calendar/model/styles/frame_style.dart';
 
 class CalendarCellStyle extends FrameStyle {
   TextStyle? maxLineCountTextStyle;

@@ -1,52 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:mobkit_calendar/src/extensions/date_extensions.dart';
-import 'package:mobkit_calendar/src/pickers/model/month_and_year_config_model.dart';
-import 'package:mobkit_calendar/src/pickers/month_and_year_picker.dart';
-import 'calendars/mobkit_calendar/controller/mobkit_calendar_controller.dart';
-import 'calendars/mobkit_calendar/mobkit_calendar_widget.dart';
-import 'calendars/mobkit_calendar/model/configs/calendar_config_model.dart';
-import 'calendars/mobkit_calendar/model/daily_frequency.dart';
-import 'calendars/mobkit_calendar/model/day_of_month_model.dart';
-import 'calendars/mobkit_calendar/model/day_of_week_and_repetition_model.dart';
-import 'calendars/mobkit_calendar/model/mobkit_calendar_appointment_model.dart';
-import 'calendars/mobkit_calendar/model/monthly_frequency.dart';
-import 'calendars/mobkit_calendar/model/weekly_frequency.dart';
+import 'mobkit_calendar/controller/mobkit_calendar_controller.dart';
+import 'mobkit_calendar/mobkit_calendar_widget.dart';
+import 'mobkit_calendar/model/configs/calendar_config_model.dart';
+import 'mobkit_calendar/model/daily_frequency.dart';
+import 'mobkit_calendar/model/day_of_month_model.dart';
+import 'mobkit_calendar/model/day_of_week_and_repetition_model.dart';
+import 'mobkit_calendar/model/mobkit_calendar_appointment_model.dart';
+import 'mobkit_calendar/model/monthly_frequency.dart';
+import 'mobkit_calendar/model/weekly_frequency.dart';
 import 'extensions/model/week_dates_model.dart';
-
-class MobkitMonthAndYearPicker extends StatelessWidget {
-  final DateTime calendarDate;
-  late final DateTime selectDate;
-  final MobkitMonthAndYearCalendarConfigModel? config;
-  final ValueChanged<DateTime> onSelectionChange;
-  final Function(DateTime firstDate, DateTime lastDate) onRangeSelectionChange;
-  late final ValueNotifier<List<DateTime>> selectedDates = ValueNotifier<List<DateTime>>(List<DateTime>.from([]));
-
-  MobkitMonthAndYearPicker({
-    DateTime? selectedDate,
-    Key? key,
-    this.config,
-    required this.onSelectionChange,
-    required this.onRangeSelectionChange,
-    required this.calendarDate,
-  }) : super(key: key) {
-    selectDate = selectedDate ?? DateTime.now();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    initializeDateFormatting();
-    ValueNotifier<DateTime> widgetCalendarDate = ValueNotifier<DateTime>(calendarDate);
-    ValueNotifier<DateTime> widgetSelectedDate = ValueNotifier<DateTime>(selectDate);
-    return MonthAndYearPicker(
-        monthAndYearConfigModel: config,
-        onSelectionChange: onSelectionChange,
-        onRangeSelectionChange: onRangeSelectionChange,
-        calendarDate: widgetCalendarDate,
-        selectedDate: widgetSelectedDate,
-        selectedDates: selectedDates);
-  }
-}
 
 class MobkitCalendarWidget extends StatefulWidget {
   final DateTime? minDate;

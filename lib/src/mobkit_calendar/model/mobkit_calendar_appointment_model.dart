@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mobkit_calendar/src/calendars/mobkit_calendar/model/recurrence_model.dart';
+import 'package:mobkit_calendar/src/mobkit_calendar/model/recurrence_model.dart';
 
 class MobkitCalendarAppointmentModel {
   String? nativeEventId;

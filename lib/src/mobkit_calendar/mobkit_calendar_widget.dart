@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:mobkit_calendar/src/calendars/mobkit_calendar/calendar_agenda_bar.dart';
-import 'package:mobkit_calendar/src/calendars/mobkit_calendar/calendar_date_bar.dart';
-import 'package:mobkit_calendar/src/calendars/mobkit_calendar/controller/mobkit_calendar_controller.dart';
-import 'package:mobkit_calendar/src/calendars/mobkit_calendar/model/configs/calendar_config_model.dart';
-import 'package:mobkit_calendar/src/calendars/mobkit_calendar/utils/date_utils.dart';
+import 'package:mobkit_calendar/src/mobkit_calendar/calendar_agenda_bar.dart';
+import 'package:mobkit_calendar/src/mobkit_calendar/calendar_date_bar.dart';
+import 'package:mobkit_calendar/src/mobkit_calendar/controller/mobkit_calendar_controller.dart';
+import 'package:mobkit_calendar/src/mobkit_calendar/model/configs/calendar_config_model.dart';
+import 'package:mobkit_calendar/src/mobkit_calendar/utils/date_utils.dart';
 import 'package:mobkit_calendar/src/extensions/date_extensions.dart';
 import 'calendar_month_selection_bar.dart';
 import 'calendar_weekdays_bar.dart';

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:mobkit_calendar/src/calendars/mobkit_calendar/controller/mobkit_calendar_controller.dart';
-import 'package:mobkit_calendar/src/calendars/mobkit_calendar/model/mobkit_calendar_appointment_model.dart';
-import 'package:mobkit_calendar/src/calendars/mobkit_calendar/utils/date_utils.dart';
+import 'package:mobkit_calendar/src/mobkit_calendar/controller/mobkit_calendar_controller.dart';
+import 'package:mobkit_calendar/src/mobkit_calendar/model/mobkit_calendar_appointment_model.dart';
+import 'package:mobkit_calendar/src/mobkit_calendar/utils/date_utils.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'infinite_listview.dart';
 import 'model/configs/calendar_config_model.dart';
