@@ -1,3 +1,4 @@
+/// Accounts on the device.
 class AccountModel {
   String accountName;
   bool isChecked;

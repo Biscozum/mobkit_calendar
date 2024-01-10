@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobkit_calendar/src/mobkit_calendar/model/recurrence_model.dart';
+import '../../calendar.dart';
 
+/// The event model used for [MobkitCalendarWidget].
 class MobkitCalendarAppointmentModel {
   String? nativeEventId;
   int? index;

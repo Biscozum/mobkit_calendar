@@ -21,6 +21,7 @@ class MethodChannelMobkitCalendar extends MobkitCalendarPlatform {
 
   @override
   Future<List<AccountGroupModel>> getAccountList() async {
+    // ignore: deprecated_member_use
     PermissionStatus result = await Permission.calendar.request();
     List<AccountGroupModel> accounts = [];
     if (result.isGranted) {
@@ -59,6 +60,7 @@ class MethodChannelMobkitCalendar extends MobkitCalendarPlatform {
 
   @override
   Future<List<MobkitCalendarAppointmentModel>> getEventList(Map arguments) async {
+    // ignore: deprecated_member_use
     PermissionStatus result = await Permission.calendar.request();
     List<MobkitCalendarAppointmentModel> events = [];
     if ((arguments["idlist"] is List<String>) && result.isGranted && (arguments["idlist"] as List<String>).isNotEmpty) {
@@ -103,6 +105,7 @@ class MethodChannelMobkitCalendar extends MobkitCalendarPlatform {
 
   @override
   Future requestCalendarAccess() async {
+    // ignore: deprecated_member_use
     PermissionStatus result = await Permission.calendar.request();
     return result.isGranted;
   }
