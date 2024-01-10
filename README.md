@@ -1,14 +1,13 @@
 # Mobkit Calendar
 
-Mobkit Calendar.
-
+Mobkit Calendar has built-in configurable views such as day, week, month and timeline day that provide basic functionalities for scheduling and representing appointments/events efficiently.
 ## Table of contents
 
 - [Technicial Specifications](#technicial-specifications)
 - [Views](#views)
-- [Parameters](#parameters)
+- [Native Calendar](#native-calendar)
 - [Appointments](#appointments)
-- [Recurrience Events](#recurrience_events)
+- [Parameters](#parameters)
 
 
 ##  Calendar features
@@ -24,6 +23,7 @@ Mobkit Calendar.
 
 
 * **Time zone** - Mobkit Calendar allows you to configure your events according to your desired time zone, regardless of the time on your device.
+
 ---
 ####  Views
 
@@ -119,7 +119,33 @@ Mobkit Calendar.
 </tr>
 </table>
 
+##### Native Calendar
 
+`Mobkit Calendar returns various functions to help you by accessing local calendars available on devices.`
+
+*   **requestCalendarAccess**
+    * `Prompts the user for permission to access the local calendar.`
+*   **getEventList**
+    * `Returns the list of events in the calendars, thanks to the relevant calendar ids given as parameters.`
+*   **getAccountList**
+    * `Returns a list of local calendar accounts available on the device.`
+*   **openEventDetail**
+    * `Opens the details of the relevant event in the local calendar.`
+
+##### Appointments
+
+`Appointments allow users to define events/appointments with a specific time interval, repetition, and various customizations.`
+
+
+* **`String? nativeEventId`** If the relevant event is a native event, it returns the id.
+* **`String title`** Returns the title of the event.
+* **`DateTime appointmentStartDate`** Returns the start time of the event.
+* **`DateTime appointmentEndDate`** Returns the end time of the event.
+* **`Color? color`** Returns the color of the relevant event (if any).
+* **`bool isAllDay`** Returns whether the relevant event occurred all day.
+* **`String detail`** Returns the detail of the relevant event.
+* **`RecurrenceModel? recurrenceModel`** Returns the recurrence pattern of the relevant event (if any).
+* **`Object? eventData`** Returns the object you gave while creating the relevant event.
 
 ##### Parameters
 *   **MobkitCalendarConfigModel**
@@ -266,3 +292,4 @@ Mobkit Calendar.
     * `TextStyle disabledStyle` - The textstyle that the inactive days of the calendar will have
     * `TextStyle currentStyle` - The textstyle that today's date will have
     * `TextStyle selectedStyle` - The textstyle that the selected days in the calendar will have.
+

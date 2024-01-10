@@ -10,7 +10,9 @@ import 'calendar_weekdays_bar.dart';
 import 'calendar_year_selection_bar.dart';
 import 'enum/mobkit_calendar_view_type_enum.dart';
 import 'model/mobkit_calendar_appointment_model.dart';
+import '../calendar.dart';
 
+/// Creates a [MobkitCalendarWidget] widget, which used to scheduling and managing events.
 class MobkitCalendarView extends StatelessWidget {
   const MobkitCalendarView({
     Key? key,
@@ -40,6 +42,7 @@ class MobkitCalendarView extends StatelessWidget {
   final Widget Function(Map<DateTime, List<MobkitCalendarAppointmentModel>>)? weeklyViewWidget;
   final Function(DateTime datetime)? dateRangeChanged;
 
+  /// Returns whether there is an intersection between two specified dates.
   bool? isIntersect(
     DateTime firstStartDate,
     DateTime firstEndDate,

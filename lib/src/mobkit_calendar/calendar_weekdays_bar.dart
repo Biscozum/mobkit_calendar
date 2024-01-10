@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:mobkit_calendar/mobkit_calendar.dart';
 import 'calendar_cell.dart';
 
+/// Creates the weekdays information view available in various views of  [MobkitCalendarWidget].
 class CalendarWeekDaysBar extends StatelessWidget {
   const CalendarWeekDaysBar(
       {Key? key, this.config, required this.customCalendarModel, required this.mobkitCalendarController})

@@ -47,7 +47,7 @@ class CalendarDateCell extends StatelessWidget {
                     builder: (_) => ListenableBuilder(
                         listenable: mobkitCalendarController,
                         builder: (context, widget) {
-                          return NativeCarousel(
+                          return CarouselEvent(
                             minDate: minDate,
                             onPopupWidget: onPopupWidget,
                             onSelectionChange: onSelectionChange,

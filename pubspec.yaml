@@ -1,7 +1,7 @@
 name: mobkit_calendar
 description: Mobkit Calendar.
 version: 0.0.1
-homepage:
+repository: https://github.com/Biscozum/mobkit_calendar
 
 environment:
   sdk: '>=2.18.2 <4.0.0'

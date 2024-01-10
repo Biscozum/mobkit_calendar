@@ -10,7 +10,9 @@ import 'mobkit_calendar/model/mobkit_calendar_appointment_model.dart';
 import 'mobkit_calendar/model/monthly_frequency.dart';
 import 'mobkit_calendar/model/weekly_frequency.dart';
 import 'extensions/model/week_dates_model.dart';
+import 'mobkit_calendar/utils/date_utils.dart';
 
+/// It allows you to use MobkitCalendar on your screen with a few parameters.
 class MobkitCalendarWidget extends StatefulWidget {
   final DateTime? minDate;
   final MobkitCalendarConfigModel? config;

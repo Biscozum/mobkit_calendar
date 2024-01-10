@@ -4,7 +4,9 @@ import 'package:flutter/gestures.dart' show DragStartBehavior;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import '../calendar.dart';
 
+/// Provides infinite list feature for [MobkitCalendarWidget] Agenda view.
 class InfiniteListView extends StatefulWidget {
   const InfiniteListView.builder({
     Key? key,

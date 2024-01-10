@@ -1,5 +1,7 @@
 import 'frequency_model.dart';
+import './mobkit_calendar_appointment_model.dart';
 
+/// Recurrence Model to be used in [MobkitCalendarAppointmentModel]
 class RecurrenceModel {
   Frequency frequency;
   DateTime endDate;

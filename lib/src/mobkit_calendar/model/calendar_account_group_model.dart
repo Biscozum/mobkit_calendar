@@ -1,5 +1,6 @@
 import 'calendar_account_model.dart';
 
+/// Groups for accounts on the device.
 class AccountGroupModel {
   String groupName;
   List<AccountModel>? accountModels;

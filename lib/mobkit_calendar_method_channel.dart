@@ -14,12 +14,6 @@ class MethodChannelMobkitCalendar extends MobkitCalendarPlatform {
   final methodChannel = const MethodChannel('mobkit_calendar');
 
   @override
-  Future<String?> getPlatformVersion() async {
-    final version = await methodChannel.invokeMethod<String>('getPlatformVersion');
-    return version;
-  }
-
-  @override
   Future openEventDetail(Map arguments) async {
     final success = await methodChannel.invokeMethod<bool>('openEventDetail', arguments);
     return success;
@@ -27,6 +21,7 @@ class MethodChannelMobkitCalendar extends MobkitCalendarPlatform {
 
   @override
   Future<List<AccountGroupModel>> getAccountList() async {
+    // ignore: deprecated_member_use
     PermissionStatus result = await Permission.calendar.request();
     List<AccountGroupModel> accounts = [];
     if (result.isGranted) {
@@ -65,9 +60,10 @@ class MethodChannelMobkitCalendar extends MobkitCalendarPlatform {
 
   @override
   Future<List<MobkitCalendarAppointmentModel>> getEventList(Map arguments) async {
+    // ignore: deprecated_member_use
     PermissionStatus result = await Permission.calendar.request();
     List<MobkitCalendarAppointmentModel> events = [];
-    if (result.isGranted && (arguments["idlist"] as List<String>).isNotEmpty) {
+    if ((arguments["idlist"] is List<String>) && result.isGranted && (arguments["idlist"] as List<String>).isNotEmpty) {
       String? eventList = await methodChannel.invokeMethod<String?>('getEventList', arguments);
       Map eventMap = json.decode(eventList ?? "");
       if (eventMap["events"] is List<Object?>) {
@@ -109,6 +105,7 @@ class MethodChannelMobkitCalendar extends MobkitCalendarPlatform {
 
   @override
   Future requestCalendarAccess() async {
+    // ignore: deprecated_member_use
     PermissionStatus result = await Permission.calendar.request();
     return result.isGranted;
   }

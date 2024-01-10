@@ -1,5 +1,4 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
-
 import 'mobkit_calendar.dart';
 import 'mobkit_calendar_method_channel.dart';
 
@@ -22,10 +21,6 @@ abstract class MobkitCalendarPlatform extends PlatformInterface {
   static set instance(MobkitCalendarPlatform instance) {
     PlatformInterface.verifyToken(instance, _token);
     _instance = instance;
-  }
-
-  Future<String?> getPlatformVersion() {
-    throw UnimplementedError('platformVersion() has not been implemented.');
   }
 
   Future<List<AccountGroupModel>> getAccountList() {
