@@ -1,3 +1,5 @@
+ <img src="/example/assets/images/MobkitCalendarBanner.png" />
+
 # Mobkit Calendar
 
 Mobkit Calendar has built-in configurable views such as day, week, month and timeline day that provide basic functionalities for scheduling and representing appointments/events efficiently.
