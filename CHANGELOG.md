@@ -6,10 +6,14 @@
 
 * README file edited.
 
-## 0.0.3.
+## 0.0.3
 
 * Support up-to-date dependencies.
 
-## 0.0.4.
+## 0.0.4
 
 * Package dependencies edited.
+
+## 0.0.5
+
+* Platform support edited.
