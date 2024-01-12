@@ -6,7 +6,10 @@ import 'calendar_cell.dart';
 /// Creates the weekdays information view available in various views of  [MobkitCalendarWidget].
 class CalendarWeekDaysBar extends StatelessWidget {
   const CalendarWeekDaysBar(
-      {Key? key, this.config, required this.customCalendarModel, required this.mobkitCalendarController})
+      {Key? key,
+      this.config,
+      required this.customCalendarModel,
+      required this.mobkitCalendarController})
       : super(key: key);
   final MobkitCalendarConfigModel? config;
   final List<MobkitCalendarAppointmentModel> customCalendarModel;
@@ -32,7 +35,9 @@ class CalendarWeekDaysBar extends StatelessWidget {
   List<String> _getWeekDays(int weekStart) {
     List<String> weekdays = [];
     for (var i = 0; i < 7; i++) {
-      weekdays.add(DateFormat.d(config?.locale).dateSymbols.SHORTWEEKDAYS[(i + weekStart) % 7]);
+      weekdays.add(DateFormat.d(config?.locale)
+          .dateSymbols
+          .SHORTWEEKDAYS[(i + weekStart) % 7]);
     }
     return weekdays;
   }

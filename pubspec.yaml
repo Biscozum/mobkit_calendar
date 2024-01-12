@@ -1,6 +1,6 @@
 name: mobkit_calendar
-description: Mobkit Calendar has built-in configurable views such as day, week, month and timeline day that provide basic functionalities for scheduling and representing appointments/events efficiently.
-version: 0.0.1
+description: Mobkit Calendar has built-in basic functionalities for scheduling and representing appointments/events efficiently.
+version: 0.0.3
 repository: https://github.com/Biscozum/mobkit_calendar
 
 environment:
@@ -20,9 +20,9 @@ dependencies:
     sdk: flutter
   flutter_web_plugins:
     sdk: flutter
-  plugin_platform_interface: ^2.0.2
-  intl: ^0.18.0
-  permission_handler: ^10.2.0
+  plugin_platform_interface: ^2.1.8
+  intl: ^0.18.1
+  permission_handler: ^10.4.5
   visibility_detector: ^0.4.0+2
 
 dev_dependencies:

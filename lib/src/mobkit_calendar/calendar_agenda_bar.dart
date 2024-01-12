@@ -14,8 +14,11 @@ class CalendarAgendaBar extends StatefulWidget {
   final MobkitCalendarConfigModel? config;
   final Function(DateTime datetime)? dateRangeChanged;
   final Function(DateTime datetime)? onDateChanged;
-  final Widget Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime)? titleWidget;
-  final Widget Function(MobkitCalendarAppointmentModel list, DateTime datetime)? agendaWidget;
+  final Widget Function(
+          List<MobkitCalendarAppointmentModel> list, DateTime datetime)?
+      titleWidget;
+  final Widget Function(MobkitCalendarAppointmentModel list, DateTime datetime)?
+      agendaWidget;
   final Function(MobkitCalendarAppointmentModel model)? eventTap;
 
   const CalendarAgendaBar({
@@ -34,7 +37,8 @@ class CalendarAgendaBar extends StatefulWidget {
 }
 
 class _CalendarAgendaBarState extends State<CalendarAgendaBar> {
-  final InfiniteScrollController _infiniteScrollController = InfiniteScrollController();
+  final InfiniteScrollController _infiniteScrollController =
+      InfiniteScrollController();
   ValueNotifier<DateTime?> lastDate = ValueNotifier<DateTime?>(null);
   late DateTime initialDate;
   @override
@@ -47,12 +51,16 @@ class _CalendarAgendaBarState extends State<CalendarAgendaBar> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _infiniteScrollController.position.isScrollingNotifier.addListener(() {
         if (!_infiniteScrollController.position.isScrollingNotifier.value) {
-          if (widget.config?.agendaViewConfigModel != null && lastDate.value != null) {
+          if (widget.config?.agendaViewConfigModel != null &&
+              lastDate.value != null) {
             if (widget.config!.agendaViewConfigModel!.endDate != null &&
-                lastDate.value!.isAfter(widget.config!.agendaViewConfigModel!.endDate!)) {
+                lastDate.value!
+                    .isAfter(widget.config!.agendaViewConfigModel!.endDate!)) {
               widget.dateRangeChanged?.call(lastDate.value!);
-            } else if (widget.config!.agendaViewConfigModel!.startDate != null &&
-                lastDate.value!.isBefore(widget.config!.agendaViewConfigModel!.startDate!)) {
+            } else if (widget.config!.agendaViewConfigModel!.startDate !=
+                    null &&
+                lastDate.value!.isBefore(
+                    widget.config!.agendaViewConfigModel!.startDate!)) {
               widget.dateRangeChanged?.call(lastDate.value!);
             }
           } else if (widget.config?.agendaViewConfigModel == null ||
@@ -78,9 +86,13 @@ class _CalendarAgendaBarState extends State<CalendarAgendaBar> {
         ValueListenableBuilder(
           valueListenable: lastDate,
           builder: (_, DateTime? date, __) {
-            return ((widget.config?.topBarConfig.isVisibleHeaderWidget ?? false) && widget.titleWidget != null)
+            return ((widget.config?.topBarConfig.isVisibleHeaderWidget ??
+                        false) &&
+                    widget.titleWidget != null)
                 ? widget.titleWidget!.call(
-                    findCustomModel(widget.mobkitCalendarController.appoitnments, lastDate.value ?? DateTime.now()),
+                    findCustomModel(
+                        widget.mobkitCalendarController.appoitnments,
+                        lastDate.value ?? DateTime.now()),
                     lastDate.value ?? DateTime.now(),
                   )
                 : Container();
@@ -90,27 +102,34 @@ class _CalendarAgendaBarState extends State<CalendarAgendaBar> {
           child: InfiniteListView.builder(
             controller: _infiniteScrollController,
             itemBuilder: (BuildContext context, int index) {
-              DateTime currentDate = DateUtils.dateOnly(initialDate.add(Duration(days: index)));
-              List<MobkitCalendarAppointmentModel> listData =
-                  findCustomModel(widget.mobkitCalendarController.appoitnments, currentDate);
+              DateTime currentDate =
+                  DateUtils.dateOnly(initialDate.add(Duration(days: index)));
+              List<MobkitCalendarAppointmentModel> listData = findCustomModel(
+                  widget.mobkitCalendarController.appoitnments, currentDate);
               return VisibilityDetector(
                 key: ValueKey("$currentDate"),
                 onVisibilityChanged: (visibilityInfo) {
                   if (visibilityInfo.key is ValueKey) {
                     lastDate.value = DateUtils.dateOnly(
-                        DateFormat("yyyy-MM-dd", widget.config?.locale).parse((visibilityInfo.key as ValueKey).value));
+                        DateFormat("yyyy-MM-dd", widget.config?.locale)
+                            .parse((visibilityInfo.key as ValueKey).value));
                   }
                 },
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 18),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 18),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        DateFormat(widget.config?.agendaViewConfigModel?.dateFormatPattern ?? "EEE, MMMM d",
+                        DateFormat(
+                                widget.config?.agendaViewConfigModel
+                                        ?.dateFormatPattern ??
+                                    "EEE, MMMM d",
                                 widget.config?.locale)
                             .format(currentDate),
-                        style: widget.config?.agendaViewConfigModel?.dateTextStyle ??
+                        style: widget
+                                .config?.agendaViewConfigModel?.dateTextStyle ??
                             const TextStyle(
                               fontSize: 14,
                               color: Colors.grey,
@@ -126,25 +145,36 @@ class _CalendarAgendaBarState extends State<CalendarAgendaBar> {
                               shrinkWrap: true,
                               itemBuilder: (context, index) {
                                 return Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 4),
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 4),
                                   child: GestureDetector(
-                                    onTap: () => widget.eventTap?.call(listData[index]),
-                                    child: widget.agendaWidget?.call(listData[index], currentDate) ??
+                                    onTap: () =>
+                                        widget.eventTap?.call(listData[index]),
+                                    child: widget.agendaWidget?.call(
+                                            listData[index], currentDate) ??
                                         Row(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Expanded(
                                               flex: 1,
                                               child: Padding(
-                                                padding: const EdgeInsets.symmetric(vertical: 4),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 4),
                                                 child: Text(
                                                   "${listData[index].title}",
                                                   maxLines: 1,
-                                                  overflow: TextOverflow.ellipsis,
-                                                  style: widget.config?.agendaViewConfigModel?.titleTextStyle ??
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: widget
+                                                          .config
+                                                          ?.agendaViewConfigModel
+                                                          ?.titleTextStyle ??
                                                       const TextStyle(
                                                         fontSize: 14,
-                                                        fontWeight: FontWeight.bold,
+                                                        fontWeight:
+                                                            FontWeight.bold,
                                                         color: Colors.black,
                                                       ),
                                                 ),
@@ -157,15 +187,22 @@ class _CalendarAgendaBarState extends State<CalendarAgendaBar> {
                                               flex: 4,
                                               child: Container(
                                                 decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(6),
+                                                  borderRadius:
+                                                      BorderRadius.circular(6),
                                                   color: listData[index].color,
                                                 ),
                                                 height: 60,
                                                 child: Padding(
-                                                  padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
+                                                      vertical: 4,
+                                                      horizontal: 8),
                                                   child: Text(
                                                     listData[index].detail,
-                                                    style: widget.config?.agendaViewConfigModel?.detailTextStyle ??
+                                                    style: widget
+                                                            .config
+                                                            ?.agendaViewConfigModel
+                                                            ?.detailTextStyle ??
                                                         const TextStyle(
                                                           fontSize: 14,
                                                           color: Colors.white,

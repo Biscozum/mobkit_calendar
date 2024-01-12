@@ -27,26 +27,31 @@ class CalendarController extends ChangeNotifier {
       recurrenceModel: RecurrenceModel(
           endDate: DateTime.now().add(const Duration(days: 500)),
           frequency: MonthlyFrequency(
-              monthlyFrequencyType: DayOfWeekAndRepetitionModel(dayOfMonthAndRepetition: const MapEntry(1, 2))),
+              monthlyFrequencyType: DayOfWeekAndRepetitionModel(
+                  dayOfMonthAndRepetition: const MapEntry(1, 2))),
           interval: 10,
           repeatOf: 1),
     ),
     MobkitCalendarAppointmentModel(
       title: "The event will take place between 4 and 6 p.m.",
-      appointmentStartDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 16),
-      appointmentEndDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 18),
+      appointmentStartDate: DateTime(
+          DateTime.now().year, DateTime.now().month, DateTime.now().day, 16),
+      appointmentEndDate: DateTime(
+          DateTime.now().year, DateTime.now().month, DateTime.now().day, 18),
       isAllDay: false,
       color: Colors.green,
       detail: "The event will take place between 4 and 6 p.m.",
       recurrenceModel: null,
     ),
     MobkitCalendarAppointmentModel(
-      title: "Every 2 weeks on Tuesdays and Sundays of the week (10 repetitions)",
+      title:
+          "Every 2 weeks on Tuesdays and Sundays of the week (10 repetitions)",
       appointmentStartDate: DateTime.now().add(const Duration(days: -1)),
       appointmentEndDate: DateTime.now(),
       isAllDay: true,
       color: Colors.orange,
-      detail: "Every 2 weeks on Tuesdays and Sundays of the week (10 repetitions)",
+      detail:
+          "Every 2 weeks on Tuesdays and Sundays of the week (10 repetitions)",
       recurrenceModel: RecurrenceModel(
           endDate: DateTime.now().add(const Duration(days: 500)),
           frequency: WeeklyFrequency(daysOfWeek: [2, 7]),
@@ -54,13 +59,15 @@ class CalendarController extends ChangeNotifier {
           repeatOf: 2),
     ),
   ];
-  MobkitCalendarController mobkitCalendarController = MobkitCalendarController();
+  MobkitCalendarController mobkitCalendarController =
+      MobkitCalendarController();
   CalendarController(MobkitCalendarViewType mobkitCalendarViewType) {
     mobkitCalendarController.mobkitCalendarViewType = mobkitCalendarViewType;
     configModel = MobkitCalendarConfigModel(
       cellConfig: CalendarCellConfigModel(
         disabledStyle: CalendarCellStyle(
-          textStyle: TextStyle(fontSize: 14, color: Colors.grey.withOpacity(0.5)),
+          textStyle:
+              TextStyle(fontSize: 14, color: Colors.grey.withOpacity(0.5)),
           color: Colors.transparent,
         ),
         enabledStyle: CalendarCellStyle(
@@ -77,19 +84,22 @@ class CalendarController extends ChangeNotifier {
         ),
       ),
       calendarPopupConfigModel: CalendarPopupConfigModel(
-        popUpBoxDecoration:
-            const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(25))),
+        popUpBoxDecoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(Radius.circular(25))),
         popUpOpacity: true,
         animateDuration: 500,
         verticalPadding: 30,
         popupSpace: 10,
-        popupHeight: MediaQuery.of(navigatorKey.currentContext!).size.height * 0.6,
+        popupHeight:
+            MediaQuery.of(navigatorKey.currentContext!).size.height * 0.6,
         popupWidth: MediaQuery.of(navigatorKey.currentContext!).size.width,
         viewportFraction: 0.9,
       ),
       topBarConfig: CalendarTopBarConfigModel(
-        isVisibleHeaderWidget: mobkitCalendarViewType == MobkitCalendarViewType.monthly ||
-            mobkitCalendarViewType == MobkitCalendarViewType.agenda,
+        isVisibleHeaderWidget:
+            mobkitCalendarViewType == MobkitCalendarViewType.monthly ||
+                mobkitCalendarViewType == MobkitCalendarViewType.agenda,
         isVisibleTitleWidget: true,
         isVisibleMonthBar: false,
         isVisibleYearBar: false,
@@ -102,7 +112,9 @@ class CalendarController extends ChangeNotifier {
       disableWeekendsDays: false,
       monthBetweenPadding: 20,
       primaryColor: Colors.lightBlue,
-      popupEnable: mobkitCalendarViewType == MobkitCalendarViewType.monthly ? true : false,
+      popupEnable: mobkitCalendarViewType == MobkitCalendarViewType.monthly
+          ? true
+          : false,
       viewportFraction: mobkitCalendarViewType == MobkitCalendarViewType.monthly
           ? isFullScreen
               ? 1
@@ -117,7 +129,8 @@ class CalendarController extends ChangeNotifier {
       ValueNotifier<List<MobkitCalendarAppointmentModel>>([]);
   DateTime? calendarDate;
 
-  setCalendarDate(List<MobkitCalendarAppointmentModel> models, DateTime date, {bool isFirst = false}) {
+  setCalendarDate(List<MobkitCalendarAppointmentModel> models, DateTime date,
+      {bool isFirst = false}) {
     showEvents.value = [];
     eventDate.value = date;
     if (models.isNotEmpty) {

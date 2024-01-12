@@ -8,7 +8,8 @@ class MobkitCalendarWeeklyView extends StatefulWidget {
   const MobkitCalendarWeeklyView({super.key});
 
   @override
-  State<MobkitCalendarWeeklyView> createState() => _MobkitCalendarWeeklyViewState();
+  State<MobkitCalendarWeeklyView> createState() =>
+      _MobkitCalendarWeeklyViewState();
 }
 
 class _MobkitCalendarWeeklyViewState extends State<MobkitCalendarWeeklyView> {
@@ -38,17 +39,27 @@ class _MobkitCalendarWeeklyViewState extends State<MobkitCalendarWeeklyView> {
                       ? Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 12),
                           child: Text(
-                            DateFormat("EEE, MMMM d", controller.configModel.locale)
+                            DateFormat("EEE, MMMM d",
+                                    controller.configModel.locale)
                                 .format(controller.eventDate.value!),
-                            style: const TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold),
+                            style: const TextStyle(
+                                fontSize: 20,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
                           ),
                         )
                       : Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 6),
                           child: Text(
-                            DateFormat("EEE, MMMM d", controller.configModel.locale)
-                                .format(controller.calendarDate ?? DateTime.now()),
-                            style: const TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold),
+                            DateFormat("EEE, MMMM d",
+                                    controller.configModel.locale)
+                                .format(
+                                    controller.calendarDate ?? DateTime.now()),
+                            style: const TextStyle(
+                                fontSize: 20,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
                           ),
                         );
                 },
@@ -58,7 +69,8 @@ class _MobkitCalendarWeeklyViewState extends State<MobkitCalendarWeeklyView> {
               ),
               ValueListenableBuilder(
                 valueListenable: controller.showEvents,
-                builder: (context, List<MobkitCalendarAppointmentModel> showEvents, widget) {
+                builder: (context,
+                    List<MobkitCalendarAppointmentModel> showEvents, widget) {
                   return SizedBox(
                     height: controller.showEvents.value.length * 45,
                     child: ListView.builder(
@@ -66,7 +78,8 @@ class _MobkitCalendarWeeklyViewState extends State<MobkitCalendarWeeklyView> {
                       physics: const NeverScrollableScrollPhysics(),
                       itemBuilder: (BuildContext context, int index) {
                         return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 2),
                           child: Row(children: [
                             Container(
                               height: 40,
@@ -81,7 +94,10 @@ class _MobkitCalendarWeeklyViewState extends State<MobkitCalendarWeeklyView> {
                                 controller.showEvents.value[index].title ?? "",
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 1,
-                                style: const TextStyle(fontSize: 20, color: Colors.grey, fontWeight: FontWeight.bold),
+                                style: const TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.bold),
                               ),
                             ),
                           ]),
@@ -95,11 +111,14 @@ class _MobkitCalendarWeeklyViewState extends State<MobkitCalendarWeeklyView> {
           ),
         ),
         dateRangeChanged: (datetime) => null,
-        titleWidget: (List<MobkitCalendarAppointmentModel> models, DateTime datetime) => Padding(
+        titleWidget:
+            (List<MobkitCalendarAppointmentModel> models, DateTime datetime) =>
+                Padding(
           padding: const EdgeInsets.symmetric(vertical: 12),
           child: Column(children: [
             Text(
-              DateFormat("yyyy MMMM", controller.configModel.locale).format(datetime),
+              DateFormat("yyyy MMMM", controller.configModel.locale)
+                  .format(datetime),
               style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -108,8 +127,9 @@ class _MobkitCalendarWeeklyViewState extends State<MobkitCalendarWeeklyView> {
             ),
           ]),
         ),
-        onSelectionChange: (List<MobkitCalendarAppointmentModel> model, DateTime date) =>
-            controller.setCalendarDate(model, date),
+        onSelectionChange:
+            (List<MobkitCalendarAppointmentModel> model, DateTime date) =>
+                controller.setCalendarDate(model, date),
         onDateChanged: (DateTime datetime) {},
         mobkitCalendarController: controller.mobkitCalendarController,
       ),

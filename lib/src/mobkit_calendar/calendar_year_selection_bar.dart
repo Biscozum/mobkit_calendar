@@ -5,9 +5,13 @@ import '../../mobkit_calendar.dart';
 class CalendarYearSelectionBar extends StatelessWidget {
   final MobkitCalendarController mobkitCalendarController;
   final MobkitCalendarConfigModel? config;
-  final Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime)? onSelectionChange;
+  final Function(
+          List<MobkitCalendarAppointmentModel> models, DateTime datetime)?
+      onSelectionChange;
 
-  const CalendarYearSelectionBar(this.mobkitCalendarController, this.onSelectionChange, this.config, {Key? key})
+  const CalendarYearSelectionBar(
+      this.mobkitCalendarController, this.onSelectionChange, this.config,
+      {Key? key})
       : super(key: key);
 
   @override
@@ -20,7 +24,8 @@ class CalendarYearSelectionBar extends StatelessWidget {
             builder: (context, builderwidget) {
               return Text(
                 mobkitCalendarController.calendarDate.year.toString(),
-                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               );
             }),
       ],

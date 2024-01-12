@@ -9,7 +9,8 @@ class AccountGroupModel {
     required this.accountModels,
   });
 
-  factory AccountGroupModel.fromJson(Map<String, dynamic> json) => AccountGroupModel(
+  factory AccountGroupModel.fromJson(Map<String, dynamic> json) =>
+      AccountGroupModel(
         groupName: json["groupName"],
         accountModels: (json['accountModels'] as List<dynamic>?)
             ?.map((e) => AccountModel.fromJson(Map<String, dynamic>.from(e)))

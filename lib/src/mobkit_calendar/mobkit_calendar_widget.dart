@@ -32,14 +32,24 @@ class MobkitCalendarView extends StatelessWidget {
   final MobkitCalendarController mobkitCalendarController;
   final MobkitCalendarConfigModel? config;
   final DateTime? minDate;
-  final Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime)? onSelectionChange;
+  final Function(
+          List<MobkitCalendarAppointmentModel> models, DateTime datetime)?
+      onSelectionChange;
   final Function(MobkitCalendarAppointmentModel model)? eventTap;
-  final Widget Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime)? onPopupWidget;
-  final Widget Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime)? headerWidget;
-  final Widget Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime)? titleWidget;
-  final Widget Function(MobkitCalendarAppointmentModel list, DateTime datetime)? agendaWidget;
+  final Widget Function(
+          List<MobkitCalendarAppointmentModel> list, DateTime datetime)?
+      onPopupWidget;
+  final Widget Function(
+          List<MobkitCalendarAppointmentModel> list, DateTime datetime)?
+      headerWidget;
+  final Widget Function(
+          List<MobkitCalendarAppointmentModel> list, DateTime datetime)?
+      titleWidget;
+  final Widget Function(MobkitCalendarAppointmentModel list, DateTime datetime)?
+      agendaWidget;
   final Function(DateTime datetime)? onDateChanged;
-  final Widget Function(Map<DateTime, List<MobkitCalendarAppointmentModel>>)? weeklyViewWidget;
+  final Widget Function(Map<DateTime, List<MobkitCalendarAppointmentModel>>)?
+      weeklyViewWidget;
   final Function(DateTime datetime)? dateRangeChanged;
 
   /// Returns whether there is an intersection between two specified dates.
@@ -49,15 +59,19 @@ class MobkitCalendarView extends StatelessWidget {
     DateTime secondStartDate,
     DateTime secondEndDate,
   ) {
-    return (secondStartDate.isBetween(firstStartDate, firstEndDate.add(const Duration(minutes: -1))) ?? false) ||
-        (secondEndDate
-                .add(const Duration(minutes: -1))
-                .isBetween(firstStartDate, firstEndDate.add(const Duration(minutes: -1))) ??
+    return (secondStartDate.isBetween(firstStartDate,
+                firstEndDate.add(const Duration(minutes: -1))) ??
             false) ||
-        (firstStartDate.isBetween(secondStartDate, secondEndDate.add(const Duration(minutes: -1))) ?? false) ||
-        (firstEndDate
-                .add(const Duration(minutes: -1))
-                .isBetween(secondStartDate, secondEndDate.add(const Duration(minutes: -1))) ??
+        (secondEndDate.add(const Duration(minutes: -1)).isBetween(
+                firstStartDate,
+                firstEndDate.add(const Duration(minutes: -1))) ??
+            false) ||
+        (firstStartDate.isBetween(secondStartDate,
+                secondEndDate.add(const Duration(minutes: -1))) ??
+            false) ||
+        (firstEndDate.add(const Duration(minutes: -1)).isBetween(
+                secondStartDate,
+                secondEndDate.add(const Duration(minutes: -1))) ??
             false);
   }
 
@@ -67,7 +81,8 @@ class MobkitCalendarView extends StatelessWidget {
     int maxGroupCount = 0;
     return Column(
       mainAxisSize: MainAxisSize.max,
-      children: mobkitCalendarController.mobkitCalendarViewType == MobkitCalendarViewType.agenda
+      children: mobkitCalendarController.mobkitCalendarViewType ==
+              MobkitCalendarViewType.agenda
           ? [
               Expanded(
                 child: CalendarAgendaBar(
@@ -85,16 +100,19 @@ class MobkitCalendarView extends StatelessWidget {
               ListenableBuilder(
                   listenable: mobkitCalendarController,
                   builder: (BuildContext context, Widget? widget) {
-                    return ((config?.topBarConfig.isVisibleTitleWidget ?? false))
+                    return ((config?.topBarConfig.isVisibleTitleWidget ??
+                            false))
                         ? titleWidget?.call(
                               findCustomModel(
-                                  mobkitCalendarController.appoitnments, mobkitCalendarController.calendarDate),
+                                  mobkitCalendarController.appoitnments,
+                                  mobkitCalendarController.calendarDate),
                               mobkitCalendarController.calendarDate,
                             ) ??
                             Container()
                         : Container();
                   }),
-              config?.topBarConfig.isVisibleMonthBar == true || config?.topBarConfig.isVisibleYearBar == true
+              config?.topBarConfig.isVisibleMonthBar == true ||
+                      config?.topBarConfig.isVisibleYearBar == true
                   ? SizedBox(
                       height: 30,
                       child: Padding(
@@ -115,14 +133,18 @@ class MobkitCalendarView extends StatelessWidget {
                                   )
                                 : Container(),
                             config?.topBarConfig.isVisibleYearBar == true
-                                ? CalendarYearSelectionBar(mobkitCalendarController, onSelectionChange, config)
+                                ? CalendarYearSelectionBar(
+                                    mobkitCalendarController,
+                                    onSelectionChange,
+                                    config)
                                 : Container(),
                           ],
                         ),
                       ),
                     )
                   : Container(),
-              config?.topBarConfig.isVisibleMonthBar == true || config?.topBarConfig.isVisibleYearBar == true
+              config?.topBarConfig.isVisibleMonthBar == true ||
+                      config?.topBarConfig.isVisibleYearBar == true
                   ? const SizedBox(
                       height: 15,
                     )
@@ -132,7 +154,8 @@ class MobkitCalendarView extends StatelessWidget {
                       height: 30,
                       child: CalendarWeekDaysBar(
                         config: config,
-                        customCalendarModel: mobkitCalendarController.appoitnments,
+                        customCalendarModel:
+                            mobkitCalendarController.appoitnments,
                         mobkitCalendarController: mobkitCalendarController,
                       ),
                     )
@@ -142,7 +165,8 @@ class MobkitCalendarView extends StatelessWidget {
                       height: 10,
                     )
                   : Container(),
-              mobkitCalendarController.mobkitCalendarViewType == MobkitCalendarViewType.daily
+              mobkitCalendarController.mobkitCalendarViewType ==
+                      MobkitCalendarViewType.daily
                   ? SizedBox(
                       height: config?.dailyTopWidgetSize,
                       child: CalendarDateSelectionBar(
@@ -168,33 +192,53 @@ class MobkitCalendarView extends StatelessWidget {
                         weeklyViewWidget: weeklyViewWidget,
                       ),
                     ),
-              mobkitCalendarController.mobkitCalendarViewType == MobkitCalendarViewType.daily
+              mobkitCalendarController.mobkitCalendarViewType ==
+                      MobkitCalendarViewType.daily
                   ? ListenableBuilder(
                       listenable: mobkitCalendarController,
                       builder: (BuildContext context, Widget? widget) {
-                        DateTime newDate = mobkitCalendarController.selectedDate ?? DateTime.now();
+                        DateTime newDate =
+                            mobkitCalendarController.selectedDate ??
+                                DateTime.now();
                         List<MobkitCalendarAppointmentModel> modelList =
-                            mobkitCalendarController.appoitnments.where((element) {
+                            mobkitCalendarController.appoitnments
+                                .where((element) {
                           var item = !element.isAllDay &&
-                              ((DateTime(newDate.year, newDate.month, newDate.day)
-                                          .isBetween(element.appointmentStartDate, element.appointmentEndDate) ??
+                              ((DateTime(newDate.year, newDate.month,
+                                              newDate.day)
+                                          .isBetween(
+                                              element.appointmentStartDate,
+                                              element.appointmentEndDate) ??
                                       false) ||
-                                  (DateTime(newDate.year, newDate.month, newDate.day)
-                                      .isSameDay(element.appointmentStartDate)) ||
-                                  DateTime(newDate.year, newDate.month, newDate.day)
-                                      .isSameDay(element.appointmentEndDate.add(const Duration(minutes: -1))));
+                                  (DateTime(newDate.year, newDate.month,
+                                          newDate.day)
+                                      .isSameDay(
+                                          element.appointmentStartDate)) ||
+                                  DateTime(newDate.year, newDate.month,
+                                          newDate.day)
+                                      .isSameDay(element.appointmentEndDate
+                                          .add(const Duration(minutes: -1))));
                           return item;
                         }).toList();
-                        List<MobkitCalendarAppointmentModel> allDayList = mobkitCalendarController.appoitnments
-                            .where((element) =>
-                                ((DateTime(newDate.year, newDate.month, newDate.day)
-                                            .isBetween(element.appointmentStartDate, element.appointmentEndDate) ??
-                                        false) ||
-                                    DateTime(newDate.year, newDate.month, newDate.day)
-                                        .isSameDay(element.appointmentStartDate)) &&
-                                element.isAllDay)
-                            .toList();
-                        modelList.sort((a, b) => a.appointmentStartDate.compareTo(b.appointmentStartDate));
+                        List<MobkitCalendarAppointmentModel> allDayList =
+                            mobkitCalendarController.appoitnments
+                                .where((element) =>
+                                    ((DateTime(newDate.year, newDate.month,
+                                                    newDate.day)
+                                                .isBetween(
+                                                    element
+                                                        .appointmentStartDate,
+                                                    element
+                                                        .appointmentEndDate) ??
+                                            false) ||
+                                        DateTime(newDate.year, newDate.month,
+                                                newDate.day)
+                                            .isSameDay(element
+                                                .appointmentStartDate)) &&
+                                    element.isAllDay)
+                                .toList();
+                        modelList.sort((a, b) => a.appointmentStartDate
+                            .compareTo(b.appointmentStartDate));
                         if (modelList.isNotEmpty) {
                           for (var item in modelList) {
                             if (modelList.indexOf(item) == 0) {
@@ -203,9 +247,14 @@ class MobkitCalendarView extends StatelessWidget {
                             } else {
                               var indexOfData = 0;
                               List<int> groupIndex = [];
-                              for (int i = 0; i < modelList.indexOf(item); i++) {
-                                if (isIntersect(item.appointmentStartDate, item.appointmentEndDate,
-                                        modelList[i].appointmentStartDate, modelList[i].appointmentEndDate) ??
+                              for (int i = 0;
+                                  i < modelList.indexOf(item);
+                                  i++) {
+                                if (isIntersect(
+                                        item.appointmentStartDate,
+                                        item.appointmentEndDate,
+                                        modelList[i].appointmentStartDate,
+                                        modelList[i].appointmentEndDate) ??
                                     false) {
                                   groupIndex.add((modelList[i].index ?? 0));
                                   while (groupIndex.contains(indexOfData)) {
@@ -214,7 +263,9 @@ class MobkitCalendarView extends StatelessWidget {
                                 }
                               }
                               item.index = indexOfData;
-                              maxGroupCount = indexOfData + 1 > maxGroupCount ? indexOfData + 1 : maxGroupCount;
+                              maxGroupCount = indexOfData + 1 > maxGroupCount
+                                  ? indexOfData + 1
+                                  : maxGroupCount;
                             }
                           }
                         }
@@ -224,17 +275,26 @@ class MobkitCalendarView extends StatelessWidget {
                             children: [
                               allDayList.isNotEmpty
                                   ? Padding(
-                                      padding: config?.dailyItemsConfigModel.allDayMargin ??
-                                          const EdgeInsets.symmetric(vertical: 6),
+                                      padding: config?.dailyItemsConfigModel
+                                              .allDayMargin ??
+                                          const EdgeInsets.symmetric(
+                                              vertical: 6),
                                       child: Row(
                                         children: [
                                           Text(
-                                            config?.dailyItemsConfigModel.allDayText ?? "Tüm Gün",
-                                            style: config?.dailyItemsConfigModel.allDayTextStyle ??
-                                                const TextStyle(color: Colors.black, fontSize: 14),
+                                            config?.dailyItemsConfigModel
+                                                    .allDayText ??
+                                                "Tüm Gün",
+                                            style: config?.dailyItemsConfigModel
+                                                    .allDayTextStyle ??
+                                                const TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 14),
                                           ),
                                           SizedBox(
-                                            width: config?.dailyItemsConfigModel.space ?? 2,
+                                            width: config?.dailyItemsConfigModel
+                                                    .space ??
+                                                2,
                                           ),
                                           Expanded(
                                             child: Row(
@@ -242,25 +302,44 @@ class MobkitCalendarView extends StatelessWidget {
                                                   .map(
                                                     (item) => Expanded(
                                                       child: GestureDetector(
-                                                        onTap: () => eventTap?.call(item),
+                                                        onTap: () => eventTap
+                                                            ?.call(item),
                                                         child: Container(
                                                           padding: config
-                                                                  ?.dailyItemsConfigModel.allDayFrameStyle?.padding ??
-                                                              const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                                          decoration: BoxDecoration(
+                                                                  ?.dailyItemsConfigModel
+                                                                  .allDayFrameStyle
+                                                                  ?.padding ??
+                                                              const EdgeInsets
+                                                                      .symmetric(
+                                                                  horizontal:
+                                                                      12,
+                                                                  vertical: 6),
+                                                          decoration:
+                                                              BoxDecoration(
                                                             color: item.color ??
-                                                                config?.dailyItemsConfigModel.allDayFrameStyle?.color,
-                                                            border:
-                                                                config?.dailyItemsConfigModel.allDayFrameStyle?.border,
+                                                                config
+                                                                    ?.dailyItemsConfigModel
+                                                                    .allDayFrameStyle
+                                                                    ?.color,
+                                                            border: config
+                                                                ?.dailyItemsConfigModel
+                                                                .allDayFrameStyle
+                                                                ?.border,
                                                             borderRadius: config
-                                                                ?.dailyItemsConfigModel.allDayFrameStyle?.borderRadius,
+                                                                ?.dailyItemsConfigModel
+                                                                .allDayFrameStyle
+                                                                ?.borderRadius,
                                                           ),
                                                           child: Text(
                                                             item.title ?? "",
-                                                            overflow: TextOverflow.ellipsis,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
                                                             maxLines: 1,
                                                             style: config
-                                                                ?.dailyItemsConfigModel.allDayFrameStyle?.textStyle,
+                                                                ?.dailyItemsConfigModel
+                                                                .allDayFrameStyle
+                                                                ?.textStyle,
                                                           ),
                                                         ),
                                                       ),
@@ -280,56 +359,67 @@ class MobkitCalendarView extends StatelessWidget {
                                       modelList.length,
                                       (i) {
                                         return Positioned(
-                                          top: (!modelList[i].appointmentEndDate.isSameDay(newDate) &&
-                                                  !modelList[i].appointmentStartDate.isSameDay(newDate))
+                                          top: (!modelList[i]
+                                                      .appointmentEndDate
+                                                      .isSameDay(newDate) &&
+                                                  !modelList[i]
+                                                      .appointmentStartDate
+                                                      .isSameDay(newDate))
                                               ? 0
-                                              : (!modelList[i].appointmentStartDate.isSameDay(newDate) &&
-                                                      modelList[i].appointmentEndDate.isSameDay(newDate))
+                                              : (!modelList[i]
+                                                          .appointmentStartDate
+                                                          .isSameDay(newDate) &&
+                                                      modelList[i]
+                                                          .appointmentEndDate
+                                                          .isSameDay(newDate))
                                                   ? 0
-                                                  : (80 *
-                                                                  (modelList[i].appointmentStartDate.hour +
-                                                                      (modelList[i].appointmentStartDate.minute / 60)))
+                                                  : (80 * (modelList[i].appointmentStartDate.hour + (modelList[i].appointmentStartDate.minute / 60)))
                                                               .toDouble() !=
                                                           0
-                                                      ? (80 *
-                                                                  (modelList[i].appointmentStartDate.hour +
-                                                                      (modelList[i].appointmentStartDate.minute / 60)))
+                                                      ? (80 * (modelList[i].appointmentStartDate.hour + (modelList[i].appointmentStartDate.minute / 60)))
                                                               .toDouble() +
                                                           9
                                                       : (80 *
-                                                              (modelList[i].appointmentStartDate.hour +
-                                                                  (modelList[i].appointmentStartDate.minute / 60)))
+                                                              (modelList[i]
+                                                                      .appointmentStartDate
+                                                                      .hour +
+                                                                  (modelList[i]
+                                                                          .appointmentStartDate
+                                                                          .minute /
+                                                                      60)))
                                                           .toDouble(),
                                           left: 58.5 +
                                               ((modelList[i].index ?? 0) > 0
-                                                  ? ((width * 0.8) / maxGroupCount) * (modelList[i].index ?? 0)
+                                                  ? ((width * 0.8) /
+                                                          maxGroupCount) *
+                                                      (modelList[i].index ?? 0)
                                                   : 0),
-                                          width: (width * 0.8) / (maxGroupCount),
-                                          height: (!modelList[i].appointmentEndDate.isSameDay(newDate) &&
-                                                  !modelList[i].appointmentStartDate.isSameDay(newDate))
+                                          width:
+                                              (width * 0.8) / (maxGroupCount),
+                                          height: (!modelList[i]
+                                                      .appointmentEndDate
+                                                      .isSameDay(newDate) &&
+                                                  !modelList[i]
+                                                      .appointmentStartDate
+                                                      .isSameDay(newDate))
                                               ? 24 * 80
-                                              : (!modelList[i].appointmentStartDate.isSameDay(newDate) &&
-                                                      modelList[i].appointmentEndDate.isSameDay(newDate))
-                                                  ? (80 *
-                                                                  (modelList[i].appointmentEndDate.hour +
-                                                                      (modelList[i].appointmentEndDate.minute / 60)))
+                                              : (!modelList[i]
+                                                          .appointmentStartDate
+                                                          .isSameDay(newDate) &&
+                                                      modelList[i]
+                                                          .appointmentEndDate
+                                                          .isSameDay(newDate))
+                                                  ? (80 * (modelList[i].appointmentEndDate.hour + (modelList[i].appointmentEndDate.minute / 60)))
                                                               .toDouble() !=
                                                           0
-                                                      ? (80 *
-                                                                  (modelList[i].appointmentEndDate.hour +
-                                                                      (modelList[i].appointmentEndDate.minute / 60)))
+                                                      ? (80 * (modelList[i].appointmentEndDate.hour + (modelList[i].appointmentEndDate.minute / 60)))
                                                               .toDouble() +
                                                           9
-                                                      : (80 *
-                                                              (modelList[i].appointmentEndDate.hour +
-                                                                  (modelList[i].appointmentEndDate.minute / 60)))
+                                                      : (80 * (modelList[i].appointmentEndDate.hour + (modelList[i].appointmentEndDate.minute / 60)))
                                                           .toDouble()
-                                                  : modelList[i].appointmentEndDate.hour != 0
-                                                      ? (((modelList[i]
-                                                                  .appointmentEndDate
-                                                                  .difference(modelList[i].appointmentStartDate)
-                                                                  .inMinutes) /
-                                                              60) *
+                                                  : modelList[i].appointmentEndDate.hour !=
+                                                          0
+                                                      ? (((modelList[i].appointmentEndDate.difference(modelList[i].appointmentStartDate).inMinutes) / 60) *
                                                           80)
                                                       : modelList[i]
                                                               .appointmentEndDate
@@ -337,24 +427,43 @@ class MobkitCalendarView extends StatelessWidget {
                                                               .inHours *
                                                           80,
                                           child: GestureDetector(
-                                            onTap: () => eventTap?.call(modelList[i]),
+                                            onTap: () =>
+                                                eventTap?.call(modelList[i]),
                                             child: Padding(
-                                              padding: const EdgeInsets.only(left: 1.5),
+                                              padding: const EdgeInsets.only(
+                                                  left: 1.5),
                                               child: Container(
-                                                padding: config?.dailyItemsConfigModel.itemFrameStyle?.padding,
+                                                padding: config
+                                                    ?.dailyItemsConfigModel
+                                                    .itemFrameStyle
+                                                    ?.padding,
                                                 decoration: BoxDecoration(
                                                     color: modelList[i].color,
-                                                    borderRadius:
-                                                        config?.dailyItemsConfigModel.itemFrameStyle?.borderRadius ??
-                                                            const BorderRadius.all(Radius.circular(1)),
-                                                    border: config?.dailyItemsConfigModel.itemFrameStyle?.border),
+                                                    borderRadius: config
+                                                            ?.dailyItemsConfigModel
+                                                            .itemFrameStyle
+                                                            ?.borderRadius ??
+                                                        const BorderRadius.all(
+                                                            Radius.circular(1)),
+                                                    border: config
+                                                        ?.dailyItemsConfigModel
+                                                        .itemFrameStyle
+                                                        ?.border),
                                                 child: Align(
-                                                  alignment: config?.dailyItemsConfigModel.itemFrameStyle?.alignment ??
+                                                  alignment: config
+                                                          ?.dailyItemsConfigModel
+                                                          .itemFrameStyle
+                                                          ?.alignment ??
                                                       Alignment.topLeft,
                                                   child: Text(
                                                     modelList[i].title ?? "",
-                                                    style: config?.dailyItemsConfigModel.itemFrameStyle?.textStyle ??
-                                                        const TextStyle(color: Colors.white),
+                                                    style: config
+                                                            ?.dailyItemsConfigModel
+                                                            .itemFrameStyle
+                                                            ?.textStyle ??
+                                                        const TextStyle(
+                                                            color:
+                                                                Colors.white),
                                                   ),
                                                 ),
                                               ),
@@ -374,22 +483,37 @@ class MobkitCalendarView extends StatelessWidget {
                                                 );
                                               } else {
                                                 return Container(
-                                                  alignment: Alignment.topCenter,
+                                                  alignment:
+                                                      Alignment.topCenter,
                                                   height: 80,
                                                   child: Padding(
-                                                    padding: const EdgeInsets.only(left: 12, right: 12),
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 12,
+                                                            right: 12),
                                                     child: Row(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
                                                       children: [
                                                         Text(
                                                           "${(index).toString()}:00",
-                                                          style: config?.dailyItemsConfigModel.hourTextStyle ??
-                                                              const TextStyle(color: Colors.black, fontSize: 18),
+                                                          style: config
+                                                                  ?.dailyItemsConfigModel
+                                                                  .hourTextStyle ??
+                                                              const TextStyle(
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontSize: 18),
                                                         ),
                                                         Container(
                                                           width: width * 0.8,
-                                                          color: Theme.of(context).dividerColor,
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .dividerColor,
                                                           height: 1,
                                                         ),
                                                       ],

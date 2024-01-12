@@ -18,11 +18,14 @@ class MobkitCalendarDailyView extends StatelessWidget {
       body: MobkitCalendarWidget(
         minDate: DateTime(1800),
         config: controller.configModel,
-        titleWidget: (List<MobkitCalendarAppointmentModel> models, DateTime datetime) => Padding(
+        titleWidget:
+            (List<MobkitCalendarAppointmentModel> models, DateTime datetime) =>
+                Padding(
           padding: const EdgeInsets.symmetric(vertical: 12),
           child: Column(children: [
             Text(
-              DateFormat("yyyy MMMM", controller.configModel.locale).format(datetime),
+              DateFormat("yyyy MMMM", controller.configModel.locale)
+                  .format(datetime),
               style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -31,8 +34,9 @@ class MobkitCalendarDailyView extends StatelessWidget {
             ),
           ]),
         ),
-        onSelectionChange: (List<MobkitCalendarAppointmentModel> model, DateTime date) =>
-            controller.setCalendarDate(model, date),
+        onSelectionChange:
+            (List<MobkitCalendarAppointmentModel> model, DateTime date) =>
+                controller.setCalendarDate(model, date),
         mobkitCalendarController: controller.mobkitCalendarController,
       ),
     );

@@ -15,11 +15,18 @@ class CalendarDateSelectionBar extends StatefulWidget {
 
   final MobkitCalendarController mobkitCalendarController;
   final MobkitCalendarConfigModel? config;
-  final Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime)? onSelectionChange;
+  final Function(
+          List<MobkitCalendarAppointmentModel> models, DateTime datetime)?
+      onSelectionChange;
   final Function(DateTime datetime)? onDateChanged;
-  final Widget Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime)? onPopupWidget;
-  final Widget Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime)? headerWidget;
-  final Widget Function(Map<DateTime, List<MobkitCalendarAppointmentModel>>)? weeklyViewWidget;
+  final Widget Function(
+          List<MobkitCalendarAppointmentModel> list, DateTime datetime)?
+      onPopupWidget;
+  final Widget Function(
+          List<MobkitCalendarAppointmentModel> list, DateTime datetime)?
+      headerWidget;
+  final Widget Function(Map<DateTime, List<MobkitCalendarAppointmentModel>>)?
+      weeklyViewWidget;
 
   const CalendarDateSelectionBar({
     this.minDate,
@@ -34,7 +41,8 @@ class CalendarDateSelectionBar extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<CalendarDateSelectionBar> createState() => _CalendarDateSelectionBarState();
+  State<CalendarDateSelectionBar> createState() =>
+      _CalendarDateSelectionBarState();
 }
 
 class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
@@ -45,7 +53,8 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
   @override
   void initState() {
     super.initState();
-    _currentPage = widget.mobkitCalendarController.mobkitCalendarViewType == MobkitCalendarViewType.monthly
+    _currentPage = widget.mobkitCalendarController.mobkitCalendarViewType ==
+            MobkitCalendarViewType.monthly
         ? ((widget.mobkitCalendarController.calendarDate.year * 12) +
                 widget.mobkitCalendarController.calendarDate.month) -
             ((_mindate.year * 12) + _mindate.month)
@@ -55,13 +64,18 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
                     .inDays) ~/
                 7)
             .abs();
-    widget.mobkitCalendarController.setPageController(_mindate, widget.config?.viewportFraction ?? 1);
+    widget.mobkitCalendarController
+        .setPageController(_mindate, widget.config?.viewportFraction ?? 1);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      widget.mobkitCalendarController.pageController.position.isScrollingNotifier.addListener(() {
+      widget
+          .mobkitCalendarController.pageController.position.isScrollingNotifier
+          .addListener(() {
         timer?.cancel();
-        if (!widget.mobkitCalendarController.pageController.position.isScrollingNotifier.value) {
+        if (!widget.mobkitCalendarController.pageController.position
+            .isScrollingNotifier.value) {
           timer = Timer(const Duration(milliseconds: 500), () {
-            widget.onDateChanged?.call(widget.mobkitCalendarController.calendarDate);
+            widget.onDateChanged
+                ?.call(widget.mobkitCalendarController.calendarDate);
           });
         }
       });
@@ -82,53 +96,72 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
           return PageView.builder(
               pageSnapping: true,
               controller: widget.mobkitCalendarController.pageController,
-              scrollDirection: widget.mobkitCalendarController.mobkitCalendarViewType != MobkitCalendarViewType.monthly
-                  ? Axis.horizontal
-                  : Axis.vertical,
+              scrollDirection:
+                  widget.mobkitCalendarController.mobkitCalendarViewType !=
+                          MobkitCalendarViewType.monthly
+                      ? Axis.horizontal
+                      : Axis.vertical,
               padEnds: false,
               onPageChanged: (page) {
-                if (widget.mobkitCalendarController.mobkitCalendarViewType == MobkitCalendarViewType.daily ||
-                    widget.mobkitCalendarController.mobkitCalendarViewType == MobkitCalendarViewType.weekly) {
-                  widget.mobkitCalendarController.selectedDate = widget.mobkitCalendarController.calendarDate = (widget
-                      .mobkitCalendarController.calendarDate
-                      .add(Duration(days: _currentPage < page ? 7 : -7))
-                      .findFirstDateOfTheWeek());
+                if (widget.mobkitCalendarController.mobkitCalendarViewType ==
+                        MobkitCalendarViewType.daily ||
+                    widget.mobkitCalendarController.mobkitCalendarViewType ==
+                        MobkitCalendarViewType.weekly) {
+                  widget.mobkitCalendarController.selectedDate =
+                      widget.mobkitCalendarController.calendarDate = (widget
+                          .mobkitCalendarController.calendarDate
+                          .add(Duration(days: _currentPage < page ? 7 : -7))
+                          .findFirstDateOfTheWeek());
                 }
                 _currentPage = page;
-                if (widget.mobkitCalendarController.mobkitCalendarViewType == MobkitCalendarViewType.monthly) {
-                  widget.mobkitCalendarController.calendarDate = (addMonth(_mindate, _currentPage));
+                if (widget.mobkitCalendarController.mobkitCalendarViewType ==
+                    MobkitCalendarViewType.monthly) {
+                  widget.mobkitCalendarController.calendarDate =
+                      (addMonth(_mindate, _currentPage));
                 }
               },
               itemBuilder: (context, index) {
                 DateTime currentDate =
-                    widget.mobkitCalendarController.mobkitCalendarViewType == MobkitCalendarViewType.monthly
+                    widget.mobkitCalendarController.mobkitCalendarViewType ==
+                            MobkitCalendarViewType.monthly
                         ? addMonth(_mindate, index)
-                        : _mindate.findFirstDateOfTheWeek().add(Duration(days: index * 7));
+                        : _mindate
+                            .findFirstDateOfTheWeek()
+                            .add(Duration(days: index * 7));
                 DateTime firstWeekDay = currentDate;
-                var headerDate = widget.mobkitCalendarController.selectedDate ?? currentDate;
+                var headerDate =
+                    widget.mobkitCalendarController.selectedDate ?? currentDate;
                 headerDate = (headerDate
                                 .findFirstDateOfTheWeek()
-                                .isBeforeOrEqualTo(widget.mobkitCalendarController.calendarDate) ??
+                                .isBeforeOrEqualTo(widget
+                                    .mobkitCalendarController.calendarDate) ??
                             false) &&
-                        (headerDate
-                                .findLastDateOfTheWeek()
-                                .isAfterOrEqualTo(widget.mobkitCalendarController.calendarDate) ??
+                        (headerDate.findLastDateOfTheWeek().isAfterOrEqualTo(
+                                widget.mobkitCalendarController.calendarDate) ??
                             false)
                     ? headerDate
                     : widget.mobkitCalendarController.calendarDate;
                 return Padding(
                   padding: EdgeInsets.only(
-                      bottom: widget.mobkitCalendarController.mobkitCalendarViewType == MobkitCalendarViewType.monthly
+                      bottom: widget.mobkitCalendarController
+                                  .mobkitCalendarViewType ==
+                              MobkitCalendarViewType.monthly
                           ? widget.config?.monthBetweenPadding ?? 0
                           : 0),
                   key: Key(DateTime.now().millisecondsSinceEpoch.toString()),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      if (widget.mobkitCalendarController.mobkitCalendarViewType != MobkitCalendarViewType.weekly) ...[
-                        (widget.config?.topBarConfig.isVisibleHeaderWidget ?? false)
+                      if (widget.mobkitCalendarController
+                              .mobkitCalendarViewType !=
+                          MobkitCalendarViewType.weekly) ...[
+                        (widget.config?.topBarConfig.isVisibleHeaderWidget ??
+                                false)
                             ? widget.headerWidget?.call(
-                                  findCustomModel(widget.mobkitCalendarController.appoitnments, headerDate),
+                                  findCustomModel(
+                                      widget.mobkitCalendarController
+                                          .appoitnments,
+                                      headerDate),
                                   headerDate,
                                 ) ??
                                 Container()
@@ -138,7 +171,8 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
                             config: widget.config,
                             minDate: _mindate,
                             date: currentDate,
-                            mobkitCalendarController: widget.mobkitCalendarController,
+                            mobkitCalendarController:
+                                widget.mobkitCalendarController,
                             onSelectionChange: widget.onSelectionChange,
                             onPopupWidget: widget.onPopupWidget,
                             headerWidget: widget.headerWidget,
@@ -150,9 +184,14 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
                           height: widget.config?.weeklyTopWidgetSize,
                           child: Column(
                             children: [
-                              (widget.config?.topBarConfig.isVisibleHeaderWidget ?? false)
+                              (widget.config?.topBarConfig
+                                          .isVisibleHeaderWidget ??
+                                      false)
                                   ? widget.headerWidget?.call(
-                                        findCustomModel(widget.mobkitCalendarController.appoitnments, headerDate),
+                                        findCustomModel(
+                                            widget.mobkitCalendarController
+                                                .appoitnments,
+                                            headerDate),
                                         headerDate,
                                       ) ??
                                       Container()
@@ -162,7 +201,8 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
                                   config: widget.config,
                                   date: currentDate,
                                   minDate: _mindate,
-                                  mobkitCalendarController: widget.mobkitCalendarController,
+                                  mobkitCalendarController:
+                                      widget.mobkitCalendarController,
                                   onSelectionChange: widget.onSelectionChange,
                                   onPopupWidget: widget.onPopupWidget,
                                   headerWidget: widget.headerWidget,
@@ -172,28 +212,49 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
                             ],
                           ),
                         ),
-                      widget.mobkitCalendarController.mobkitCalendarViewType == MobkitCalendarViewType.weekly
+                      widget.mobkitCalendarController.mobkitCalendarViewType ==
+                              MobkitCalendarViewType.weekly
                           ? widget.weeklyViewWidget?.call({
-                                firstWeekDay:
-                                    findCustomModel(widget.mobkitCalendarController.appoitnments, firstWeekDay),
-                                firstWeekDay.add(const Duration(days: 1)): findCustomModel(
-                                    widget.mobkitCalendarController.appoitnments,
-                                    firstWeekDay.add(const Duration(days: 1))),
-                                firstWeekDay.add(const Duration(days: 2)): findCustomModel(
-                                    widget.mobkitCalendarController.appoitnments,
-                                    firstWeekDay.add(const Duration(days: 2))),
-                                firstWeekDay.add(const Duration(days: 3)): findCustomModel(
-                                    widget.mobkitCalendarController.appoitnments,
-                                    firstWeekDay.add(const Duration(days: 3))),
-                                firstWeekDay.add(const Duration(days: 4)): findCustomModel(
-                                    widget.mobkitCalendarController.appoitnments,
-                                    firstWeekDay.add(const Duration(days: 4))),
-                                firstWeekDay.add(const Duration(days: 5)): findCustomModel(
-                                    widget.mobkitCalendarController.appoitnments,
-                                    firstWeekDay.add(const Duration(days: 5))),
-                                firstWeekDay.add(const Duration(days: 6)): findCustomModel(
-                                    widget.mobkitCalendarController.appoitnments,
-                                    firstWeekDay.add(const Duration(days: 6))),
+                                firstWeekDay: findCustomModel(
+                                    widget
+                                        .mobkitCalendarController.appoitnments,
+                                    firstWeekDay),
+                                firstWeekDay.add(const Duration(days: 1)):
+                                    findCustomModel(
+                                        widget.mobkitCalendarController
+                                            .appoitnments,
+                                        firstWeekDay
+                                            .add(const Duration(days: 1))),
+                                firstWeekDay.add(const Duration(days: 2)):
+                                    findCustomModel(
+                                        widget.mobkitCalendarController
+                                            .appoitnments,
+                                        firstWeekDay
+                                            .add(const Duration(days: 2))),
+                                firstWeekDay.add(const Duration(days: 3)):
+                                    findCustomModel(
+                                        widget.mobkitCalendarController
+                                            .appoitnments,
+                                        firstWeekDay
+                                            .add(const Duration(days: 3))),
+                                firstWeekDay.add(const Duration(days: 4)):
+                                    findCustomModel(
+                                        widget.mobkitCalendarController
+                                            .appoitnments,
+                                        firstWeekDay
+                                            .add(const Duration(days: 4))),
+                                firstWeekDay.add(const Duration(days: 5)):
+                                    findCustomModel(
+                                        widget.mobkitCalendarController
+                                            .appoitnments,
+                                        firstWeekDay
+                                            .add(const Duration(days: 5))),
+                                firstWeekDay.add(const Duration(days: 6)):
+                                    findCustomModel(
+                                        widget.mobkitCalendarController
+                                            .appoitnments,
+                                        firstWeekDay
+                                            .add(const Duration(days: 6))),
                               }) ??
                               Container()
                           : Container(),
@@ -210,10 +271,17 @@ class DateList extends StatefulWidget {
   final MobkitCalendarController mobkitCalendarController;
   final DateTime minDate;
   final DateTime date;
-  final Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime)? onSelectionChange;
-  final Widget Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime)? onPopupWidget;
-  final List<MobkitCalendarAppointmentModel> Function(DateTime datetime, bool isSameMonth)? onPopupChange;
-  final Widget Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime)? headerWidget;
+  final Function(
+          List<MobkitCalendarAppointmentModel> models, DateTime datetime)?
+      onSelectionChange;
+  final Widget Function(
+          List<MobkitCalendarAppointmentModel> list, DateTime datetime)?
+      onPopupWidget;
+  final List<MobkitCalendarAppointmentModel> Function(
+      DateTime datetime, bool isSameMonth)? onPopupChange;
+  final Widget Function(
+          List<MobkitCalendarAppointmentModel> list, DateTime datetime)?
+      headerWidget;
   final Function(DateTime datetime)? onDateChanged;
 
   const DateList({
@@ -237,26 +305,44 @@ class _DateListState extends State<DateList> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: widget.mobkitCalendarController.mobkitCalendarViewType == MobkitCalendarViewType.monthly
-          ? getDatesMonthly(widget.date, widget.minDate, widget.onSelectionChange, widget.config, widget.onPopupWidget,
-              widget.onDateChanged, widget.mobkitCalendarController)
-          : getDatesWeekly(widget.date, widget.minDate, widget.onSelectionChange, widget.config, widget.onPopupWidget,
-              widget.onDateChanged, widget.mobkitCalendarController),
+      children: widget.mobkitCalendarController.mobkitCalendarViewType ==
+              MobkitCalendarViewType.monthly
+          ? getDatesMonthly(
+              widget.date,
+              widget.minDate,
+              widget.onSelectionChange,
+              widget.config,
+              widget.onPopupWidget,
+              widget.onDateChanged,
+              widget.mobkitCalendarController)
+          : getDatesWeekly(
+              widget.date,
+              widget.minDate,
+              widget.onSelectionChange,
+              widget.config,
+              widget.onPopupWidget,
+              widget.onDateChanged,
+              widget.mobkitCalendarController),
     );
   }
 
   List<Widget> getDatesMonthly(
     DateTime date,
     DateTime minDate,
-    Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime)? onSelectionChange,
+    Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime)?
+        onSelectionChange,
     final MobkitCalendarConfigModel? config,
-    final Widget Function(List<MobkitCalendarAppointmentModel>, DateTime datetime)? onPopupWidget,
+    final Widget Function(
+            List<MobkitCalendarAppointmentModel>, DateTime datetime)?
+        onPopupWidget,
     final Function(DateTime datetime)? onDateChanged,
     final MobkitCalendarController mobkitCalendarController,
   ) {
     List<Widget> rowList = [];
     var firstDay = DateTime(date.year, date.month, 1);
-    DateTime newDate = firstDay.isFirstDay(DateTime.monday) ? firstDay : firstDay.previous(DateTime.monday);
+    DateTime newDate = firstDay.isFirstDay(DateTime.monday)
+        ? firstDay
+        : firstDay.previous(DateTime.monday);
     for (var i = 0; i < calculateWeekCount(date); i++) {
       List<Widget> cellList = [];
       rowList.add(Container(
@@ -296,9 +382,12 @@ class _DateListState extends State<DateList> {
   List<Widget> getDatesWeekly(
     DateTime date,
     DateTime minDate,
-    Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime)? onSelectionChange,
+    Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime)?
+        onSelectionChange,
     final MobkitCalendarConfigModel? config,
-    final Widget Function(List<MobkitCalendarAppointmentModel>, DateTime datetime)? onPopupWidget,
+    final Widget Function(
+            List<MobkitCalendarAppointmentModel>, DateTime datetime)?
+        onPopupWidget,
     final Function(DateTime datetime)? onDateChanged,
     final MobkitCalendarController mobkitCalendarController,
   ) {
@@ -338,17 +427,23 @@ class _DateListState extends State<DateList> {
     return rowList;
   }
 
-  bool checkConfigForEnable(DateTime newDate, DateTime date, MobkitCalendarConfigModel? config) {
+  bool checkConfigForEnable(
+      DateTime newDate, DateTime date, MobkitCalendarConfigModel? config) {
     if (config == null) return false;
-    if (config.disableBefore != null && newDate.isBefore(config.disableBefore!)) return false;
+    if (config.disableBefore != null &&
+        newDate.isBefore(config.disableBefore!)) {
+      return false;
+    }
 
     if (config.disableAfter != null && newDate.isAfter(config.disableAfter!)) {
       return false;
     }
-    if (config.disabledDates != null && config.disabledDates!.any((element) => element.isSameDay(newDate))) {
+    if (config.disabledDates != null &&
+        config.disabledDates!.any((element) => element.isSameDay(newDate))) {
       return false;
     }
-    if (config.disableWeekDays != null && config.disableWeekDays!.any((element) => element == newDate.weekday)) {
+    if (config.disableWeekDays != null &&
+        config.disableWeekDays!.any((element) => element == newDate.weekday)) {
       return false;
     }
     if (newDate.isWeekend() && config.disableWeekendsDays) return false;

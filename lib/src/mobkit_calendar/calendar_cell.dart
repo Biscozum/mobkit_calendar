@@ -33,13 +33,16 @@ class CalendarCellWidget extends StatelessWidget {
   }
   @override
   Widget build(BuildContext context) {
-    var style = isEnabled || mobkitCalendarController.mobkitCalendarViewType != MobkitCalendarViewType.monthly
+    var style = isEnabled ||
+            mobkitCalendarController.mobkitCalendarViewType !=
+                MobkitCalendarViewType.monthly
         ? isSelected
             ? configStandardCalendar.cellConfig.selectedStyle
             : isCurrent
                 ? configStandardCalendar.cellConfig.currentStyle
                 : isWeekend
-                    ? configStandardCalendar.cellConfig.weekendStyle ?? configStandardCalendar.cellConfig.enabledStyle
+                    ? configStandardCalendar.cellConfig.weekendStyle ??
+                        configStandardCalendar.cellConfig.enabledStyle
                     : configStandardCalendar.cellConfig.enabledStyle
         : configStandardCalendar.cellConfig.disabledStyle;
     return Padding(
@@ -50,7 +53,9 @@ class CalendarCellWidget extends StatelessWidget {
           color: style?.color,
           borderRadius: configStandardCalendar.borderRadius,
           border: isWeekDaysBar
-              ? Border.all(width: 1, color: configStandardCalendar.weekDaysBarBorderColor)
+              ? Border.all(
+                  width: 1,
+                  color: configStandardCalendar.weekDaysBarBorderColor)
               : style?.border,
         ),
         child: isWeekDaysBar
@@ -73,34 +78,49 @@ class CalendarCellWidget extends StatelessWidget {
                             style: style?.textStyle,
                           ),
                         ),
-                        ((!isEnabled && !(configStandardCalendar.showEventOffDay ?? false)) &&
-                                mobkitCalendarController.mobkitCalendarViewType == MobkitCalendarViewType.monthly)
+                        ((!isEnabled &&
+                                    !(configStandardCalendar.showEventOffDay ??
+                                        false)) &&
+                                mobkitCalendarController
+                                        .mobkitCalendarViewType ==
+                                    MobkitCalendarViewType.monthly)
                             ? Container()
                             : Column(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    children: generateItems(showedCustomCalendarModelList, style),
+                                    children: generateItems(
+                                        showedCustomCalendarModelList, style),
                                   ),
                                   SizedBox(
-                                    height: configStandardCalendar.cellConfig.spaceBetweenEventLineToPoint,
+                                    height: configStandardCalendar.cellConfig
+                                        .spaceBetweenEventLineToPoint,
                                   ),
                                   Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    children: generateAllDayItems(showedCustomCalendarModelList),
+                                    children: generateAllDayItems(
+                                        showedCustomCalendarModelList),
                                   ),
-                                  showedCustomCalendarModelList!.where((element) => element.isAllDay).length >
-                                          configStandardCalendar.cellConfig.maxEventLineCount
+                                  showedCustomCalendarModelList!
+                                              .where(
+                                                  (element) => element.isAllDay)
+                                              .length >
+                                          configStandardCalendar
+                                              .cellConfig.maxEventLineCount
                                       ? Center(
                                           child: Text(
                                             "+${(showedCustomCalendarModelList!.where((element) => element.isAllDay).length - (configStandardCalendar.cellConfig.maxEventLineCount - 1)).toString()}",
                                             textAlign: TextAlign.center,
-                                            style: style?.maxLineCountTextStyle ??
-                                                TextStyle(
-                                                    fontSize: 9,
-                                                    color: isSelected ? Colors.white : Colors.black,
-                                                    fontWeight: FontWeight.bold),
+                                            style:
+                                                style?.maxLineCountTextStyle ??
+                                                    TextStyle(
+                                                        fontSize: 9,
+                                                        color: isSelected
+                                                            ? Colors.white
+                                                            : Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.bold),
                                           ),
                                         )
                                       : Container(),
@@ -115,14 +135,18 @@ class CalendarCellWidget extends StatelessWidget {
   }
 
   List<Widget> generateItems(
-      List<MobkitCalendarAppointmentModel>? showedCustomCalendarModelList, CalendarCellStyle? style) {
+      List<MobkitCalendarAppointmentModel>? showedCustomCalendarModelList,
+      CalendarCellStyle? style) {
     List<Widget> items = [];
     if (showedCustomCalendarModelList != null) {
       List<MobkitCalendarAppointmentModel> listModel =
-          showedCustomCalendarModelList.where((element) => !element.isAllDay).toList();
+          showedCustomCalendarModelList
+              .where((element) => !element.isAllDay)
+              .toList();
       if (listModel.isNotEmpty) {
         for (int i = 0; i < listModel.length; i++) {
-          if (i + 1 == configStandardCalendar.cellConfig.maxEventPointCount && i < listModel.length - 1) {
+          if (i + 1 == configStandardCalendar.cellConfig.maxEventPointCount &&
+              i < listModel.length - 1) {
             items.add(
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 1),
@@ -130,9 +154,15 @@ class CalendarCellWidget extends StatelessWidget {
                   "+${(listModel.length - (configStandardCalendar.cellConfig.maxEventPointCount - 1)).toString()}",
                   style: isSelected
                       ? style?.maxPointCountTextStyle ??
-                          const TextStyle(fontSize: 8, color: Colors.white, fontWeight: FontWeight.bold)
+                          const TextStyle(
+                              fontSize: 8,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold)
                       : style?.maxPointCountTextStyle ??
-                          const TextStyle(fontSize: 8, color: Colors.black, fontWeight: FontWeight.bold),
+                          const TextStyle(
+                              fontSize: 8,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold),
                 ),
               ),
             );
@@ -141,7 +171,10 @@ class CalendarCellWidget extends StatelessWidget {
             items.add(
               Padding(
                 padding: EdgeInsets.only(
-                  right: i == listModel.length - 1 ? 0 : configStandardCalendar.cellConfig.spaceBetweenEventPoints,
+                  right: i == listModel.length - 1
+                      ? 0
+                      : configStandardCalendar
+                          .cellConfig.spaceBetweenEventPoints,
                 ),
                 child: CircleAvatar(
                   radius: configStandardCalendar.cellConfig.eventPointRadius,
@@ -156,25 +189,36 @@ class CalendarCellWidget extends StatelessWidget {
     return items;
   }
 
-  List<Widget> generateAllDayItems(List<MobkitCalendarAppointmentModel>? showedCustomCalendarModelList) {
+  List<Widget> generateAllDayItems(
+      List<MobkitCalendarAppointmentModel>? showedCustomCalendarModelList) {
     List<Widget> items = [];
-    if (showedCustomCalendarModelList != null && showedCustomCalendarModelList.isNotEmpty) {
+    if (showedCustomCalendarModelList != null &&
+        showedCustomCalendarModelList.isNotEmpty) {
       List<MobkitCalendarAppointmentModel> listModel =
-          showedCustomCalendarModelList.where((element) => element.isAllDay).toList();
+          showedCustomCalendarModelList
+              .where((element) => element.isAllDay)
+              .toList();
       if (listModel.isNotEmpty) {
         for (int i = 0; i < listModel.length; i++) {
-          if ((i + 1) == (configStandardCalendar.cellConfig.maxEventLineCount) && i < listModel.length - 1) {
+          if ((i + 1) ==
+                  (configStandardCalendar.cellConfig.maxEventLineCount) &&
+              i < listModel.length - 1) {
             break;
           } else {
             items.add(
               Container(
                 margin: EdgeInsets.only(
-                  bottom: i == (configStandardCalendar.cellConfig.maxEventLineCount) || i == listModel.length - 1
+                  bottom: i ==
+                              (configStandardCalendar
+                                  .cellConfig.maxEventLineCount) ||
+                          i == listModel.length - 1
                       ? 0
-                      : configStandardCalendar.cellConfig.spaceBetweenEventLines,
+                      : configStandardCalendar
+                          .cellConfig.spaceBetweenEventLines,
                 ),
                 decoration: BoxDecoration(
-                  borderRadius: configStandardCalendar.cellConfig.eventLineRadius,
+                  borderRadius:
+                      configStandardCalendar.cellConfig.eventLineRadius,
                   color: listModel[i].color,
                 ),
                 height: configStandardCalendar.cellConfig.eventLineHeight,
