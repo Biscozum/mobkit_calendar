@@ -6,9 +6,13 @@ import '../../mobkit_calendar.dart';
 class CalendarMonthSelectionBar extends StatelessWidget {
   final MobkitCalendarConfigModel? config;
   final MobkitCalendarController mobkitCalendarController;
-  final Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime)? onSelectionChange;
+  final Function(
+          List<MobkitCalendarAppointmentModel> models, DateTime datetime)?
+      onSelectionChange;
 
-  const CalendarMonthSelectionBar(this.mobkitCalendarController, this.onSelectionChange, this.config, {Key? key})
+  const CalendarMonthSelectionBar(
+      this.mobkitCalendarController, this.onSelectionChange, this.config,
+      {Key? key})
       : super(key: key);
 
   @override

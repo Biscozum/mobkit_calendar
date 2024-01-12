@@ -26,7 +26,8 @@ class MobkitCalendarTypesView extends StatelessWidget {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                           builder: (context) => ChangeNotifierProvider(
-                                create: (_) => CalendarController(MobkitCalendarViewType.monthly),
+                                create: (_) => CalendarController(
+                                    MobkitCalendarViewType.monthly),
                                 child: const MobkitCalendarMonthlyView(),
                               )),
                     );
@@ -39,7 +40,8 @@ class MobkitCalendarTypesView extends StatelessWidget {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                           builder: (context) => ChangeNotifierProvider(
-                                create: (_) => CalendarController(MobkitCalendarViewType.weekly),
+                                create: (_) => CalendarController(
+                                    MobkitCalendarViewType.weekly),
                                 child: const MobkitCalendarWeeklyView(),
                               )),
                     );
@@ -52,7 +54,8 @@ class MobkitCalendarTypesView extends StatelessWidget {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                           builder: (context) => ChangeNotifierProvider(
-                                create: (_) => CalendarController(MobkitCalendarViewType.daily),
+                                create: (_) => CalendarController(
+                                    MobkitCalendarViewType.daily),
                                 child: const MobkitCalendarDailyView(),
                               )),
                     );
@@ -65,7 +68,8 @@ class MobkitCalendarTypesView extends StatelessWidget {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                           builder: (context) => ChangeNotifierProvider(
-                                create: (_) => CalendarController(MobkitCalendarViewType.agenda),
+                                create: (_) => CalendarController(
+                                    MobkitCalendarViewType.agenda),
                                 child: const MobkitCalendarAgendaView(),
                               )),
                     );

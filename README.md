@@ -1,4 +1,4 @@
- <img src="/example/assets/images/MobkitCalendarBanner.png" />
+ <img src="https://raw.githubusercontent.com/Biscozum/mobkit_calendar/main/example/assets/images/MobkitCalendarBanner.png" />
 
 # Mobkit Calendar
 
@@ -39,24 +39,24 @@ Mobkit Calendar has built-in configurable views such as day, week, month and tim
 </tr>
 <tr>
   <td>
-    <img src="/example/assets/images/monthly_view_fraction.png" />
+    <img src="https://raw.githubusercontent.com/Biscozum/mobkit_calendar/main/example/assets/images/monthly_view_fraction.png" />
   </td>
   <td>
-    <img src="/example/assets/images/monthly_view_fullscreen.png" />
+    <img src="https://raw.githubusercontent.com/Biscozum/mobkit_calendar/main/example/assets/images/monthly_view_fullscreen.png" />
   </td>
    <td>
-    <img src="/example/assets/images/monthly_view_popup.png" />
+    <img src="https://raw.githubusercontent.com/Biscozum/mobkit_calendar/main/example/assets/images/monthly_view_popup.png" />
   </td>
 </tr>
 <tr>
   <td>
-    <img src="/example/assets/videos/monthly_view_fraction_gf.gif" />
+    <img src="https://raw.githubusercontent.com/Biscozum/mobkit_calendar/main/example/assets/videos/monthly_view_fraction_gf.gif" />
   </td>
   <td>
-    <img src="/example/assets/videos/monthly_view_fullscreen_gf.gif" />
+    <img src="https://raw.githubusercontent.com/Biscozum/mobkit_calendar/main/example/assets/videos/monthly_view_fullscreen_gf.gif" />
   </td>
   <td>
-    <img src="/example/assets/videos/monthly_view_popup_gf.gif" />
+    <img src="https://raw.githubusercontent.com/Biscozum/mobkit_calendar/main/example/assets/videos/monthly_view_popup_gf.gif" />
   </td>
 </tr>
 </table>
@@ -71,10 +71,10 @@ Mobkit Calendar has built-in configurable views such as day, week, month and tim
 </tr>
 <tr>
   <td>
-    <img src="/example/assets/images/weekly_view.png" />
+    <img src="https://raw.githubusercontent.com/Biscozum/mobkit_calendar/main/example/assets/images/weekly_view.png" />
   </td>
   <td>
-    <img src="/example/assets/videos/weekly_view_gf.gif" />
+    <img src="https://raw.githubusercontent.com/Biscozum/mobkit_calendar/main/example/assets/videos/weekly_view_gf.gif" />
   </td>
 </tr>
 
@@ -91,15 +91,15 @@ Mobkit Calendar has built-in configurable views such as day, week, month and tim
 </tr>
 <tr>
   <td>
-    <img src="/example/assets/images/daily_view_all_day_event.png" />
+    <img src="https://github.com/Biscozum/mobkit_calendar/blob/main/example/assets/images/daily_view_all_day_event.png?raw=true" />
   </td>
   <td>
-    <img src="/example/assets/images/daily_view_short_day_event.png" />
+    <img src="https://raw.githubusercontent.com/Biscozum/mobkit_calendar/main/example/assets/images/daily_view_short_day_event.png" />
   </td>
 </tr>
 <tr>
   <td colspan="2" align="center">
-    <img src="/example/assets/videos/daily_view_gf.gif" />
+    <img src="https://raw.githubusercontent.com/Biscozum/mobkit_calendar/main/example/assets/videos/daily_view_gf.gif" />
   </td>
 </tr>
 </table>
@@ -113,10 +113,10 @@ Mobkit Calendar has built-in configurable views such as day, week, month and tim
 </tr>
 <tr>
   <td>
-    <img src="/example/assets/images/agenda_view.png" />
+    <img src="https://raw.githubusercontent.com/Biscozum/mobkit_calendar/main/example/assets/images/agenda_view.png" />
   </td>
   <td>
-    <img src="/example/assets/videos/agenda_view_gf.gif" />
+    <img src="https://raw.githubusercontent.com/Biscozum/mobkit_calendar/main/example/assets/videos/agenda_view_gf.gif" />
   </td>
 </tr>
 </table>

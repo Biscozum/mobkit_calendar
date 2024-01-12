@@ -5,7 +5,8 @@ import '../../extensions/model/week_dates_model.dart';
 /// Returns the number of weeks in the relevant month.
 int calculateWeekCount(DateTime firstDay) {
   int weekCount = 0;
-  final DateTime lastDayOfMonth = DateTime(firstDay.year, firstDay.month + 1, 0);
+  final DateTime lastDayOfMonth =
+      DateTime(firstDay.year, firstDay.month + 1, 0);
   DateTime date = firstDay;
   while (date.isBefore(lastDayOfMonth) || date == lastDayOfMonth) {
     weekCount++;
@@ -16,16 +17,21 @@ int calculateWeekCount(DateTime firstDay) {
 
 /// Returns the number of weeks in the relevant month.
 List<MobkitCalendarAppointmentModel> findCustomModel(
-    List<MobkitCalendarAppointmentModel> customCalendarModelList, DateTime today) {
+    List<MobkitCalendarAppointmentModel> customCalendarModelList,
+    DateTime today) {
   List<MobkitCalendarAppointmentModel> showCustomCalendarModelList = [];
   showCustomCalendarModelList = customCalendarModelList
       .where((element) =>
           !today.isSameDay(element.appointmentEndDate) &&
-              (today.isBetween(element.appointmentStartDate, element.appointmentEndDate) ?? false) ||
+              (today.isBetween(element.appointmentStartDate,
+                      element.appointmentEndDate) ??
+                  false) ||
           today.isSameDay(element.appointmentStartDate) ||
           (today.isSameDay(element.appointmentStartDate) ||
-              (!element.appointmentStartDate.isSameDay(element.appointmentEndDate) &&
-                  today.isSameDay(element.appointmentEndDate.add(const Duration(minutes: -1))))))
+              (!element.appointmentStartDate
+                      .isSameDay(element.appointmentEndDate) &&
+                  today.isSameDay(element.appointmentEndDate
+                      .add(const Duration(minutes: -1))))))
       .toList();
   return showCustomCalendarModelList;
 }
@@ -64,9 +70,11 @@ WeekDates getDatesFromWeekNumber(int year, int weekNumber) {
 
   final int daysToFirstWeek = (8 - firstDayOfWeek) % 7;
 
-  final DateTime firstDayOfGivenWeek = firstDayOfYear.add(Duration(days: daysToFirstWeek + (weekNumber - 1) * 7));
+  final DateTime firstDayOfGivenWeek = firstDayOfYear
+      .add(Duration(days: daysToFirstWeek + (weekNumber - 1) * 7));
 
-  final DateTime lastDayOfGivenWeek = firstDayOfGivenWeek.add(const Duration(days: 6));
+  final DateTime lastDayOfGivenWeek =
+      firstDayOfGivenWeek.add(const Duration(days: 6));
 
   return WeekDates(from: firstDayOfGivenWeek, to: lastDayOfGivenWeek);
 }

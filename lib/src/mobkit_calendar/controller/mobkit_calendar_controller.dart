@@ -7,7 +7,8 @@ class MobkitCalendarController extends ChangeNotifier {
   DateTime? _selectedDate;
   List<MobkitCalendarAppointmentModel> _appoitnments = [];
   late PageController _pageController;
-  MobkitCalendarViewType _mobkitCalendarViewType = MobkitCalendarViewType.monthly;
+  MobkitCalendarViewType _mobkitCalendarViewType =
+      MobkitCalendarViewType.monthly;
 
   List<MobkitCalendarAppointmentModel> get appoitnments {
     return _appoitnments;
@@ -43,8 +44,14 @@ class MobkitCalendarController extends ChangeNotifier {
   setPageController(DateTime minDate, double viewportFraction) {
     _pageController = PageController(
         initialPage: mobkitCalendarViewType == MobkitCalendarViewType.monthly
-            ? (((calendarDate.year * 12) + calendarDate.month) - ((minDate.year * 12) + minDate.month))
-            : ((calendarDate.findFirstDateOfTheWeek().difference(minDate.findFirstDateOfTheWeek()).inDays) ~/ 7).abs(),
+            ? (((calendarDate.year * 12) + calendarDate.month) -
+                ((minDate.year * 12) + minDate.month))
+            : ((calendarDate
+                        .findFirstDateOfTheWeek()
+                        .difference(minDate.findFirstDateOfTheWeek())
+                        .inDays) ~/
+                    7)
+                .abs(),
         viewportFraction: viewportFraction);
   }
 
@@ -74,16 +81,19 @@ class MobkitCalendarController extends ChangeNotifier {
     pageController.nextPage(duration: duration, curve: curve);
   }
 
-  void previousPage(PageController pageController, Duration duration, Curve curve) {
+  void previousPage(
+      PageController pageController, Duration duration, Curve curve) {
     pageController.previousPage(duration: duration, curve: curve);
   }
 
   void popupChanged(DateTime minDate, int page) {
     if (selectedDate!.month != minDate.add(Duration(days: page)).month) {
       if (selectedDate!.isBefore((minDate.add(Duration(days: page))))) {
-        pageController.nextPage(duration: const Duration(milliseconds: 250), curve: Curves.easeIn);
+        pageController.nextPage(
+            duration: const Duration(milliseconds: 250), curve: Curves.easeIn);
       } else if (selectedDate!.isAfter((minDate.add(Duration(days: page))))) {
-        pageController.previousPage(duration: const Duration(milliseconds: 250), curve: Curves.easeIn);
+        pageController.previousPage(
+            duration: const Duration(milliseconds: 250), curve: Curves.easeIn);
       }
       selectedDate = (minDate.add(Duration(days: page)));
     } else {

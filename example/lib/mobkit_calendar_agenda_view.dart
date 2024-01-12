@@ -18,11 +18,14 @@ class MobkitCalendarAgendaView extends StatelessWidget {
       body: MobkitCalendarWidget(
         minDate: DateTime(1800),
         config: controller.configModel,
-        titleWidget: (List<MobkitCalendarAppointmentModel> models, DateTime datetime) => Padding(
+        titleWidget:
+            (List<MobkitCalendarAppointmentModel> models, DateTime datetime) =>
+                Padding(
           padding: const EdgeInsets.symmetric(vertical: 12),
           child: Column(children: [
             Text(
-              DateFormat("yyyy MMMM", controller.configModel.locale).format(datetime),
+              DateFormat("yyyy MMMM", controller.configModel.locale)
+                  .format(datetime),
               style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -31,10 +34,13 @@ class MobkitCalendarAgendaView extends StatelessWidget {
             ),
           ]),
         ),
-        onSelectionChange: (List<MobkitCalendarAppointmentModel> model, DateTime date) =>
-            controller.setCalendarDate(model, date),
+        onSelectionChange:
+            (List<MobkitCalendarAppointmentModel> model, DateTime date) =>
+                controller.setCalendarDate(model, date),
         eventTap: (model) => null,
-        onPopupWidget: (List<MobkitCalendarAppointmentModel> models, DateTime datetime) => Padding(
+        onPopupWidget:
+            (List<MobkitCalendarAppointmentModel> models, DateTime datetime) =>
+                Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 18),
           child: models.isNotEmpty
               ? Column(
@@ -43,7 +49,8 @@ class MobkitCalendarAgendaView extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Text(
-                        DateFormat("EEE, MMMM d", controller.configModel.locale).format(datetime),
+                        DateFormat("EEE, MMMM d", controller.configModel.locale)
+                            .format(datetime),
                         style: const TextStyle(
                           fontSize: 18,
                           color: Colors.grey,
@@ -62,7 +69,8 @@ class MobkitCalendarAgendaView extends StatelessWidget {
                           return GestureDetector(
                             onTap: () {},
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 2),
                               child: Row(children: [
                                 Container(
                                   height: 40,
@@ -97,7 +105,8 @@ class MobkitCalendarAgendaView extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Text(
-                        DateFormat("EEE, MMMM d", controller.configModel.locale).format(datetime),
+                        DateFormat("EEE, MMMM d", controller.configModel.locale)
+                            .format(datetime),
                         style: const TextStyle(
                           fontSize: 18,
                           color: Colors.grey,

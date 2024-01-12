@@ -15,7 +15,8 @@ class MethodChannelMobkitCalendar extends MobkitCalendarPlatform {
 
   @override
   Future openEventDetail(Map arguments) async {
-    final success = await methodChannel.invokeMethod<bool>('openEventDetail', arguments);
+    final success =
+        await methodChannel.invokeMethod<bool>('openEventDetail', arguments);
     return success;
   }
 
@@ -25,12 +26,14 @@ class MethodChannelMobkitCalendar extends MobkitCalendarPlatform {
     PermissionStatus result = await Permission.calendar.request();
     List<AccountGroupModel> accounts = [];
     if (result.isGranted) {
-      String? accountList = await methodChannel.invokeMethod<String?>('getAccountList');
+      String? accountList =
+          await methodChannel.invokeMethod<String?>('getAccountList');
       Map accountMap = json.decode(accountList ?? "");
       if (accountMap["accounts"] is List<Object?>) {
         for (var account in accountMap["accounts"]) {
           if (account is Map) {
-            if (accounts.any((element) => element.groupName == account["groupName"])) {
+            if (accounts
+                .any((element) => element.groupName == account["groupName"])) {
               AccountModel accountModel = AccountModel(
                   accountName: account["accountName"],
                   isChecked: account["isChecked"],
@@ -41,8 +44,8 @@ class MethodChannelMobkitCalendar extends MobkitCalendarPlatform {
                   .accountModels!
                   .add(accountModel);
             } else {
-              AccountGroupModel accountGroupModel =
-                  AccountGroupModel(groupName: account["groupName"], accountModels: []);
+              AccountGroupModel accountGroupModel = AccountGroupModel(
+                  groupName: account["groupName"], accountModels: []);
               AccountModel accountModel = AccountModel(
                   accountName: account["accountName"],
                   isChecked: account["isChecked"],
@@ -59,12 +62,16 @@ class MethodChannelMobkitCalendar extends MobkitCalendarPlatform {
   }
 
   @override
-  Future<List<MobkitCalendarAppointmentModel>> getEventList(Map arguments) async {
+  Future<List<MobkitCalendarAppointmentModel>> getEventList(
+      Map arguments) async {
     // ignore: deprecated_member_use
     PermissionStatus result = await Permission.calendar.request();
     List<MobkitCalendarAppointmentModel> events = [];
-    if ((arguments["idlist"] is List<String>) && result.isGranted && (arguments["idlist"] as List<String>).isNotEmpty) {
-      String? eventList = await methodChannel.invokeMethod<String?>('getEventList', arguments);
+    if ((arguments["idlist"] is List<String>) &&
+        result.isGranted &&
+        (arguments["idlist"] as List<String>).isNotEmpty) {
+      String? eventList =
+          await methodChannel.invokeMethod<String?>('getEventList', arguments);
       Map eventMap = json.decode(eventList ?? "");
       if (eventMap["events"] is List<Object?>) {
         for (var event in eventMap["events"]) {
@@ -74,10 +81,12 @@ class MethodChannelMobkitCalendar extends MobkitCalendarPlatform {
               mobkitCalendarAppointmentModel = MobkitCalendarAppointmentModel(
                 nativeEventId: event["nativeEventId"].toString(),
                 title: event["fullName"],
-                appointmentStartDate:
-                    DateTime.fromMillisecondsSinceEpoch(event["startDate"], isUtc: event["isFullDayEvent"]),
-                appointmentEndDate:
-                    DateTime.fromMillisecondsSinceEpoch(event["endDate"], isUtc: event["isFullDayEvent"]),
+                appointmentStartDate: DateTime.fromMillisecondsSinceEpoch(
+                    event["startDate"],
+                    isUtc: event["isFullDayEvent"]),
+                appointmentEndDate: DateTime.fromMillisecondsSinceEpoch(
+                    event["endDate"],
+                    isUtc: event["isFullDayEvent"]),
                 isAllDay: event["isFullDayEvent"],
                 detail: event["description"] ?? "",
                 color: const Color(0xff7209b7),
@@ -87,8 +96,10 @@ class MethodChannelMobkitCalendar extends MobkitCalendarPlatform {
               mobkitCalendarAppointmentModel = MobkitCalendarAppointmentModel(
                 nativeEventId: event["nativeEventId"].toString(),
                 title: event["fullName"],
-                appointmentStartDate: DateFormat('dd/MM/yyyy HH:mm:ss').parse(event["startDate"]),
-                appointmentEndDate: DateFormat('dd/MM/yyyy HH:mm:ss').parse(event["endDate"]),
+                appointmentStartDate:
+                    DateFormat('dd/MM/yyyy HH:mm:ss').parse(event["startDate"]),
+                appointmentEndDate:
+                    DateFormat('dd/MM/yyyy HH:mm:ss').parse(event["endDate"]),
                 isAllDay: event["isFullDayEvent"],
                 detail: event["description"] ?? "",
                 color: const Color(0xff7209b7),

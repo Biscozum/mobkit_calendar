@@ -16,6 +16,7 @@ class CalendarTopBarConfigModel {
     this.isVisibleHeaderWidget,
     this.isVisibleTitleWidget,
     this.monthDaysStyle = const TextStyle(fontWeight: FontWeight.normal),
-    this.weekDaysStyle = const TextStyle(color: Color.fromRGBO(253, 165, 46, 1), fontWeight: FontWeight.bold),
+    this.weekDaysStyle = const TextStyle(
+        color: Color.fromRGBO(253, 165, 46, 1), fontWeight: FontWeight.bold),
   });
 }

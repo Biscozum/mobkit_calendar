@@ -103,6 +103,7 @@ class MobkitCalendarConfigModel {
   }) {
     this.cellConfig = cellConfig ?? CalendarCellConfigModel();
     this.topBarConfig = topBarConfig ?? CalendarTopBarConfigModel();
-    this.dailyItemsConfigModel = dailyItemsConfigModel ?? DailyItemsConfigModel();
+    this.dailyItemsConfigModel =
+        dailyItemsConfigModel ?? DailyItemsConfigModel();
   }
 }

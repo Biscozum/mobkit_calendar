@@ -8,7 +8,8 @@ class MobkitCalendarMonthlyView extends StatefulWidget {
   const MobkitCalendarMonthlyView({super.key});
 
   @override
-  State<MobkitCalendarMonthlyView> createState() => _MobkitCalendarMonthlyViewState();
+  State<MobkitCalendarMonthlyView> createState() =>
+      _MobkitCalendarMonthlyViewState();
 }
 
 class _MobkitCalendarMonthlyViewState extends State<MobkitCalendarMonthlyView> {
@@ -24,18 +25,23 @@ class _MobkitCalendarMonthlyViewState extends State<MobkitCalendarMonthlyView> {
           ),
           floatingActionButton: FloatingActionButton(
             onPressed: () => controller.setIsFullScreen(),
-            child: Icon(controller.isFullScreen ? Icons.close_fullscreen : Icons.open_in_full),
+            child: Icon(controller.isFullScreen
+                ? Icons.close_fullscreen
+                : Icons.open_in_full),
           ),
           body: MobkitCalendarWidget(
             minDate: DateTime(1800),
             key: UniqueKey(),
             config: controller.configModel,
             dateRangeChanged: (datetime) => null,
-            headerWidget: (List<MobkitCalendarAppointmentModel> models, DateTime datetime) => Padding(
+            headerWidget: (List<MobkitCalendarAppointmentModel> models,
+                    DateTime datetime) =>
+                Padding(
               padding: const EdgeInsets.symmetric(vertical: 12),
               child: Column(children: [
                 Text(
-                  DateFormat("MMMM", controller.configModel.locale).format(datetime),
+                  DateFormat("MMMM", controller.configModel.locale)
+                      .format(datetime),
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w500,
@@ -44,11 +50,14 @@ class _MobkitCalendarMonthlyViewState extends State<MobkitCalendarMonthlyView> {
                 ),
               ]),
             ),
-            titleWidget: (List<MobkitCalendarAppointmentModel> models, DateTime datetime) => Padding(
+            titleWidget: (List<MobkitCalendarAppointmentModel> models,
+                    DateTime datetime) =>
+                Padding(
               padding: const EdgeInsets.symmetric(vertical: 12),
               child: Column(children: [
                 Text(
-                  DateFormat("yyyy MMMM", controller.configModel.locale).format(datetime),
+                  DateFormat("yyyy MMMM", controller.configModel.locale)
+                      .format(datetime),
                   style: const TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -57,10 +66,13 @@ class _MobkitCalendarMonthlyViewState extends State<MobkitCalendarMonthlyView> {
                 ),
               ]),
             ),
-            onSelectionChange: (List<MobkitCalendarAppointmentModel> model, DateTime date) =>
-                controller.setCalendarDate(model, date),
+            onSelectionChange:
+                (List<MobkitCalendarAppointmentModel> model, DateTime date) =>
+                    controller.setCalendarDate(model, date),
             eventTap: (model) => null,
-            onPopupWidget: (List<MobkitCalendarAppointmentModel> models, DateTime datetime) => Padding(
+            onPopupWidget: (List<MobkitCalendarAppointmentModel> models,
+                    DateTime datetime) =>
+                Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 18),
               child: models.isNotEmpty
                   ? Column(
@@ -69,7 +81,9 @@ class _MobkitCalendarMonthlyViewState extends State<MobkitCalendarMonthlyView> {
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 8),
                           child: Text(
-                            DateFormat("EEE, MMMM d", controller.configModel.locale).format(datetime),
+                            DateFormat("EEE, MMMM d",
+                                    controller.configModel.locale)
+                                .format(datetime),
                             style: const TextStyle(
                               fontSize: 18,
                               color: Colors.grey,
@@ -88,7 +102,8 @@ class _MobkitCalendarMonthlyViewState extends State<MobkitCalendarMonthlyView> {
                               return GestureDetector(
                                 onTap: () {},
                                 child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12, vertical: 2),
                                   child: Row(children: [
                                     Container(
                                       height: 40,
@@ -123,7 +138,9 @@ class _MobkitCalendarMonthlyViewState extends State<MobkitCalendarMonthlyView> {
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 8),
                           child: Text(
-                            DateFormat("EEE, MMMM d", controller.configModel.locale).format(datetime),
+                            DateFormat("EEE, MMMM d",
+                                    controller.configModel.locale)
+                                .format(datetime),
                             style: const TextStyle(
                               fontSize: 18,
                               color: Colors.grey,
