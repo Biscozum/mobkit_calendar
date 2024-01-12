@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:mobkit_calendar/src/mobkit_calendar/utils/date_utils.dart';
 import '../../mobkit_calendar.dart';
 
 /// When any event in the month view of [MobkitCalendarWidget] is clicked
