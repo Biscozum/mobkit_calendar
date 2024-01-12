@@ -9,3 +9,7 @@
 ## 0.0.3.
 
 * Support up-to-date dependencies.
+
+## 0.0.4.
+
+* Package dependencies edited.

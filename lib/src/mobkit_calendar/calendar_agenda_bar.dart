@@ -139,83 +139,10 @@ class _CalendarAgendaBarState extends State<CalendarAgendaBar> {
                         height: 8,
                       ),
                       listData.isNotEmpty
-                          ? ListView.builder(
-                              itemCount: listData.length,
-                              physics: const NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              itemBuilder: (context, index) {
-                                return Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 4),
-                                  child: GestureDetector(
-                                    onTap: () =>
-                                        widget.eventTap?.call(listData[index]),
-                                    child: widget.agendaWidget?.call(
-                                            listData[index], currentDate) ??
-                                        Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Expanded(
-                                              flex: 1,
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 4),
-                                                child: Text(
-                                                  "${listData[index].title}",
-                                                  maxLines: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: widget
-                                                          .config
-                                                          ?.agendaViewConfigModel
-                                                          ?.titleTextStyle ??
-                                                      const TextStyle(
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.black,
-                                                      ),
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              width: 8,
-                                            ),
-                                            Expanded(
-                                              flex: 4,
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(6),
-                                                  color: listData[index].color,
-                                                ),
-                                                height: 60,
-                                                child: Padding(
-                                                  padding: const EdgeInsets
-                                                          .symmetric(
-                                                      vertical: 4,
-                                                      horizontal: 8),
-                                                  child: Text(
-                                                    listData[index].detail,
-                                                    style: widget
-                                                            .config
-                                                            ?.agendaViewConfigModel
-                                                            ?.detailTextStyle ??
-                                                        const TextStyle(
-                                                          fontSize: 14,
-                                                          color: Colors.white,
-                                                        ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                  ),
-                                );
-                              },
+                          ? CalendarAgendaListView(
+                              listData: listData,
+                              widget: widget,
+                              currentDate: currentDate,
                             )
                           : Container(),
                     ],
@@ -226,6 +153,86 @@ class _CalendarAgendaBarState extends State<CalendarAgendaBar> {
           ),
         ),
       ],
+    );
+  }
+}
+
+class CalendarAgendaListView extends StatelessWidget {
+  const CalendarAgendaListView({
+    super.key,
+    required this.listData,
+    required this.widget,
+    required this.currentDate,
+  });
+
+  final List<MobkitCalendarAppointmentModel> listData;
+  final CalendarAgendaBar widget;
+  final DateTime currentDate;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: listData.length,
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          child: GestureDetector(
+            onTap: () => widget.eventTap?.call(listData[index]),
+            child: widget.agendaWidget?.call(listData[index], currentDate) ??
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        child: Text(
+                          "${listData[index].title}",
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: widget.config?.agendaViewConfigModel
+                                  ?.titleTextStyle ??
+                              const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 8,
+                    ),
+                    Expanded(
+                      flex: 4,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(6),
+                          color: listData[index].color,
+                        ),
+                        height: 60,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 4, horizontal: 8),
+                          child: Text(
+                            listData[index].detail,
+                            style: widget.config?.agendaViewConfigModel
+                                    ?.detailTextStyle ??
+                                const TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.white,
+                                ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+          ),
+        );
+      },
     );
   }
 }
