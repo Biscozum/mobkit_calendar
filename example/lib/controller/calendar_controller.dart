@@ -63,6 +63,7 @@ class CalendarController extends ChangeNotifier {
       MobkitCalendarController();
   CalendarController(MobkitCalendarViewType mobkitCalendarViewType) {
     mobkitCalendarController.mobkitCalendarViewType = mobkitCalendarViewType;
+    mobkitCalendarController.appointments = eventList;
     configModel = MobkitCalendarConfigModel(
       cellConfig: CalendarCellConfigModel(
         disabledStyle: CalendarCellStyle(

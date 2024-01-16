@@ -17,3 +17,7 @@
 ## 0.0.5
 
 * Platform support edited.
+
+## 0.0.6
+
+* parseAppointmentModel method bug fixed.

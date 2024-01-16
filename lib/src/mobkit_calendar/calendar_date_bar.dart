@@ -160,7 +160,7 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
                             ? widget.headerWidget?.call(
                                   findCustomModel(
                                       widget.mobkitCalendarController
-                                          .appoitnments,
+                                          .appointments,
                                       headerDate),
                                   headerDate,
                                 ) ??
@@ -190,7 +190,7 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
                                   ? widget.headerWidget?.call(
                                         findCustomModel(
                                             widget.mobkitCalendarController
-                                                .appoitnments,
+                                                .appointments,
                                             headerDate),
                                         headerDate,
                                       ) ??
@@ -217,42 +217,42 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
                           ? widget.weeklyViewWidget?.call({
                                 firstWeekDay: findCustomModel(
                                     widget
-                                        .mobkitCalendarController.appoitnments,
+                                        .mobkitCalendarController.appointments,
                                     firstWeekDay),
                                 firstWeekDay.add(const Duration(days: 1)):
                                     findCustomModel(
                                         widget.mobkitCalendarController
-                                            .appoitnments,
+                                            .appointments,
                                         firstWeekDay
                                             .add(const Duration(days: 1))),
                                 firstWeekDay.add(const Duration(days: 2)):
                                     findCustomModel(
                                         widget.mobkitCalendarController
-                                            .appoitnments,
+                                            .appointments,
                                         firstWeekDay
                                             .add(const Duration(days: 2))),
                                 firstWeekDay.add(const Duration(days: 3)):
                                     findCustomModel(
                                         widget.mobkitCalendarController
-                                            .appoitnments,
+                                            .appointments,
                                         firstWeekDay
                                             .add(const Duration(days: 3))),
                                 firstWeekDay.add(const Duration(days: 4)):
                                     findCustomModel(
                                         widget.mobkitCalendarController
-                                            .appoitnments,
+                                            .appointments,
                                         firstWeekDay
                                             .add(const Duration(days: 4))),
                                 firstWeekDay.add(const Duration(days: 5)):
                                     findCustomModel(
                                         widget.mobkitCalendarController
-                                            .appoitnments,
+                                            .appointments,
                                         firstWeekDay
                                             .add(const Duration(days: 5))),
                                 firstWeekDay.add(const Duration(days: 6)):
                                     findCustomModel(
                                         widget.mobkitCalendarController
-                                            .appoitnments,
+                                            .appointments,
                                         firstWeekDay
                                             .add(const Duration(days: 6))),
                               }) ??

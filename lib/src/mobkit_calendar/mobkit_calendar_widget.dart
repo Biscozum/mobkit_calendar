@@ -104,7 +104,7 @@ class MobkitCalendarView extends StatelessWidget {
                             false))
                         ? titleWidget?.call(
                               findCustomModel(
-                                  mobkitCalendarController.appoitnments,
+                                  mobkitCalendarController.appointments,
                                   mobkitCalendarController.calendarDate),
                               mobkitCalendarController.calendarDate,
                             ) ??
@@ -155,7 +155,7 @@ class MobkitCalendarView extends StatelessWidget {
                       child: CalendarWeekDaysBar(
                         config: config,
                         customCalendarModel:
-                            mobkitCalendarController.appoitnments,
+                            mobkitCalendarController.appointments,
                         mobkitCalendarController: mobkitCalendarController,
                       ),
                     )
@@ -208,7 +208,7 @@ class MobkitCalendarView extends StatelessWidget {
         DateTime newDate =
             mobkitCalendarController.selectedDate ?? DateTime.now();
         List<MobkitCalendarAppointmentModel> modelList =
-            mobkitCalendarController.appoitnments.where((element) {
+            mobkitCalendarController.appointments.where((element) {
           var item = !element.isAllDay &&
               ((DateTime(newDate.year, newDate.month, newDate.day).isBetween(
                           element.appointmentStartDate,
@@ -222,7 +222,7 @@ class MobkitCalendarView extends StatelessWidget {
           return item;
         }).toList();
         List<MobkitCalendarAppointmentModel> allDayList =
-            mobkitCalendarController.appoitnments
+            mobkitCalendarController.appointments
                 .where((element) =>
                     ((DateTime(newDate.year, newDate.month, newDate.day)
                                 .isBetween(element.appointmentStartDate,

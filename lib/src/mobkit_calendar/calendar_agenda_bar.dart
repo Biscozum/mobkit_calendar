@@ -45,7 +45,7 @@ class _CalendarAgendaBarState extends State<CalendarAgendaBar> {
   void initState() {
     super.initState();
     initialDate = widget.mobkitCalendarController.calendarDate;
-    widget.mobkitCalendarController.appoitnments.sort((a, b) {
+    widget.mobkitCalendarController.appointments.sort((a, b) {
       return a.appointmentStartDate.compareTo(b.appointmentStartDate);
     });
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -91,7 +91,7 @@ class _CalendarAgendaBarState extends State<CalendarAgendaBar> {
                     widget.titleWidget != null)
                 ? widget.titleWidget!.call(
                     findCustomModel(
-                        widget.mobkitCalendarController.appoitnments,
+                        widget.mobkitCalendarController.appointments,
                         lastDate.value ?? DateTime.now()),
                     lastDate.value ?? DateTime.now(),
                   )
@@ -105,7 +105,7 @@ class _CalendarAgendaBarState extends State<CalendarAgendaBar> {
               DateTime currentDate =
                   DateUtils.dateOnly(initialDate.add(Duration(days: index)));
               List<MobkitCalendarAppointmentModel> listData = findCustomModel(
-                  widget.mobkitCalendarController.appoitnments, currentDate);
+                  widget.mobkitCalendarController.appointments, currentDate);
               return VisibilityDetector(
                 key: ValueKey("$currentDate"),
                 onVisibilityChanged: (visibilityInfo) {

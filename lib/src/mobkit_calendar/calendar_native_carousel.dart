@@ -106,7 +106,7 @@ class _CarouselState extends State<CarouselEvent> {
                                   ?.withOpacity(0.6)),
                   child: widget.onPopupWidget?.call(
                     findCustomModel(
-                        widget.mobkitCalendarController.appoitnments,
+                        widget.mobkitCalendarController.appointments,
                         currentDate),
                     currentDate,
                   ),

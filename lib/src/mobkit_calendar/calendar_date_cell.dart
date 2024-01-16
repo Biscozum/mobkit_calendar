@@ -46,7 +46,7 @@ class CalendarDateCell extends StatelessWidget {
                 mobkitCalendarController.selectedDate = (date);
                 onSelectionChange?.call(
                     findCustomModel(
-                        mobkitCalendarController.appoitnments, date),
+                        mobkitCalendarController.appointments, date),
                     date);
                 if (config != null && config!.popupEnable) {
                   await showDialog(
@@ -76,7 +76,7 @@ class CalendarDateCell extends StatelessWidget {
               isSelected: mobkitCalendarController.selectedDate != null &&
                   mobkitCalendarController.selectedDate!.isSameDay(date),
               showedCustomCalendarModelList:
-                  findCustomModel(mobkitCalendarController.appoitnments, date),
+                  findCustomModel(mobkitCalendarController.appointments, date),
               isEnabled: enabled,
               isWeekend: date.isWeekend(),
               standardCalendarConfig: config,
