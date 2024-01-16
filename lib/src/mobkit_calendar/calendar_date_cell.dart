@@ -15,8 +15,11 @@ class CalendarDateCell extends StatelessWidget {
   final bool enabled;
   final MobkitCalendarConfigModel? config;
   final MobkitCalendarController mobkitCalendarController;
-  final Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime)? onSelectionChange;
-  final Widget Function(List<MobkitCalendarAppointmentModel>, DateTime datetime)? onPopupWidget;
+  final Function(
+          List<MobkitCalendarAppointmentModel> models, DateTime datetime)?
+      onSelectionChange;
+  final Widget Function(
+      List<MobkitCalendarAppointmentModel>, DateTime datetime)? onPopupWidget;
   final Function(DateTime datetime)? onDateChanged;
 
   const CalendarDateCell(
@@ -37,9 +40,14 @@ class CalendarDateCell extends StatelessWidget {
         builder: (context, widget) {
           return GestureDetector(
             onTap: () async {
-              if (enabled || mobkitCalendarController.mobkitCalendarViewType != MobkitCalendarViewType.monthly) {
+              if (enabled ||
+                  mobkitCalendarController.mobkitCalendarViewType !=
+                      MobkitCalendarViewType.monthly) {
                 mobkitCalendarController.selectedDate = (date);
-                onSelectionChange?.call(findCustomModel(mobkitCalendarController.appointments, date), date);
+                onSelectionChange?.call(
+                    findCustomModel(
+                        mobkitCalendarController.appointments, date),
+                    date);
                 if (config != null && config!.popupEnable) {
                   await showDialog(
                     context: context,
@@ -67,12 +75,14 @@ class CalendarDateCell extends StatelessWidget {
               key: Key("CalendarCell-${DateFormat("dd-MM-yyyy").format(date)}"),
               isSelected: mobkitCalendarController.selectedDate != null &&
                   mobkitCalendarController.selectedDate!.isSameDay(date),
-              showedCustomCalendarModelList: findCustomModel(mobkitCalendarController.appointments, date),
+              showedCustomCalendarModelList:
+                  findCustomModel(mobkitCalendarController.appointments, date),
               isEnabled: enabled,
               isWeekend: date.isWeekend(),
               standardCalendarConfig: config,
               isCurrent:
-                  DateFormat.yMd(config?.locale).format(DateTime.now()) == DateFormat.yMd(config?.locale).format(date),
+                  DateFormat.yMd(config?.locale).format(DateTime.now()) ==
+                      DateFormat.yMd(config?.locale).format(date),
             ),
           );
         });
