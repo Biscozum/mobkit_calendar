@@ -21,3 +21,7 @@
 ## 0.0.6
 
 * parseAppointmentModel method bug fixed.
+
+## 0.0.7
+
+* Fixed the issue of not being able to drill down to the selected date when the calendar view is changed.
