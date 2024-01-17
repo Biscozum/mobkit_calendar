@@ -63,7 +63,6 @@ class CalendarController extends ChangeNotifier {
       MobkitCalendarController();
   CalendarController(MobkitCalendarViewType mobkitCalendarViewType) {
     mobkitCalendarController.mobkitCalendarViewType = mobkitCalendarViewType;
-    mobkitCalendarController.appointments = eventList;
     configModel = MobkitCalendarConfigModel(
       cellConfig: CalendarCellConfigModel(
         disabledStyle: CalendarCellStyle(
@@ -130,6 +129,12 @@ class CalendarController extends ChangeNotifier {
       ValueNotifier<List<MobkitCalendarAppointmentModel>>([]);
   DateTime? calendarDate;
 
+  Future<bool> getCalendarData() async {
+    mobkitCalendarController.appointments.clear();
+    mobkitCalendarController.appointments.addAll(eventList);
+    return true;
+  }
+
   setCalendarDate(List<MobkitCalendarAppointmentModel> models, DateTime date,
       {bool isFirst = false}) {
     showEvents.value = [];
@@ -142,7 +147,8 @@ class CalendarController extends ChangeNotifier {
     isFirst ? null : eventDate.notifyListeners();
   }
 
-  setIsFullScreen() {
+  setIsFullScreen() async {
+    await getCalendarData();
     isFullScreen = !isFullScreen;
     if (isFullScreen) {
       configModel.viewportFraction = 1;

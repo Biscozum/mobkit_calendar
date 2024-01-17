@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:mobkit_calendar/mobkit_calendar.dart';
-
 import '../../extensions/model/week_dates_model.dart';
 
 /// Controller that allows you to use [MobkitCalendar] with all its functions
 class MobkitCalendarController extends ChangeNotifier {
   DateTime _calendarDate = DateTime.now();
   DateTime? _selectedDate;
-  List<MobkitCalendarAppointmentModel> _appoitnments = [];
+  List<MobkitCalendarAppointmentModel> _appointments = [];
   late PageController _pageController;
   MobkitCalendarViewType _mobkitCalendarViewType =
       MobkitCalendarViewType.monthly;
   bool isLoadData = false;
 
   List<MobkitCalendarAppointmentModel> get appointments {
-    return _appoitnments;
+    return _appointments;
+  }
+
+  set appointments(List<MobkitCalendarAppointmentModel> newList) {
+    _appointments = newList;
+    notifyListeners();
   }
 
   set selectedDate(DateTime? selectedDate) {
@@ -24,11 +28,6 @@ class MobkitCalendarController extends ChangeNotifier {
 
   DateTime? get selectedDate {
     return _selectedDate;
-  }
-
-  set appointments(List<MobkitCalendarAppointmentModel> newList) {
-    _appoitnments = newList;
-    notifyListeners();
   }
 
   DateTime get calendarDate {
@@ -49,7 +48,7 @@ class MobkitCalendarController extends ChangeNotifier {
         initialPage: mobkitCalendarViewType == MobkitCalendarViewType.monthly
             ? (((calendarDate.year * 12) + calendarDate.month) -
                 ((minDate.year * 12) + minDate.month))
-            : ((calendarDate
+            : (((selectedDate ?? calendarDate)
                         .findFirstDateOfTheWeek()
                         .difference(minDate.findFirstDateOfTheWeek())
                         .inDays) ~/
@@ -138,7 +137,7 @@ class MobkitCalendarController extends ChangeNotifier {
                         .abs())
                 : true) {
               if (withRecurrencyAppointments[i].recurrenceModel != null) {
-                //Günlük tekrar döngüsü
+                // Daily Repeat
                 if (withRecurrencyAppointments[i].recurrenceModel!.frequency
                     is DailyFrequency) {
                   for (int y = 1;
@@ -172,7 +171,7 @@ class MobkitCalendarController extends ChangeNotifier {
                     addNewAppointments.add(addAppointmentModel);
                   }
                 }
-                //Haftalik tekrar döngüsü
+                // Weekly Repeat
                 if (withRecurrencyAppointments[i].recurrenceModel!.frequency
                     is WeeklyFrequency) {
                   List<int> dayOfWeekList = (withRecurrencyAppointments[i]
@@ -255,7 +254,7 @@ class MobkitCalendarController extends ChangeNotifier {
                     }
                   }
                 }
-                //Aylik tekrar döngüsü
+                // Monthly Repeat
                 if (withRecurrencyAppointments[i].recurrenceModel!.frequency
                     is MonthlyFrequency) {
                   for (int y = 1;
@@ -414,12 +413,11 @@ class MobkitCalendarController extends ChangeNotifier {
           }
         }
       }
-      appointments = lastAppointments;
-      appointments.addAll(withRecurrencyAppointments);
+      appointments.addAll(lastAppointments);
       isLoadData = true;
       notifyListeners();
     } else {
-      appointments = lastAppointments;
+      appointments.addAll(lastAppointments);
       isLoadData = true;
       notifyListeners();
     }

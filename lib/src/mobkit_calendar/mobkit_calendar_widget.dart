@@ -274,7 +274,7 @@ class MobkitCalendarView extends StatelessWidget {
                         children: [
                           Text(
                             config?.dailyItemsConfigModel.allDayText ??
-                                "Tüm Gün",
+                                "All Day",
                             style:
                                 config?.dailyItemsConfigModel.allDayTextStyle ??
                                     const TextStyle(
