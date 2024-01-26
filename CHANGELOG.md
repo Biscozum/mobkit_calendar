@@ -25,3 +25,7 @@
 ## 0.0.7
 
 * Fixed the issue of not being able to drill down to the selected date when the calendar view is changed.
+
+## 0.0.8
+
+* Topics added.
