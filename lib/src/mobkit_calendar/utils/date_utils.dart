@@ -3,14 +3,13 @@ import 'package:mobkit_calendar/mobkit_calendar.dart';
 import '../../extensions/model/week_dates_model.dart';
 
 /// Returns the number of weeks in the relevant month.
-int calculateWeekCount(DateTime firstDay) {
+int calculateWeekCount(DateTime date) {
   int weekCount = 0;
-  final DateTime lastDayOfMonth =
-      DateTime(firstDay.year, firstDay.month + 1, 0);
-  DateTime date = firstDay;
-  while (date.isBefore(lastDayOfMonth) || date == lastDayOfMonth) {
+  final DateTime lastDayOfMonth = DateTime(date.year, date.month + 1, 0);
+  DateTime firstDay = date.findFirstDateOfTheMonth();
+  while (firstDay.isBefore(lastDayOfMonth) || firstDay == lastDayOfMonth) {
     weekCount++;
-    date = date.next(DateTime.monday);
+    firstDay = firstDay.next(DateTime.monday);
   }
   return weekCount;
 }
