@@ -29,3 +29,8 @@
 ## 0.0.8
 
 * Topics added.
+
+## 0.0.9
+**Bug fixes**
+* Header widget is now called with the correct date.
+* All weeks are now visible in the monthly view.
