@@ -58,7 +58,8 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
         ? ((widget.mobkitCalendarController.calendarDate.year * 12) +
                 widget.mobkitCalendarController.calendarDate.month) -
             ((_mindate.year * 12) + _mindate.month)
-        : ((widget.mobkitCalendarController.calendarDate
+        : (((widget.mobkitCalendarController.selectedDate ??
+                        widget.mobkitCalendarController.calendarDate)
                     .findFirstDateOfTheWeek()
                     .difference(_mindate.findFirstDateOfTheWeek())
                     .inDays) ~/
@@ -129,18 +130,26 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
                             .findFirstDateOfTheWeek()
                             .add(Duration(days: index * 7));
                 DateTime firstWeekDay = currentDate;
-                var headerDate =
-                    widget.mobkitCalendarController.selectedDate ?? currentDate;
-                headerDate = (headerDate
-                                .findFirstDateOfTheWeek()
-                                .isBeforeOrEqualTo(widget
-                                    .mobkitCalendarController.calendarDate) ??
-                            false) &&
-                        (headerDate.findLastDateOfTheWeek().isAfterOrEqualTo(
-                                widget.mobkitCalendarController.calendarDate) ??
-                            false)
-                    ? headerDate
-                    : widget.mobkitCalendarController.calendarDate;
+
+                var headerDate = currentDate;
+
+                if (widget.mobkitCalendarController.mobkitCalendarViewType !=
+                    MobkitCalendarViewType.monthly) {
+                  headerDate = widget.mobkitCalendarController.selectedDate ??
+                      currentDate;
+
+                  headerDate = (headerDate
+                                  .findFirstDateOfTheWeek()
+                                  .isBeforeOrEqualTo(currentDate) ??
+                              false) &&
+                          (headerDate
+                                  .findLastDateOfTheWeek()
+                                  .isAfterOrEqualTo(currentDate) ??
+                              false)
+                      ? headerDate
+                      : currentDate;
+                }
+
                 return Padding(
                   padding: EdgeInsets.only(
                       bottom: widget.mobkitCalendarController
