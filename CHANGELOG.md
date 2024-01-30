@@ -34,3 +34,7 @@
 **Bug fixes**
 * Header widget is now called with the correct date.
 * All weeks are now visible in the monthly view.
+
+## 0.1.0
+**Bug fixes**
+* Recurrency multiple item fixed
