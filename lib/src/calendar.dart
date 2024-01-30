@@ -57,7 +57,6 @@ class _MobkitCalendarWidgetState extends State<MobkitCalendarWidget> {
     mobkitCalendarController =
         widget.mobkitCalendarController ?? MobkitCalendarController();
     initializeDateFormatting();
-    mobkitCalendarController.parseAppointmentModel();
     super.initState();
     assert(
         (widget.minDate ?? DateTime.utc(0, 0, 0))

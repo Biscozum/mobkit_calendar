@@ -17,7 +17,7 @@ class MobkitCalendarController extends ChangeNotifier {
   }
 
   set appointments(List<MobkitCalendarAppointmentModel> newList) {
-    _appointments = newList;
+    parseAppointmentModel(newList);
     notifyListeners();
   }
 
@@ -103,224 +103,144 @@ class MobkitCalendarController extends ChangeNotifier {
     }
   }
 
-  parseAppointmentModel() {
-    List<MobkitCalendarAppointmentModel> lastAppointments = [];
-    lastAppointments = [];
-    if (appointments.isNotEmpty) {
+  parseAppointmentModel(List<MobkitCalendarAppointmentModel> newAppointments) {
+    _appointments = [];
+    if (newAppointments.isNotEmpty) {
       List<MobkitCalendarAppointmentModel> withRecurrencyAppointments = [];
       List<MobkitCalendarAppointmentModel> addNewAppointments = [];
-      for (var appointment in appointments.where((element) =>
+      for (var appointment in newAppointments.where((element) =>
           element.appointmentStartDate.isAfter(element.appointmentEndDate))) {
-        int index = appointments.indexOf(appointment);
-        appointments.removeAt(index);
-        if (appointments.isEmpty) {
+        int index = newAppointments.indexOf(appointment);
+        newAppointments.removeAt(index);
+        if (newAppointments.isEmpty) {
           break;
         }
       }
-      if (appointments.isNotEmpty) {
-        if (appointments
+      if (newAppointments.isNotEmpty) {
+        withRecurrencyAppointments = newAppointments
             .where((element) => element.recurrenceModel != null)
-            .isNotEmpty) {
-          withRecurrencyAppointments = appointments
-              .where((element) => element.recurrenceModel != null)
-              .toList();
-          for (int i = 0; i < withRecurrencyAppointments.length; i++) {
-            addNewAppointments = [];
-            if (withRecurrencyAppointments[i].recurrenceModel!.frequency
-                    is DailyFrequency
-                ? withRecurrencyAppointments[i].recurrenceModel!.repeatOf >
-                    (withRecurrencyAppointments[i]
-                        .appointmentStartDate
-                        .difference(
-                            withRecurrencyAppointments[i].appointmentEndDate)
-                        .inDays
-                        .abs())
-                : true) {
-              if (withRecurrencyAppointments[i].recurrenceModel != null) {
-                // Daily Repeat
-                if (withRecurrencyAppointments[i].recurrenceModel!.frequency
-                    is DailyFrequency) {
-                  for (int y = 1;
-                      y <
-                          withRecurrencyAppointments[i]
-                                  .recurrenceModel!
-                                  .interval +
-                              1;
-                      y++) {
-                    MobkitCalendarAppointmentModel addAppointmentModel =
-                        MobkitCalendarAppointmentModel(
-                            title: withRecurrencyAppointments[i].title,
-                            appointmentStartDate: withRecurrencyAppointments[i]
-                                .appointmentStartDate
-                                .add(Duration(
-                                    days: y *
-                                        withRecurrencyAppointments[i]
-                                            .recurrenceModel!
-                                            .repeatOf)),
-                            appointmentEndDate: withRecurrencyAppointments[i]
-                                .appointmentEndDate
-                                .add(Duration(
-                                    days: y *
-                                        withRecurrencyAppointments[i]
-                                            .recurrenceModel!
-                                            .repeatOf)),
-                            color: withRecurrencyAppointments[i].color,
-                            isAllDay: withRecurrencyAppointments[i].isAllDay,
-                            detail: withRecurrencyAppointments[i].detail,
-                            recurrenceModel: null);
-                    addNewAppointments.add(addAppointmentModel);
-                  }
+            .toList();
+        _appointments.addAll(newAppointments
+            .where((element) => element.recurrenceModel == null)
+            .toList());
+        for (int i = 0; i < withRecurrencyAppointments.length; i++) {
+          addNewAppointments = [];
+          if (withRecurrencyAppointments[i].recurrenceModel!.frequency
+                  is DailyFrequency
+              ? withRecurrencyAppointments[i].recurrenceModel!.repeatOf >
+                  (withRecurrencyAppointments[i]
+                      .appointmentStartDate
+                      .difference(
+                          withRecurrencyAppointments[i].appointmentEndDate)
+                      .inDays
+                      .abs())
+              : true) {
+            if (withRecurrencyAppointments[i].recurrenceModel != null) {
+//region :Daily Repeat
+              if (withRecurrencyAppointments[i].recurrenceModel!.frequency
+                  is DailyFrequency) {
+                for (int y = 1;
+                    y <
+                        withRecurrencyAppointments[i]
+                                .recurrenceModel!
+                                .interval +
+                            1;
+                    y++) {
+                  MobkitCalendarAppointmentModel addAppointmentModel =
+                      MobkitCalendarAppointmentModel(
+                          title: withRecurrencyAppointments[i].title,
+                          appointmentStartDate: withRecurrencyAppointments[i]
+                              .appointmentStartDate
+                              .add(Duration(
+                                  days: y *
+                                      withRecurrencyAppointments[i]
+                                          .recurrenceModel!
+                                          .repeatOf)),
+                          appointmentEndDate: withRecurrencyAppointments[i]
+                              .appointmentEndDate
+                              .add(Duration(
+                                  days: y *
+                                      withRecurrencyAppointments[i]
+                                          .recurrenceModel!
+                                          .repeatOf)),
+                          color: withRecurrencyAppointments[i].color,
+                          isAllDay: withRecurrencyAppointments[i].isAllDay,
+                          detail: withRecurrencyAppointments[i].detail,
+                          recurrenceModel: null);
+                  addNewAppointments.add(addAppointmentModel);
                 }
-                // Weekly Repeat
-                if (withRecurrencyAppointments[i].recurrenceModel!.frequency
-                    is WeeklyFrequency) {
-                  List<int> dayOfWeekList = (withRecurrencyAppointments[i]
-                          .recurrenceModel!
-                          .frequency as WeeklyFrequency)
-                      .daysOfWeek;
-                  int interval =
-                      withRecurrencyAppointments[i].recurrenceModel!.interval;
-                  WeekDates weekDates = getDatesFromWeekNumber(
-                      withRecurrencyAppointments[i].appointmentStartDate.year,
-                      withRecurrencyAppointments[i]
-                          .appointmentEndDate
-                          .weekNumber());
-                  for (int y = 1; y < interval + 1; y++) {
-                    int endDateDay = withRecurrencyAppointments[i]
-                        .appointmentStartDate
-                        .difference(
-                            withRecurrencyAppointments[i].appointmentEndDate)
-                        .inDays
-                        .abs();
-                    List<DateTime> betweenDays = getDaysInBetween(
-                        weekDates.from.add(Duration(
-                            days: (withRecurrencyAppointments[i]
-                                    .recurrenceModel!
-                                    .repeatOf *
-                                (y * 7)))),
-                        weekDates.to.add(Duration(
-                            days: (withRecurrencyAppointments[i]
-                                    .recurrenceModel!
-                                    .repeatOf *
-                                (y * 7)))));
-                    if (withRecurrencyAppointments[i]
+              }
+//endregion
+//region : Weekly Repeat
+              if (withRecurrencyAppointments[i].recurrenceModel!.frequency
+                  is WeeklyFrequency) {
+                List<int> dayOfWeekList = (withRecurrencyAppointments[i]
                         .recurrenceModel!
-                        .endDate
-                        .isAfter(weekDates.from.add(Duration(days: y * 7)))) {
-                      for (int d = 0; d < dayOfWeekList.length; d++) {
-                        for (int k = 0; k < betweenDays.length; k++) {
-                          if (betweenDays[k].weekday == dayOfWeekList[d]) {
-                            MobkitCalendarAppointmentModel addAppointmentModel =
-                                MobkitCalendarAppointmentModel(
-                                    title: withRecurrencyAppointments[i].title,
-                                    appointmentStartDate: DateTime(
-                                      betweenDays[k].year,
-                                      betweenDays[k].month,
-                                      betweenDays[k].day,
-                                      withRecurrencyAppointments[i]
-                                          .appointmentStartDate
-                                          .hour,
-                                      withRecurrencyAppointments[i]
-                                          .appointmentStartDate
-                                          .minute,
-                                      withRecurrencyAppointments[i]
-                                          .appointmentStartDate
-                                          .second,
-                                    ),
-                                    appointmentEndDate: DateTime(
-                                      betweenDays[k].year,
-                                      betweenDays[k].month,
-                                      betweenDays[k].day + endDateDay,
-                                      withRecurrencyAppointments[i]
-                                          .appointmentEndDate
-                                          .hour,
-                                      withRecurrencyAppointments[i]
-                                          .appointmentEndDate
-                                          .minute,
-                                      withRecurrencyAppointments[i]
-                                          .appointmentEndDate
-                                          .second,
-                                    ),
-                                    color: withRecurrencyAppointments[i].color,
-                                    isAllDay:
-                                        withRecurrencyAppointments[i].isAllDay,
-                                    detail:
-                                        withRecurrencyAppointments[i].detail,
-                                    recurrenceModel: null);
-                            addNewAppointments.add(addAppointmentModel);
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-                // Monthly Repeat
-                if (withRecurrencyAppointments[i].recurrenceModel!.frequency
-                    is MonthlyFrequency) {
-                  for (int y = 1;
-                      y <
-                          withRecurrencyAppointments[i]
+                        .frequency as WeeklyFrequency)
+                    .daysOfWeek;
+                int interval =
+                    withRecurrencyAppointments[i].recurrenceModel!.interval;
+                WeekDates weekDates = getDatesFromWeekNumber(
+                    withRecurrencyAppointments[i].appointmentStartDate.year,
+                    withRecurrencyAppointments[i]
+                        .appointmentEndDate
+                        .weekNumber());
+                for (int y = 1; y < interval + 1; y++) {
+                  int endDateDay = withRecurrencyAppointments[i]
+                      .appointmentStartDate
+                      .difference(
+                          withRecurrencyAppointments[i].appointmentEndDate)
+                      .inDays
+                      .abs();
+                  List<DateTime> betweenDays = getDaysInBetween(
+                      weekDates.from.add(Duration(
+                          days: (withRecurrencyAppointments[i]
                                   .recurrenceModel!
-                                  .interval +
-                              1;
-                      y++) {
-                    int endDateDay = withRecurrencyAppointments[i]
-                        .appointmentStartDate
-                        .difference(
-                            withRecurrencyAppointments[i].appointmentEndDate)
-                        .inDays
-                        .abs();
-                    if (((withRecurrencyAppointments[i]
-                            .recurrenceModel!
-                            .frequency as MonthlyFrequency)
-                        .monthlyFrequencyType) is DaysOfMonthModel) {
-                      List<int> daysOfMonthList =
-                          (((withRecurrencyAppointments[i]
-                                      .recurrenceModel!
-                                      .frequency as MonthlyFrequency)
-                                  .monthlyFrequencyType) as DaysOfMonthModel)
-                              .daysOfMonth;
-                      DateTime changedDate = addMonth(
-                          withRecurrencyAppointments[i].appointmentStartDate,
-                          y +
-                              (withRecurrencyAppointments[i]
-                                      .recurrenceModel!
-                                      .repeatOf -
-                                  1));
-                      if (withRecurrencyAppointments[i]
-                          .recurrenceModel!
-                          .endDate
-                          .isAfter(changedDate)) {
-                        for (int k = 0; k < daysOfMonthList.length; k++) {
+                                  .repeatOf *
+                              (y * 7)))),
+                      weekDates.to.add(Duration(
+                          days: (withRecurrencyAppointments[i]
+                                  .recurrenceModel!
+                                  .repeatOf *
+                              (y * 7)))));
+                  if (withRecurrencyAppointments[i]
+                      .recurrenceModel!
+                      .endDate
+                      .isAfter(weekDates.from.add(Duration(days: y * 7)))) {
+                    for (int d = 0; d < dayOfWeekList.length; d++) {
+                      for (int k = 0; k < betweenDays.length; k++) {
+                        if (betweenDays[k].weekday == dayOfWeekList[d]) {
                           MobkitCalendarAppointmentModel addAppointmentModel =
                               MobkitCalendarAppointmentModel(
                                   title: withRecurrencyAppointments[i].title,
                                   appointmentStartDate: DateTime(
-                                      changedDate.year,
-                                      changedDate.month,
-                                      daysOfMonthList[k],
-                                      withRecurrencyAppointments[i]
-                                          .appointmentStartDate
-                                          .hour,
-                                      withRecurrencyAppointments[i]
-                                          .appointmentStartDate
-                                          .minute,
-                                      withRecurrencyAppointments[i]
-                                          .appointmentStartDate
-                                          .second),
+                                    betweenDays[k].year,
+                                    betweenDays[k].month,
+                                    betweenDays[k].day,
+                                    withRecurrencyAppointments[i]
+                                        .appointmentStartDate
+                                        .hour,
+                                    withRecurrencyAppointments[i]
+                                        .appointmentStartDate
+                                        .minute,
+                                    withRecurrencyAppointments[i]
+                                        .appointmentStartDate
+                                        .second,
+                                  ),
                                   appointmentEndDate: DateTime(
-                                      changedDate.year,
-                                      changedDate.month,
-                                      daysOfMonthList[k] + endDateDay,
-                                      withRecurrencyAppointments[i]
-                                          .appointmentEndDate
-                                          .hour,
-                                      withRecurrencyAppointments[i]
-                                          .appointmentEndDate
-                                          .minute,
-                                      withRecurrencyAppointments[i]
-                                          .appointmentEndDate
-                                          .second),
+                                    betweenDays[k].year,
+                                    betweenDays[k].month,
+                                    betweenDays[k].day + endDateDay,
+                                    withRecurrencyAppointments[i]
+                                        .appointmentEndDate
+                                        .hour,
+                                    withRecurrencyAppointments[i]
+                                        .appointmentEndDate
+                                        .minute,
+                                    withRecurrencyAppointments[i]
+                                        .appointmentEndDate
+                                        .second,
+                                  ),
                                   color: withRecurrencyAppointments[i].color,
                                   isAllDay:
                                       withRecurrencyAppointments[i].isAllDay,
@@ -329,95 +249,168 @@ class MobkitCalendarController extends ChangeNotifier {
                           addNewAppointments.add(addAppointmentModel);
                         }
                       }
-                    } else if (((withRecurrencyAppointments[i]
-                            .recurrenceModel!
-                            .frequency as MonthlyFrequency)
-                        .monthlyFrequencyType) is DayOfWeekAndRepetitionModel) {
-                      MapEntry<int, int> dayOfMonthAndRepetition =
-                          (((withRecurrencyAppointments[i]
-                                          .recurrenceModel!
-                                          .frequency as MonthlyFrequency)
-                                      .monthlyFrequencyType)
-                                  as DayOfWeekAndRepetitionModel)
-                              .dayOfMonthAndRepetition;
-                      DateTime changedDate = addMonth(
-                          withRecurrencyAppointments[i].appointmentStartDate,
-                          y +
-                              (withRecurrencyAppointments[i]
-                                      .recurrenceModel!
-                                      .repeatOf -
-                                  1));
-                      if (withRecurrencyAppointments[i]
+                    }
+                  }
+                }
+              }
+//endregion
+//region : Monthly Repeat
+              if (withRecurrencyAppointments[i].recurrenceModel!.frequency
+                  is MonthlyFrequency) {
+                for (int y = 1;
+                    y <
+                        withRecurrencyAppointments[i]
+                                .recurrenceModel!
+                                .interval +
+                            1;
+                    y++) {
+                  int endDateDay = withRecurrencyAppointments[i]
+                      .appointmentStartDate
+                      .difference(
+                          withRecurrencyAppointments[i].appointmentEndDate)
+                      .inDays
+                      .abs();
+                  if (((withRecurrencyAppointments[i].recurrenceModel!.frequency
+                          as MonthlyFrequency)
+                      .monthlyFrequencyType) is DaysOfMonthModel) {
+                    List<int> daysOfMonthList = (((withRecurrencyAppointments[i]
+                                .recurrenceModel!
+                                .frequency as MonthlyFrequency)
+                            .monthlyFrequencyType) as DaysOfMonthModel)
+                        .daysOfMonth;
+                    DateTime changedDate = addMonth(
+                        withRecurrencyAppointments[i].appointmentStartDate,
+                        y +
+                            (withRecurrencyAppointments[i]
+                                    .recurrenceModel!
+                                    .repeatOf -
+                                1));
+                    if (withRecurrencyAppointments[i]
+                        .recurrenceModel!
+                        .endDate
+                        .isAfter(changedDate)) {
+                      for (int k = 0; k < daysOfMonthList.length; k++) {
+                        MobkitCalendarAppointmentModel addAppointmentModel =
+                            MobkitCalendarAppointmentModel(
+                                title: withRecurrencyAppointments[i].title,
+                                appointmentStartDate: DateTime(
+                                    changedDate.year,
+                                    changedDate.month,
+                                    daysOfMonthList[k],
+                                    withRecurrencyAppointments[i]
+                                        .appointmentStartDate
+                                        .hour,
+                                    withRecurrencyAppointments[i]
+                                        .appointmentStartDate
+                                        .minute,
+                                    withRecurrencyAppointments[i]
+                                        .appointmentStartDate
+                                        .second),
+                                appointmentEndDate: DateTime(
+                                    changedDate.year,
+                                    changedDate.month,
+                                    daysOfMonthList[k] + endDateDay,
+                                    withRecurrencyAppointments[i]
+                                        .appointmentEndDate
+                                        .hour,
+                                    withRecurrencyAppointments[i]
+                                        .appointmentEndDate
+                                        .minute,
+                                    withRecurrencyAppointments[i]
+                                        .appointmentEndDate
+                                        .second),
+                                color: withRecurrencyAppointments[i].color,
+                                isAllDay:
+                                    withRecurrencyAppointments[i].isAllDay,
+                                detail: withRecurrencyAppointments[i].detail,
+                                recurrenceModel: null);
+                        addNewAppointments.add(addAppointmentModel);
+                      }
+                    }
+                  } else if (((withRecurrencyAppointments[i]
                           .recurrenceModel!
-                          .endDate
-                          .isAfter(changedDate)) {
-                        int monthDays = DateUtils.getDaysInMonth(
-                            changedDate.year, changedDate.month);
-                        int repetition = 0;
-                        for (int d = 1; d < monthDays; d++) {
-                          if (dayOfMonthAndRepetition.key ==
-                              DateTime(changedDate.year, changedDate.month, d)
-                                  .weekday) {
-                            repetition++;
-                            if (repetition == dayOfMonthAndRepetition.value) {
-                              addNewAppointments.add(
-                                  MobkitCalendarAppointmentModel(
-                                      title:
-                                          withRecurrencyAppointments[i].title,
-                                      appointmentStartDate: DateTime(
-                                          changedDate.year,
-                                          changedDate.month,
-                                          d,
-                                          withRecurrencyAppointments[i]
-                                              .appointmentStartDate
-                                              .hour,
-                                          withRecurrencyAppointments[i]
-                                              .appointmentStartDate
-                                              .minute,
-                                          withRecurrencyAppointments[i]
-                                              .appointmentStartDate
-                                              .second),
-                                      appointmentEndDate:
-                                          DateTime(
-                                              changedDate.year,
-                                              changedDate.month,
-                                              d + endDateDay,
-                                              withRecurrencyAppointments[i]
-                                                  .appointmentEndDate
-                                                  .hour,
-                                              withRecurrencyAppointments[i]
-                                                  .appointmentEndDate
-                                                  .minute,
-                                              withRecurrencyAppointments[i]
-                                                  .appointmentEndDate
-                                                  .second),
-                                      color:
-                                          withRecurrencyAppointments[i].color,
-                                      isAllDay: withRecurrencyAppointments[i]
-                                          .isAllDay,
-                                      detail:
-                                          withRecurrencyAppointments[i].detail,
-                                      recurrenceModel: null));
-                            }
+                          .frequency as MonthlyFrequency)
+                      .monthlyFrequencyType) is DayOfWeekAndRepetitionModel) {
+                    MapEntry<int, int> dayOfMonthAndRepetition =
+                        (((withRecurrencyAppointments[i]
+                                        .recurrenceModel!
+                                        .frequency as MonthlyFrequency)
+                                    .monthlyFrequencyType)
+                                as DayOfWeekAndRepetitionModel)
+                            .dayOfMonthAndRepetition;
+                    DateTime changedDate = addMonth(
+                        withRecurrencyAppointments[i].appointmentStartDate,
+                        y +
+                            (withRecurrencyAppointments[i]
+                                    .recurrenceModel!
+                                    .repeatOf -
+                                1));
+                    if (withRecurrencyAppointments[i]
+                        .recurrenceModel!
+                        .endDate
+                        .isAfter(changedDate)) {
+                      int monthDays = DateUtils.getDaysInMonth(
+                          changedDate.year, changedDate.month);
+                      int repetition = 0;
+                      for (int d = 1; d < monthDays; d++) {
+                        if (dayOfMonthAndRepetition.key ==
+                            DateTime(changedDate.year, changedDate.month, d)
+                                .weekday) {
+                          repetition++;
+                          if (repetition == dayOfMonthAndRepetition.value) {
+                            addNewAppointments.add(
+                                MobkitCalendarAppointmentModel(
+                                    title: withRecurrencyAppointments[i].title,
+                                    appointmentStartDate: DateTime(
+                                        changedDate.year,
+                                        changedDate.month,
+                                        d,
+                                        withRecurrencyAppointments[i]
+                                            .appointmentStartDate
+                                            .hour,
+                                        withRecurrencyAppointments[i]
+                                            .appointmentStartDate
+                                            .minute,
+                                        withRecurrencyAppointments[i]
+                                            .appointmentStartDate
+                                            .second),
+                                    appointmentEndDate: DateTime(
+                                        changedDate.year,
+                                        changedDate.month,
+                                        d + endDateDay,
+                                        withRecurrencyAppointments[i]
+                                            .appointmentEndDate
+                                            .hour,
+                                        withRecurrencyAppointments[i]
+                                            .appointmentEndDate
+                                            .minute,
+                                        withRecurrencyAppointments[i]
+                                            .appointmentEndDate
+                                            .second),
+                                    color: withRecurrencyAppointments[i].color,
+                                    isAllDay:
+                                        withRecurrencyAppointments[i].isAllDay,
+                                    detail:
+                                        withRecurrencyAppointments[i].detail,
+                                    recurrenceModel: null));
                           }
                         }
                       }
                     }
                   }
                 }
-                lastAppointments.addAll(addNewAppointments);
-              } else {
-                continue;
               }
+//endregion
+              _appointments.addAll(addNewAppointments);
+            } else {
+              continue;
             }
           }
         }
       }
-      appointments.addAll(lastAppointments);
       isLoadData = true;
       notifyListeners();
     } else {
-      appointments.addAll(lastAppointments);
       isLoadData = true;
       notifyListeners();
     }
