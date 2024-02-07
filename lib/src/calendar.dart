@@ -9,15 +9,24 @@ import 'mobkit_calendar/model/mobkit_calendar_appointment_model.dart';
 class MobkitCalendarWidget extends StatefulWidget {
   final DateTime? minDate;
   final MobkitCalendarConfigModel? config;
-  final Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime) onSelectionChange;
+  final Function(List<MobkitCalendarAppointmentModel> models, DateTime datetime)
+      onSelectionChange;
   final Function(MobkitCalendarAppointmentModel model)? eventTap;
   final Function(DateTime datetime)? onDateChanged;
   final MobkitCalendarController? mobkitCalendarController;
-  final Widget Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime)? onPopupWidget;
-  final Widget Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime)? headerWidget;
-  final Widget Function(List<MobkitCalendarAppointmentModel> list, DateTime datetime)? titleWidget;
-  final Widget Function(MobkitCalendarAppointmentModel list, DateTime datetime)? agendaWidget;
-  final Widget Function(Map<DateTime, List<MobkitCalendarAppointmentModel>>)? weeklyViewWidget;
+  final Widget Function(
+          List<MobkitCalendarAppointmentModel> list, DateTime datetime)?
+      onPopupWidget;
+  final Widget Function(
+          List<MobkitCalendarAppointmentModel> list, DateTime datetime)?
+      headerWidget;
+  final Widget Function(
+          List<MobkitCalendarAppointmentModel> list, DateTime datetime)?
+      titleWidget;
+  final Widget Function(MobkitCalendarAppointmentModel list, DateTime datetime)?
+      agendaWidget;
+  final Widget Function(Map<DateTime, List<MobkitCalendarAppointmentModel>>)?
+      weeklyViewWidget;
   final Function(DateTime datetime)? dateRangeChanged;
 
   const MobkitCalendarWidget({
@@ -45,14 +54,18 @@ class _MobkitCalendarWidgetState extends State<MobkitCalendarWidget> {
 
   @override
   void initState() {
-    mobkitCalendarController = widget.mobkitCalendarController ?? MobkitCalendarController();
+    mobkitCalendarController =
+        widget.mobkitCalendarController ?? MobkitCalendarController();
     initializeDateFormatting();
     super.initState();
-    assert((widget.minDate ?? DateTime.utc(0, 0, 0)).isBefore(mobkitCalendarController.calendarDate),
+    assert(
+        (widget.minDate ?? DateTime.utc(0, 0, 0))
+            .isBefore(mobkitCalendarController.calendarDate),
         "Minimum Date cannot be greater than Calendar Date.");
   }
 
-  late final ValueNotifier<List<DateTime>> selectedDates = ValueNotifier<List<DateTime>>(List<DateTime>.from([]));
+  late final ValueNotifier<List<DateTime>> selectedDates =
+      ValueNotifier<List<DateTime>>(List<DateTime>.from([]));
 
   @override
   Widget build(BuildContext context) {
