@@ -38,3 +38,7 @@
 ## 0.1.0
 **Bug fixes**
 * Recurrency multiple item fixed
+
+## 0.1.1
+**Bug fixes**
+* mobkitCalendarController null control fixed

@@ -69,7 +69,7 @@ class _MobkitCalendarWidgetState extends State<MobkitCalendarWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return widget.mobkitCalendarController!.isLoadData
+    return mobkitCalendarController.isLoadData
         ? MobkitCalendarView(
             config: widget.config,
             mobkitCalendarController: mobkitCalendarController,
