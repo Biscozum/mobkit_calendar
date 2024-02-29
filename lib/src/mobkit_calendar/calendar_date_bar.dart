@@ -68,24 +68,29 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
     widget.mobkitCalendarController
         .setPageController(_mindate, widget.config?.viewportFraction ?? 1);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      widget
-          .mobkitCalendarController.pageController.position.isScrollingNotifier
-          .addListener(() {
-        timer?.cancel();
-        if (!widget.mobkitCalendarController.pageController.position
-            .isScrollingNotifier.value) {
-          timer = Timer(const Duration(milliseconds: 500), () {
-            widget.onDateChanged
-                ?.call(widget.mobkitCalendarController.calendarDate);
-          });
-        }
-      });
+      widget.mobkitCalendarController.pageController
+          .addListener(pageScrollListener);
+    });
+  }
+
+  pageScrollListener() {
+    Future.delayed(const Duration(milliseconds: 150)).then((value) {
+      timer?.cancel();
+      if (!widget.mobkitCalendarController.pageController.position
+          .isScrollingNotifier.value) {
+        timer = Timer(const Duration(milliseconds: 500), () {
+          widget.onDateChanged
+              ?.call(widget.mobkitCalendarController.calendarDate);
+        });
+      }
     });
   }
 
   @override
   void dispose() {
     timer?.cancel();
+    widget.mobkitCalendarController.pageController
+        .removeListener(pageScrollListener);
     super.dispose();
   }
 

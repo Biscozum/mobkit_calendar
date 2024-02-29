@@ -67,7 +67,6 @@ class MobkitCalendarConfigModel {
   late CalendarCellConfigModel cellConfig;
   late CalendarTopBarConfigModel topBarConfig;
   late DailyItemsConfigModel dailyItemsConfigModel;
-  PageController? pageController;
   AgendaViewConfigModel? agendaViewConfigModel;
   MobkitCalendarConfigModel({
     this.title,
@@ -95,7 +94,6 @@ class MobkitCalendarConfigModel {
     this.showEventPointMaxCountText = true,
     this.weeklyTopWidgetSize = 110,
     this.dailyTopWidgetSize = 110,
-    this.pageController,
     CalendarCellConfigModel? cellConfig,
     CalendarTopBarConfigModel? topBarConfig,
     DailyItemsConfigModel? dailyItemsConfigModel,
