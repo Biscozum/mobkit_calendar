@@ -79,12 +79,11 @@ class MobkitCalendarController extends ChangeNotifier {
     mobkitCalendarViewType = viewType ?? MobkitCalendarViewType.monthly;
   }
 
-  void nextPage(PageController pageController, Duration duration, Curve curve) {
+  void nextPage({required Duration duration, required Curve curve}) {
     pageController.nextPage(duration: duration, curve: curve);
   }
 
-  void previousPage(
-      PageController pageController, Duration duration, Curve curve) {
+  void previousPage({required Duration duration, required Curve curve}) {
     pageController.previousPage(duration: duration, curve: curve);
   }
 
