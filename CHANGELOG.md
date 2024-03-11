@@ -1,3 +1,7 @@
+## 0.1.3
+**Example Page**
+* Example page edited.
+
 ## 0.1.2
 **Bug fixes**
 * Calendar scroll listener bug (Doesn't work when theme changed) fixed.

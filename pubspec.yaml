@@ -1,6 +1,6 @@
 name: mobkit_calendar
 description: Mobkit Calendar has built-in basic functionalities for scheduling and representing appointments/events efficiently.
-version: 0.1.2
+version: 0.1.3
 repository: https://github.com/Biscozum/mobkit_calendar
 
 topics:
