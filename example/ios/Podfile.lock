@@ -4,11 +4,14 @@ PODS:
     - Flutter
   - mobkit_calendar (0.0.1):
     - Flutter
+  - permission_handler_apple (9.1.1):
+    - Flutter
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
   - integration_test (from `.symlinks/plugins/integration_test/ios`)
   - mobkit_calendar (from `.symlinks/plugins/mobkit_calendar/ios`)
+  - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
 
 EXTERNAL SOURCES:
   Flutter:
@@ -17,12 +20,15 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/integration_test/ios"
   mobkit_calendar:
     :path: ".symlinks/plugins/mobkit_calendar/ios"
+  permission_handler_apple:
+    :path: ".symlinks/plugins/permission_handler_apple/ios"
 
 SPEC CHECKSUMS:
-  Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
+  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   integration_test: 13825b8a9334a850581300559b8839134b124670
   mobkit_calendar: 1241b6855135cf0612defd96c2c8e02cf72044fd
+  permission_handler_apple: e76247795d700c14ea09e3a2d8855d41ee80a2e6
 
-PODFILE CHECKSUM: 70d9d25280d0dd177a5f637cdb0f0b0b12c6a189
+PODFILE CHECKSUM: 4a561919af0b78fe26291024e4398ea96a812460
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.12.0

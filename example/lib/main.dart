@@ -175,9 +175,11 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
               children: [
                 TextButton(
                   onPressed: () async {
-                    bool success = await MobkitCalendar().addCalendar(NativeCalendar(
-                        calendarName: "Plena İnsan", calendarColor: "0xFFBB4438", localAccountName: 'Plena'));
-                    print(success);
+                    bool permission = await MobkitCalendar().requestCalendarAccess();
+                    print(permission);
+                    // bool success = await MobkitCalendar().addCalendar(NativeCalendar(
+                    //     calendarName: "Plena İnsan", calendarColor: "0xFFBB4438", localAccountName: 'Plena'));
+                    // print(success);
                   },
                   child: Text("Native Calendar"),
                 ),

@@ -106,8 +106,10 @@ class MethodChannelMobkitCalendar extends MobkitCalendarPlatform {
   @override
   Future requestCalendarAccess() async {
     // ignore: deprecated_member_use
-    PermissionStatus result = await Permission.calendar.request();
-    return result.isGranted;
+    // PermissionStatus result = await Permission.calendar.request();
+    // return result.isGranted;
+    final success = await methodChannel.invokeMethod<bool>('requestPermissions');
+    return success ?? false;
   }
 
   @override
