@@ -17,6 +17,7 @@ import android.provider.CalendarContract.CALLER_IS_SYNCADAPTER
 import android.util.Log
 import androidx.annotation.NonNull
 import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat.startActivity
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
@@ -25,6 +26,8 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import io.flutter.plugin.common.PluginRegistry
+import io.flutter.plugin.common.PluginRegistry.Registrar
 import org.json.JSONObject
 import java.time.LocalDateTime
 import java.time.ZoneOffset
@@ -33,7 +36,7 @@ import java.util.*
 
 
 /** MobkitCalendarPlugin */
-class MobkitCalendarPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
+class MobkitCalendarPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,  PluginRegistry.RequestPermissionsResultListener{
     /// The MethodChannel that will the communication between Flutter and native Android
     ///
     /// This local reference serves to register the plugin with the Flutter Engine and unregister it
@@ -42,7 +45,8 @@ class MobkitCalendarPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     private lateinit var context: Context
     private lateinit var activity: Activity
     private val MY_CAL_REQ = 101
-    private val MY_CAL_WRITE_AND_READ_REQ = 102
+    private var permissionResult: MethodChannel.Result? = null
+
     override fun onDetachedFromActivity() {
     }
 
@@ -51,6 +55,7 @@ class MobkitCalendarPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
         activity = binding.activity;
+        binding.addRequestPermissionsResultListener(this)
     }
 
     override fun onDetachedFromActivityForConfigChanges() {
@@ -62,49 +67,64 @@ class MobkitCalendarPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         context = flutterPluginBinding.applicationContext
     }
 
+
+
     @SuppressLint("SimpleDateFormat")
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
         if (call.method == "addCalendar") {
-            if (!hasPermissions()) {
-                requestPermissions()
+            if (hasPermissions()) {
+                result.success(createCalendar(
+                    call.argument("calendarName")!!,
+                    call.argument("calendarColor"),
+                    call.argument("localAccountName")!!,
+                ) != null)
             }
-            result.success(createCalendar(call.argument("calendarName")!!,
-                call.argument("calendarColor"),
-                call.argument("localAccountName")!!,
-            ) != null)
+            result.success(false)
         }else if (call.method == "getPlatformVersion") {
             result.success("Android ${Build.VERSION.RELEASE}")
+        }else if (call.method == "requestPermissions") {
+            permissionResult = result
+            if (!hasPermissions()) {
+                requestPermissions ()
+            }else{
+                result.success(hasPermissions())
+            }
+        }
+        else if (call.method == "hasPermissions") {
+            result.success(hasPermissions())
         }
         else if (call.method == "addNativeEvent") {
             if (!hasPermissions()) {
-                requestPermissions()
+                result.success(false)
+            }else{
+                val cr: ContentResolver = context.contentResolver
+                val currentTimeZone = Calendar.getInstance().timeZone.displayName
+                var eventId: String? = call.argument("eventId") as String?
+                val values = ContentValues()
+                values.put(CalendarContract.Events.DTSTART, call.argument("startDate") as Long?)
+                values.put(CalendarContract.Events.DTEND, call.argument("endDate") as Long?)
+                values.put(CalendarContract.Events.TITLE, call.argument("title") as String?)
+                values.put(CalendarContract.Events.DESCRIPTION, call.argument("desc") as String?)
+                values.put(CalendarContract.Events.CALENDAR_ID, call.argument("calendarId") as String?)
+                values.put(CalendarContract.Events.EVENT_TIMEZONE, currentTimeZone)
+                values.put(CalendarContract.Events.ALL_DAY, call.argument("allDay") as Boolean?)
+                if (call.argument("location") as String? != null) {
+                    values.put(CalendarContract.Events.EVENT_LOCATION, call.argument("location") as String?)
+                }
+                if (call.argument("url") as String? != null) {
+                    values.put(CalendarContract.Events.CUSTOM_APP_URI, call.argument("url") as String?)
+                }
+                try {
+                    val uri: Uri? = cr.insert(CalendarContract.Events.CONTENT_URI, values)
+                    // get the event ID that is the last element in the Uri
+                    eventId = uri?.lastPathSegment!!.toLong().toString() + ""
+                } catch (e: Exception) {
+                    Log.e("EVENT", e.message.toString())
+                }
+                result.success(eventId != null)
             }
-            val cr: ContentResolver = context.contentResolver
-            val currentTimeZone = Calendar.getInstance().timeZone.displayName
-            var eventId: String? = call.argument("eventId") as String?
-            val values = ContentValues()
-            values.put(CalendarContract.Events.DTSTART, call.argument("startDate") as Long?)
-            values.put(CalendarContract.Events.DTEND, call.argument("endDate") as Long?)
-            values.put(CalendarContract.Events.TITLE, call.argument("title") as String?)
-            values.put(CalendarContract.Events.DESCRIPTION, call.argument("desc") as String?)
-            values.put(CalendarContract.Events.CALENDAR_ID, call.argument("calendarId") as String?)
-            values.put(CalendarContract.Events.EVENT_TIMEZONE, currentTimeZone)
-            values.put(CalendarContract.Events.ALL_DAY, call.argument("allDay") as Boolean?)
-            if (call.argument("location") as String? != null) {
-                values.put(CalendarContract.Events.EVENT_LOCATION, call.argument("location") as String?)
-            }
-            if (call.argument("url") as String? != null) {
-                values.put(CalendarContract.Events.CUSTOM_APP_URI, call.argument("url") as String?)
-            }
-            try {
-                val uri: Uri? = cr.insert(CalendarContract.Events.CONTENT_URI, values)
-                // get the event ID that is the last element in the Uri
-                eventId = uri?.lastPathSegment!!.toLong().toString() + ""
-            } catch (e: Exception) {
-                Log.e("EVENT", e.message.toString())
-            }
-            result.success(eventId != null)
+
         }
         else if(call.method == "openEventDetail"){
             val intent = Intent(Intent.ACTION_VIEW)
@@ -261,6 +281,7 @@ class MobkitCalendarPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         channel.setMethodCallHandler(null)
     }
 
+
     private fun hasPermissions(): Boolean {
         if (23 <= Build.VERSION.SDK_INT) {
             val writeCalendarPermissionGranted = (context.checkSelfPermission(Manifest.permission.WRITE_CALENDAR)
@@ -272,15 +293,22 @@ class MobkitCalendarPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         return true
     }
 
-    private fun requestPermissions() {
+    private fun requestPermissions(){
         if (23 <= Build.VERSION.SDK_INT) {
             val permissions = arrayOf<String>(
                 Manifest.permission.WRITE_CALENDAR,
                 Manifest.permission.READ_CALENDAR
             )
-            activity.requestPermissions(permissions, MY_CAL_REQ)
+            if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(activity, Manifest.permission.READ_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
+
+            } else {
+                ActivityCompat.requestPermissions(activity, permissions, MY_CAL_REQ)
+            }
         }
     }
+
+
 
     fun createCalendar(
         calendarName: String,
@@ -324,5 +352,17 @@ class MobkitCalendarPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         val calendarId = java.lang.Long.parseLong(result?.lastPathSegment!!)
 
         return calendarId.toString()
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray): Boolean {
+        if (requestCode == MY_CAL_REQ) {
+            if (grantResults.isNotEmpty() && !(grantResults.filter { s ->  s ==  PackageManager.PERMISSION_GRANTED}.isEmpty()) ) {
+                permissionResult?.success(true)
+            } else {
+                permissionResult?.success(false)
+            }
+            return true
+        }
+        return false
     }
 }
