@@ -91,9 +91,6 @@ class MobkitCalendarPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,  P
                 result.success(hasPermissions())
             }
         }
-        else if (call.method == "hasPermissions") {
-            result.success(hasPermissions())
-        }
         else if (call.method == "addNativeEvent") {
             if (!hasPermissions()) {
                 result.success(false)
