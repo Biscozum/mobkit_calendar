@@ -7,6 +7,8 @@ public class MobkitCalendarPlugin: NSObject, FlutterPlugin {
     let calendarManager = CalendarManager()
     let dateFormatter = DateFormatter()
     let eventStore = EKEventStore()
+    private var permissionResult: FlutterResult?
+    
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "mobkit_calendar", binaryMessenger: registrar.messenger())
         let instance = MobkitCalendarPlugin()
@@ -14,7 +16,7 @@ public class MobkitCalendarPlugin: NSObject, FlutterPlugin {
         
     }
     
-
+    
     private func hasPermissions() -> Bool {
         let status = EKEventStore.authorizationStatus(for: .event)
         if #available(iOS 17, *) {
@@ -25,20 +27,32 @@ public class MobkitCalendarPlugin: NSObject, FlutterPlugin {
     }
     
     private func requestPermissions(completion: @escaping (Bool) -> Void) {
+        var isGranted = false
+        var permissionGranted = false
         if hasPermissions() {
             completion(true)
             return
         }
         if #available(iOS 17, *) {
             eventStore.requestFullAccessToEvents {
-                (accessGranted: Bool, _: Error?) in
-                completion(accessGranted)
+                (granted: Bool, _: Error?) in
+                isGranted = granted
+                permissionGranted = true
             }
+            while !permissionGranted {
+                RunLoop.current.run(mode: .default, before: Date(timeIntervalSinceNow: 0.1))
+            }
+            completion(isGranted)
         } else {
             eventStore.requestAccess(to: .event, completion: {
-                (accessGranted: Bool, _: Error?) in
-                completion(accessGranted)
+                (granted: Bool, _: Error?) in
+                isGranted = granted
+                permissionGranted = true
             })
+            while !permissionGranted {
+                RunLoop.current.run(mode: .default, before: Date(timeIntervalSinceNow: 0.1))
+            }
+            completion(isGranted)
         }
     }
     
@@ -103,8 +117,6 @@ public class MobkitCalendarPlugin: NSObject, FlutterPlugin {
                 requestPermissions(completion: result )
             }
             result(hasPermissions())
-        case "hasPermissions":
-            result(hasPermissions())
         case "addNativeEvent":
             let arguments = call.arguments as! Dictionary<String, AnyObject>
             let argCalendarId = arguments["calendarId"] as! String
@@ -116,9 +128,6 @@ public class MobkitCalendarPlugin: NSObject, FlutterPlugin {
             let argLocation = arguments["location"] as? String
             let argIsAllDay = arguments["allDay"] as! Bool
             let argUrl = arguments["url"] as? String
-            if(!hasPermissions()) {
-                requestPermissions(completion: result)
-            }
             var eventId = argEventId
             let title = argTitle
             let description = argDescription
