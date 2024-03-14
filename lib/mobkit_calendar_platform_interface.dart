@@ -32,11 +32,18 @@ abstract class MobkitCalendarPlatform extends PlatformInterface {
   }
 
   Future requestCalendarAccess() {
-    throw UnimplementedError(
-        'reqestCalendarAccess() has not been implemented.');
+    throw UnimplementedError('reqestCalendarAccess() has not been implemented.');
   }
 
   Future openEventDetail(Map arguments) {
     throw UnimplementedError('openEventDetail() has not been implemented.');
+  }
+
+  Future<bool> addNativeEvent(NativeEvent nativeEvent) {
+    throw UnimplementedError('addNativeEVent() has not been implemented.');
+  }
+
+  Future<bool> addCalendar(NativeCalendar nativeCalendar) {
+    throw UnimplementedError('addCalendarAccount() has not been implemented.');
   }
 }

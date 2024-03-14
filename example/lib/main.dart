@@ -22,13 +22,11 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
   late TabController _tabController;
 
-  MobkitCalendarConfigModel getConfig(
-      MobkitCalendarViewType mobkitCalendarViewType) {
+  MobkitCalendarConfigModel getConfig(MobkitCalendarViewType mobkitCalendarViewType) {
     return MobkitCalendarConfigModel(
       cellConfig: CalendarCellConfigModel(
         disabledStyle: CalendarCellStyle(
-          textStyle:
-              TextStyle(fontSize: 14, color: Colors.grey.withOpacity(0.5)),
+          textStyle: TextStyle(fontSize: 14, color: Colors.grey.withOpacity(0.5)),
           color: Colors.transparent,
         ),
         enabledStyle: CalendarCellStyle(
@@ -45,9 +43,8 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
         ),
       ),
       calendarPopupConfigModel: CalendarPopupConfigModel(
-        popUpBoxDecoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(25))),
+        popUpBoxDecoration:
+            const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(25))),
         popUpOpacity: true,
         animateDuration: 500,
         verticalPadding: 30,
@@ -57,9 +54,8 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
         viewportFraction: 0.9,
       ),
       topBarConfig: CalendarTopBarConfigModel(
-        isVisibleHeaderWidget:
-            mobkitCalendarViewType == MobkitCalendarViewType.monthly ||
-                mobkitCalendarViewType == MobkitCalendarViewType.agenda,
+        isVisibleHeaderWidget: mobkitCalendarViewType == MobkitCalendarViewType.monthly ||
+            mobkitCalendarViewType == MobkitCalendarViewType.agenda,
         isVisibleTitleWidget: true,
         isVisibleMonthBar: false,
         isVisibleYearBar: false,
@@ -72,9 +68,7 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
       disableWeekendsDays: false,
       monthBetweenPadding: 20,
       primaryColor: Colors.lightBlue,
-      popupEnable: mobkitCalendarViewType == MobkitCalendarViewType.monthly
-          ? true
-          : false,
+      popupEnable: mobkitCalendarViewType == MobkitCalendarViewType.monthly ? true : false,
     );
   }
 
@@ -109,31 +103,26 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
       recurrenceModel: RecurrenceModel(
           endDate: DateTime.now().add(const Duration(days: 500)),
           frequency: MonthlyFrequency(
-              monthlyFrequencyType: DayOfWeekAndRepetitionModel(
-                  dayOfMonthAndRepetition: const MapEntry(1, 2))),
+              monthlyFrequencyType: DayOfWeekAndRepetitionModel(dayOfMonthAndRepetition: const MapEntry(1, 2))),
           interval: 10,
           repeatOf: 1),
     ),
     MobkitCalendarAppointmentModel(
       title: "The event will take place between 4 and 6 p.m.",
-      appointmentStartDate: DateTime(
-          DateTime.now().year, DateTime.now().month, DateTime.now().day, 16),
-      appointmentEndDate: DateTime(
-          DateTime.now().year, DateTime.now().month, DateTime.now().day, 18),
+      appointmentStartDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 16),
+      appointmentEndDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 18),
       isAllDay: false,
       color: Colors.green,
       detail: "The event will take place between 4 and 6 p.m.",
       recurrenceModel: null,
     ),
     MobkitCalendarAppointmentModel(
-      title:
-          "Every 2 weeks on Tuesdays and Sundays of the week (10 repetitions)",
+      title: "Every 2 weeks on Tuesdays and Sundays of the week (10 repetitions)",
       appointmentStartDate: DateTime.now().add(const Duration(days: -1)),
       appointmentEndDate: DateTime.now(),
       isAllDay: true,
       color: Colors.orange,
-      detail:
-          "Every 2 weeks on Tuesdays and Sundays of the week (10 repetitions)",
+      detail: "Every 2 weeks on Tuesdays and Sundays of the week (10 repetitions)",
       recurrenceModel: RecurrenceModel(
           endDate: DateTime.now().add(const Duration(days: 500)),
           frequency: WeeklyFrequency(daysOfWeek: [2, 7]),
@@ -182,53 +171,74 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
           controller: _tabController,
           physics: const NeverScrollableScrollPhysics(),
           children: [
-            MobkitCalendarWidget(
-              minDate: DateTime(1800),
-              key: UniqueKey(),
-              config: getConfig(MobkitCalendarViewType.monthly),
-              dateRangeChanged: (datetime) => null,
-              headerWidget: (List<MobkitCalendarAppointmentModel> models,
-                      DateTime datetime) =>
-                  HeaderWidget(
-                datetime: datetime,
-                models: models,
-              ),
-              titleWidget: (List<MobkitCalendarAppointmentModel> models,
-                      DateTime datetime) =>
-                  TitleWidget(
-                datetime: datetime,
-                models: models,
-              ),
-              onSelectionChange: (List<MobkitCalendarAppointmentModel> models,
-                      DateTime date) =>
-                  null,
-              eventTap: (model) => null,
-              onPopupWidget: (List<MobkitCalendarAppointmentModel> models,
-                      DateTime datetime) =>
-                  OnPopupWidget(
-                datetime: datetime,
-                models: models,
-              ),
-              onDateChanged: (DateTime datetime) => null,
-              mobkitCalendarController: MobkitCalendarController(
-                viewType: MobkitCalendarViewType.monthly,
-                appointmentList: eventList,
-              ),
+            Column(
+              children: [
+                TextButton(
+                  onPressed: () async {
+                    bool success = await MobkitCalendar().addCalendar(NativeCalendar(
+                        calendarName: "Plena İnsan", calendarColor: "0xFFBB4438", localAccountName: 'Plena'));
+                    print(success);
+                  },
+                  child: Text("Native Calendar"),
+                ),
+                const SizedBox(
+                  height: 12,
+                ),
+                TextButton(
+                  onPressed: () async {
+                    List<AccountGroupModel> accounts = await MobkitCalendar().getAccountList();
+                    MobkitCalendar().addNativeEvent(NativeEvent(
+                      title: 'Test event',
+                      calendarId: accounts.isNotEmpty ? accounts.first.accountModels?.first.accountId ?? "" : "",
+                      description: 'example',
+                      location: 'Flutter app',
+                      startDate: DateTime.now(),
+                      endDate: DateTime.now().add(const Duration(minutes: 30)),
+                      allDay: false,
+                    ));
+                  },
+                  child: Text("Native Event"),
+                ),
+                SizedBox(
+                  height: 300,
+                  child: MobkitCalendarWidget(
+                    minDate: DateTime(1800),
+                    key: UniqueKey(),
+                    config: getConfig(MobkitCalendarViewType.monthly),
+                    dateRangeChanged: (datetime) => null,
+                    headerWidget: (List<MobkitCalendarAppointmentModel> models, DateTime datetime) => HeaderWidget(
+                      datetime: datetime,
+                      models: models,
+                    ),
+                    titleWidget: (List<MobkitCalendarAppointmentModel> models, DateTime datetime) => TitleWidget(
+                      datetime: datetime,
+                      models: models,
+                    ),
+                    onSelectionChange: (List<MobkitCalendarAppointmentModel> models, DateTime date) => null,
+                    eventTap: (model) => null,
+                    onPopupWidget: (List<MobkitCalendarAppointmentModel> models, DateTime datetime) => OnPopupWidget(
+                      datetime: datetime,
+                      models: models,
+                    ),
+                    onDateChanged: (DateTime datetime) => null,
+                    mobkitCalendarController: MobkitCalendarController(
+                      viewType: MobkitCalendarViewType.monthly,
+                      appointmentList: eventList,
+                    ),
+                  ),
+                ),
+              ],
             ),
             MobkitCalendarWidget(
               minDate: DateTime(1800),
               key: UniqueKey(),
               config: getConfig(MobkitCalendarViewType.weekly),
               dateRangeChanged: (datetime) => null,
-              headerWidget: (List<MobkitCalendarAppointmentModel> models,
-                      DateTime datetime) =>
-                  HeaderWidget(
+              headerWidget: (List<MobkitCalendarAppointmentModel> models, DateTime datetime) => HeaderWidget(
                 datetime: datetime,
                 models: models,
               ),
-              weeklyViewWidget:
-                  (Map<DateTime, List<MobkitCalendarAppointmentModel>> val) =>
-                      Expanded(
+              weeklyViewWidget: (Map<DateTime, List<MobkitCalendarAppointmentModel>> val) => Expanded(
                 child: ListView.builder(
                   itemCount: val.length,
                   itemBuilder: (BuildContext context, int index) {
@@ -236,81 +246,63 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                     return val[dateTime] != null
                         ? Padding(
                             padding: const EdgeInsets.all(12),
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    DateFormat("dd MMMM").format(dateTime),
-                                  ),
-                                  const SizedBox(
-                                    height: 6,
-                                  ),
-                                  val[dateTime]!.isNotEmpty
-                                      ? SizedBox(
-                                          height: val[dateTime]!.length * 45,
-                                          child: ListView.builder(
-                                            itemCount: val[dateTime]!.length,
-                                            physics:
-                                                const NeverScrollableScrollPhysics(),
-                                            itemBuilder: (BuildContext context,
-                                                int index) {
-                                              return GestureDetector(
-                                                child: Column(
+                            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                              Text(
+                                DateFormat("dd MMMM").format(dateTime),
+                              ),
+                              const SizedBox(
+                                height: 6,
+                              ),
+                              val[dateTime]!.isNotEmpty
+                                  ? SizedBox(
+                                      height: val[dateTime]!.length * 45,
+                                      child: ListView.builder(
+                                        itemCount: val[dateTime]!.length,
+                                        physics: const NeverScrollableScrollPhysics(),
+                                        itemBuilder: (BuildContext context, int index) {
+                                          return GestureDetector(
+                                            child: Column(
+                                              children: [
+                                                Row(
                                                   children: [
-                                                    Row(
-                                                      children: [
-                                                        Container(
-                                                          height: 40,
-                                                          color: val[dateTime]![
-                                                                  index]
-                                                              .color,
-                                                          width: 3,
-                                                        ),
-                                                        const SizedBox(
-                                                            width: 12),
-                                                        Flexible(
-                                                          child: Text(
-                                                            val[dateTime]![
-                                                                        index]
-                                                                    .title ??
-                                                                "",
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                            maxLines: 1,
-                                                          ),
-                                                        ),
-                                                      ],
+                                                    Container(
+                                                      height: 40,
+                                                      color: val[dateTime]![index].color,
+                                                      width: 3,
                                                     ),
-                                                    const SizedBox(
-                                                      height: 4,
+                                                    const SizedBox(width: 12),
+                                                    Flexible(
+                                                      child: Text(
+                                                        val[dateTime]![index].title ?? "",
+                                                        overflow: TextOverflow.ellipsis,
+                                                        maxLines: 1,
+                                                      ),
                                                     ),
                                                   ],
                                                 ),
-                                              );
-                                            },
-                                          ),
-                                        )
-                                      : Container(),
-                                ]),
+                                                const SizedBox(
+                                                  height: 4,
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    )
+                                  : Container(),
+                            ]),
                           )
                         : Container();
                   },
                 ),
               ),
-              titleWidget: (List<MobkitCalendarAppointmentModel> models,
-                      DateTime datetime) =>
-                  TitleWidget(
+              titleWidget: (List<MobkitCalendarAppointmentModel> models, DateTime datetime) => TitleWidget(
                 datetime: datetime,
                 models: models,
               ),
-              onSelectionChange: (List<MobkitCalendarAppointmentModel> models,
-                      DateTime date) =>
-                  null,
+              onSelectionChange: (List<MobkitCalendarAppointmentModel> models, DateTime date) => null,
               eventTap: (model) => null,
-              onPopupWidget: (List<MobkitCalendarAppointmentModel> models,
-                      DateTime datetime) =>
-                  OnPopupWidget(
+              onPopupWidget: (List<MobkitCalendarAppointmentModel> models, DateTime datetime) => OnPopupWidget(
                 datetime: datetime,
                 models: models,
               ),
@@ -325,25 +317,17 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
               key: UniqueKey(),
               config: getConfig(MobkitCalendarViewType.daily),
               dateRangeChanged: (datetime) => null,
-              headerWidget: (List<MobkitCalendarAppointmentModel> models,
-                      DateTime datetime) =>
-                  HeaderWidget(
+              headerWidget: (List<MobkitCalendarAppointmentModel> models, DateTime datetime) => HeaderWidget(
                 datetime: datetime,
                 models: models,
               ),
-              titleWidget: (List<MobkitCalendarAppointmentModel> models,
-                      DateTime datetime) =>
-                  TitleWidget(
+              titleWidget: (List<MobkitCalendarAppointmentModel> models, DateTime datetime) => TitleWidget(
                 datetime: datetime,
                 models: models,
               ),
-              onSelectionChange: (List<MobkitCalendarAppointmentModel> models,
-                      DateTime date) =>
-                  null,
+              onSelectionChange: (List<MobkitCalendarAppointmentModel> models, DateTime date) => null,
               eventTap: (model) => null,
-              onPopupWidget: (List<MobkitCalendarAppointmentModel> models,
-                      DateTime datetime) =>
-                  OnPopupWidget(
+              onPopupWidget: (List<MobkitCalendarAppointmentModel> models, DateTime datetime) => OnPopupWidget(
                 datetime: datetime,
                 models: models,
               ),
@@ -358,25 +342,17 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
               key: UniqueKey(),
               config: getConfig(MobkitCalendarViewType.agenda),
               dateRangeChanged: (datetime) => null,
-              headerWidget: (List<MobkitCalendarAppointmentModel> models,
-                      DateTime datetime) =>
-                  HeaderWidget(
+              headerWidget: (List<MobkitCalendarAppointmentModel> models, DateTime datetime) => HeaderWidget(
                 datetime: datetime,
                 models: models,
               ),
-              titleWidget: (List<MobkitCalendarAppointmentModel> models,
-                      DateTime datetime) =>
-                  TitleWidget(
+              titleWidget: (List<MobkitCalendarAppointmentModel> models, DateTime datetime) => TitleWidget(
                 datetime: datetime,
                 models: models,
               ),
-              onSelectionChange: (List<MobkitCalendarAppointmentModel> models,
-                      DateTime date) =>
-                  null,
+              onSelectionChange: (List<MobkitCalendarAppointmentModel> models, DateTime date) => null,
               eventTap: (model) => null,
-              onPopupWidget: (List<MobkitCalendarAppointmentModel> models,
-                      DateTime datetime) =>
-                  OnPopupWidget(
+              onPopupWidget: (List<MobkitCalendarAppointmentModel> models, DateTime datetime) => OnPopupWidget(
                 datetime: datetime,
                 models: models,
               ),
@@ -432,8 +408,7 @@ class OnPopupWidget extends StatelessWidget {
                       return GestureDetector(
                         onTap: () {},
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 2),
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
                           child: Row(children: [
                             Container(
                               height: 40,

@@ -3,9 +3,7 @@ import 'package:mobkit_calendar/mobkit_calendar.dart';
 import 'package:mobkit_calendar/mobkit_calendar_platform_interface.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
-class MockMobkitCalendarPlatform
-    with MockPlatformInterfaceMixin
-    implements MobkitCalendarPlatform {
+class MockMobkitCalendarPlatform with MockPlatformInterfaceMixin implements MobkitCalendarPlatform {
   @override
   Future<List<AccountGroupModel>> getAccountList() {
     throw UnimplementedError();
@@ -23,6 +21,16 @@ class MockMobkitCalendarPlatform
 
   @override
   Future requestCalendarAccess() {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> addNativeEvent(NativeEvent nativeEvent) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> addCalendar(NativeCalendar nativeCalendar) {
     throw UnimplementedError();
   }
 }

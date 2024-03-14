@@ -21,6 +21,9 @@ export 'src/mobkit_calendar/model/day_of_week_and_repetition_model.dart';
 export 'src/extensions/date_extensions.dart';
 export 'src/mobkit_calendar/utils/date_utils.dart';
 export 'src/mobkit_calendar/controller/mobkit_calendar_controller.dart';
+export 'src/mobkit_calendar/model/native_event/native_event_model.dart';
+export 'src/mobkit_calendar/model/native_event/native_calendar_model.dart';
+
 import 'mobkit_calendar.dart';
 import 'mobkit_calendar_platform_interface.dart';
 
@@ -45,5 +48,13 @@ class MobkitCalendar {
   /// Returns the details of the relevant event.
   Future openEventDetail(Map arguments) {
     return MobkitCalendarPlatform.instance.openEventDetail(arguments);
+  }
+
+  Future<bool> addNativeEvent(NativeEvent nativeEvent) {
+    return MobkitCalendarPlatform.instance.addNativeEvent(nativeEvent);
+  }
+
+  Future<bool> addCalendar(NativeCalendar nativeCalendar) {
+    return MobkitCalendarPlatform.instance.addCalendar(nativeCalendar);
   }
 }
