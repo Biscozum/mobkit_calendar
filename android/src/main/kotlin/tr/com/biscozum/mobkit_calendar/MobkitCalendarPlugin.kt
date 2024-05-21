@@ -79,8 +79,9 @@ class MobkitCalendarPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,  P
                     call.argument("calendarColor"),
                     call.argument("localAccountName")!!,
                 ) != null)
+            }else{
+                result.success(false)
             }
-            result.success(false)
         }else if (call.method == "getPlatformVersion") {
             result.success("Android ${Build.VERSION.RELEASE}")
         }else if (call.method == "requestPermissions") {
