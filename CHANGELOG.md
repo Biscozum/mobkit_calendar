@@ -1,3 +1,9 @@
+## 1.0.0
+**Updated Dependency**
+* Upgraded the `intl` package dependency from `^0.18.0` to `^0.19.0`. This update includes improvements and bug fixes provided in the latest version of `intl`, ensuring better performance and compatibility.
+
+`Users are encouraged to update to this version to benefit from the improvements in intl ^0.19.0`
+
 ## 0.1.3
 **Example Page**
 * Example page edited.
