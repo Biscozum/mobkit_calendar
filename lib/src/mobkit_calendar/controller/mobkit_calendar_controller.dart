@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:mobkit_calendar/mobkit_calendar.dart';
 import '../../extensions/model/week_dates_model.dart';
@@ -107,13 +109,17 @@ class MobkitCalendarController extends ChangeNotifier {
     if (newAppointments.isNotEmpty) {
       List<MobkitCalendarAppointmentModel> withRecurrencyAppointments = [];
       List<MobkitCalendarAppointmentModel> addNewAppointments = [];
+      List<MobkitCalendarAppointmentModel> deletedAppointments = [];
       for (var appointment in newAppointments.where((element) =>
           element.appointmentStartDate.isAfter(element.appointmentEndDate))) {
-        int index = newAppointments.indexOf(appointment);
-        newAppointments.removeAt(index);
+        deletedAppointments.add(appointment);
         if (newAppointments.isEmpty) {
           break;
         }
+      }
+      for (var d = 0; d < deletedAppointments.length; d++) {
+        log("Due to incorrect values ​​on the MobkitCalendarAppointmentModel, the relevant model has been deleted from the list.");
+        newAppointments.remove(deletedAppointments[d]);
       }
       if (newAppointments.isNotEmpty) {
         withRecurrencyAppointments = newAppointments
