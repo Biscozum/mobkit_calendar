@@ -1,3 +1,7 @@
+## 1.0.1
+**Bug fixes**
+* The problem caused by data with a start date after the end date has been resolved.
+
 ## 1.0.0
 **Updated Dependency**
 * Upgraded the `intl` package dependency from `^0.18.0` to `^0.19.0`. This update includes improvements and bug fixes provided in the latest version of `intl`, ensuring better performance and compatibility.
