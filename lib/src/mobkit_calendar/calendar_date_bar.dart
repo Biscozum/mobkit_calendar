@@ -30,7 +30,7 @@ class CalendarDateSelectionBar extends StatefulWidget {
 
   const CalendarDateSelectionBar({
     this.minDate,
-    Key? key,
+    super.key,
     this.config,
     required this.mobkitCalendarController,
     this.onSelectionChange,
@@ -38,7 +38,7 @@ class CalendarDateSelectionBar extends StatefulWidget {
     this.headerWidget,
     this.onDateChanged,
     this.weeklyViewWidget,
-  }) : super(key: key);
+  });
 
   @override
   State<CalendarDateSelectionBar> createState() =>
@@ -299,7 +299,7 @@ class DateList extends StatefulWidget {
   final Function(DateTime datetime)? onDateChanged;
 
   const DateList({
-    Key? key,
+    super.key,
     required this.mobkitCalendarController,
     required this.minDate,
     required this.date,
@@ -309,7 +309,7 @@ class DateList extends StatefulWidget {
     this.onPopupChange,
     this.headerWidget,
     this.onDateChanged,
-  }) : super(key: key);
+  });
 
   @override
   State<DateList> createState() => _DateListState();

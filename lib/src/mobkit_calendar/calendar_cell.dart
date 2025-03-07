@@ -23,8 +23,8 @@ class CalendarCellWidget extends StatelessWidget {
     required this.mobkitCalendarController,
     MobkitCalendarConfigModel? standardCalendarConfig,
     this.showedCustomCalendarModelList,
-    Key? key,
-  }) : super(key: key) {
+    super.key,
+  }) {
     if (standardCalendarConfig == null) {
       configStandardCalendar = MobkitCalendarConfigModel();
     } else {

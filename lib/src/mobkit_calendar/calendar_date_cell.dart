@@ -26,13 +26,13 @@ class CalendarDateCell extends StatelessWidget {
     this.date,
     this.minDate,
     this.onSelectionChange, {
-    Key? key,
+    super.key,
     this.config,
     required this.mobkitCalendarController,
     this.enabled = true,
     this.onPopupWidget,
     this.onDateChanged,
-  }) : super(key: key);
+  });
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
