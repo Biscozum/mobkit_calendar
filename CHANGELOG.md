@@ -1,3 +1,7 @@
+## 1.1.0
+**Updated Dependency**
+* Upgraded Android compileSdkVersion to 35 to support the latest Android APIs.
+
 ## 1.0.1
 **Bug fixes**
 * The problem caused by data with a start date after the end date has been resolved.

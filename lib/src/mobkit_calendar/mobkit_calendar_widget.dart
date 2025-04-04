@@ -15,7 +15,7 @@ import '../calendar.dart';
 /// Creates a [MobkitCalendarWidget] widget, which used to scheduling and managing events.
 class MobkitCalendarView extends StatelessWidget {
   const MobkitCalendarView({
-    Key? key,
+    super.key,
     required this.mobkitCalendarController,
     required this.config,
     this.minDate,
@@ -28,7 +28,7 @@ class MobkitCalendarView extends StatelessWidget {
     this.onDateChanged,
     this.weeklyViewWidget,
     this.dateRangeChanged,
-  }) : super(key: key);
+  });
   final MobkitCalendarController mobkitCalendarController;
   final MobkitCalendarConfigModel? config;
   final DateTime? minDate;

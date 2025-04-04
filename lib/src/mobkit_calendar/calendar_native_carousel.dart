@@ -6,14 +6,14 @@ import '../../mobkit_calendar.dart';
 /// (if the popupEnable value is true), it creates an event list in the form of a carousel.
 class CarouselEvent extends StatefulWidget {
   const CarouselEvent({
-    Key? key,
+    super.key,
     required this.minDate,
     this.onPopupWidget,
     this.onSelectionChange,
     required this.mobkitCalendarController,
     this.config,
     this.onDateChanged,
-  }) : super(key: key);
+  });
   final DateTime minDate;
   final Widget Function(
       List<MobkitCalendarAppointmentModel>, DateTime datetime)? onPopupWidget;
@@ -103,7 +103,7 @@ class _CarouselState extends State<CarouselEvent> {
                           ?.copyWith(
                               color: widget.config?.calendarPopupConfigModel
                                   ?.popUpBoxDecoration?.color
-                                  ?.withOpacity(0.6)),
+                                  ?.withValues(alpha: 0.6)),
                   child: widget.onPopupWidget?.call(
                     findCustomModel(
                         widget.mobkitCalendarController.appointments,

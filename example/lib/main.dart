@@ -27,13 +27,14 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
     return MobkitCalendarConfigModel(
       cellConfig: CalendarCellConfigModel(
         disabledStyle: CalendarCellStyle(
-          textStyle:
-              TextStyle(fontSize: 14, color: Colors.grey.withOpacity(0.5)),
+          textStyle: TextStyle(
+              fontSize: 14, color: Colors.grey.withValues(alpha: 0.5)),
           color: Colors.transparent,
         ),
         enabledStyle: CalendarCellStyle(
           textStyle: const TextStyle(fontSize: 14, color: Colors.black),
-          border: Border.all(color: Colors.grey.withOpacity(0.2), width: 1),
+          border:
+              Border.all(color: Colors.grey.withValues(alpha: 0.2), width: 1),
         ),
         selectedStyle: CalendarCellStyle(
           color: Colors.orange,

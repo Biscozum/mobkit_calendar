@@ -12,8 +12,7 @@ class CalendarMonthSelectionBar extends StatelessWidget {
 
   const CalendarMonthSelectionBar(
       this.mobkitCalendarController, this.onSelectionChange, this.config,
-      {Key? key})
-      : super(key: key);
+      {super.key});
 
   @override
   Widget build(BuildContext context) {

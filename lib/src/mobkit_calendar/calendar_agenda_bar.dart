@@ -22,7 +22,7 @@ class CalendarAgendaBar extends StatefulWidget {
   final Function(MobkitCalendarAppointmentModel model)? eventTap;
 
   const CalendarAgendaBar({
-    Key? key,
+    super.key,
     required this.mobkitCalendarController,
     this.config,
     this.titleWidget,
@@ -30,7 +30,7 @@ class CalendarAgendaBar extends StatefulWidget {
     this.dateRangeChanged,
     this.onDateChanged,
     this.eventTap,
-  }) : super(key: key);
+  });
 
   @override
   State<CalendarAgendaBar> createState() => _CalendarAgendaBarState();
