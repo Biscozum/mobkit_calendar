@@ -1,6 +1,6 @@
 name: mobkit_calendar
 description: Mobkit Calendar has built-in basic functionalities for scheduling and representing appointments/events efficiently.
-version: 1.1.0
+version: 1.2.0
 repository: https://github.com/Biscozum/mobkit_calendar
 
 topics:
@@ -25,7 +25,7 @@ dependencies:
   flutter_web_plugins:
     sdk: flutter
   plugin_platform_interface: ^2.1.8
-  intl: ^0.19.0
+  intl: ^0.20.2
   permission_handler: ^11.0.0
   visibility_detector: ^0.4.0+2
 

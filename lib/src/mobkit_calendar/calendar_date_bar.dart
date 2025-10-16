@@ -76,8 +76,9 @@ class _CalendarDateSelectionBarState extends State<CalendarDateSelectionBar> {
   pageScrollListener() {
     Future.delayed(const Duration(milliseconds: 150)).then((value) {
       timer?.cancel();
-      if (!widget.mobkitCalendarController.pageController.position
-          .isScrollingNotifier.value) {
+      if (widget.mobkitCalendarController.pageController.hasClients &&
+          !widget.mobkitCalendarController.pageController.position
+              .isScrollingNotifier.value) {
         timer = Timer(const Duration(milliseconds: 500), () {
           widget.onDateChanged
               ?.call(widget.mobkitCalendarController.calendarDate);
