@@ -1,3 +1,7 @@
+## 1.2.0
+**Updated Dependency**
+* Updated `intl` dependency to `^0.20.2` for Flutter `3.32+` compatibility.
+
 ## 1.1.0
 **Updated Dependency**
 * Upgraded Android compileSdkVersion to 35 to support the latest Android APIs.
