@@ -1,3 +1,7 @@
+## 1.3.0
+**Updated Dependency**
+* Updated `permission_handler` dependency to `^12.0.3` for compatibility.
+
 ## 1.2.0
 **Updated Dependency**
 * Updated `intl` dependency to `^0.20.2` for Flutter `3.32+` compatibility.
